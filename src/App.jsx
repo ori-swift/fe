@@ -15,7 +15,7 @@ function App() {
 
   const nav = useNavigate();
 
-  console.log("App rendered", isLogged);
+  console.log("App rendered", isLogged, userData);
 
   useEffect(() => {
     // check token
@@ -23,7 +23,7 @@ function App() {
     if (token) {
       checkToken(token).then((userData_) => {
         if (userData_) {
-          console.log(userData_);
+          // console.log(userData_);
           setUserData(userData_);
           setIsLogged(true);
           // nav("/home")
@@ -32,11 +32,12 @@ function App() {
     } else {
       nav("/auth");
     }
-  }, [])
+  }, [isLogged])
 
   const handleLogout = () => {
     setIsLogged(false);
-    localStorage.removeItem("sc_token");
+    // localStorage.removeItem("sc_token");
+    localStorage.clear();
     nav("/auth");
   }
 

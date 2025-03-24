@@ -1,0 +1,54 @@
+  /* Document Modal Styles */
+  .doc-modal-header {
+    border-bottom: 1px solid #dee2e6;
+    padding: 15px;
+  }
+  
+  .doc-modal-title {
+    font-weight: bold;
+    text-align: right;
+  }
+  
+  .doc-modal-body {
+    padding: 15px;
+  }
+  
+  .doc-modal-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .doc-modal-row {
+    display: flex;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 8px;
+  }
+  
+  .doc-modal-label {
+    font-weight: bold;
+    width: 150px;
+    min-width: 150px;
+  }
+  
+  .doc-modal-value {
+    flex-grow: 1;
+  }
+  
+  .doc-modal-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 15px;
+    display: flex;
+    justify-content: flex-start;
+  }
+  
+  .doc-modal-playbook-btn {
+    background-color: #28a745;
+    color: white;
+    margin-left: 10px;
+  }
+  
+  .doc-modal-close-btn {
+    background-color: #6c757d;
+    color: white;
+  }

@@ -1,0 +1,103 @@
+.new-ps-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.new-ps-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.new-ps-form-group {
+    margin-bottom: 15px;
+}
+
+.new-ps-label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.new-ps-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.new-ps-input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.new-ps-error {
+    color: #d9534f;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    background: #f8d7da;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.new-ps-alert {
+    text-align: center;
+    font-size: 1rem;
+    padding: 10px;
+    background: #d4edda;
+    color: #155724;
+    border-radius: 5px;
+}
+
+.new-ps-button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.new-ps-submit-button,
+.new-ps-cancel-button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.new-ps-submit-button {
+    background: #007bff;
+    color: white;
+}
+
+.new-ps-submit-button:hover {
+    background: #0056b3;
+}
+
+.new-ps-cancel-button {
+    background: #6c757d;
+    color: white;
+}
+
+.new-ps-cancel-button:hover {
+    background: #545b62;
+}
+
+.new-ps-spinner-text {
+    margin-left: 8px;
+}
+
+@media (max-width: 600px) {
+    .new-ps-button-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .new-ps-submit-button,
+    .new-ps-cancel-button {
+        width: 100%;
+    }
+}

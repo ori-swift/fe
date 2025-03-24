@@ -7,6 +7,38 @@
     font-family: Arial, sans-serif;
   }
   
+  .clients-list-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+  }
+  
+  .clients-list-toggle-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+  }
+  
+  .clients-list-toggle-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .clients-list-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .clients-list-row:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
   .clients-list-title {
     font-size: 1.75rem;
     margin-bottom: 1.5rem;

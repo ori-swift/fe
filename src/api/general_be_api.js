@@ -1,6 +1,15 @@
 import { SERVER_URL } from "../config";
 import axios from 'axios';
 
+
+export const getAuthHeaders = () => {
+    return {
+        "Content-Type": "application/json",
+        "Authorization": `Token ${localStorage.getItem("sc_token")}`
+    }
+}
+
+
 export async function refreshProviderData(cred_id) {
 
     const data = { cred_id: cred_id };
@@ -10,14 +19,11 @@ export async function refreshProviderData(cred_id) {
         const response = await axios.post(`${SERVER_URL}/refresh-provider-data`,
             data,
             {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Token ${token}`
-                }
+                headers: getAuthHeaders()
             });
 
         console.log(response.data);
-        return response;
+        return true;
     } catch (error) {
         console.log(error);
         alert("Error refreshing data.")
@@ -36,18 +42,18 @@ export async function getAllClients(cred_id) {
         const now = new Date().getTime();
         if (now - parsedData.timestamp < cacheTime) {
             console.log("Using cache for clients");
-            
+
             return parsedData.response.data;
         }
     }
     console.log("No cache for clients");
-    
-    const data = { cred_id: cred_id };
+
+    // const data = { cred_id: cred_id };
     const token = localStorage.getItem("sc_token");
 
     try {
-        const response = await axios.post(`${SERVER_URL}/clients`,
-            data,
+        const response = await axios.get(`${SERVER_URL}/clients/${cred_id}/`,
+            // data,
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -70,3 +76,84 @@ export async function getAllClients(cred_id) {
         return false;
     }
 }
+
+
+export async function addContactInfo(clientId, emails = [], phones = []) {
+
+    try {
+        const response = await axios.put(`${SERVER_URL}/clients/${clientId}/add_contact_info/`, {
+            emails,
+            phones
+        },
+            { headers: getAuthHeaders() });
+        return response.data;
+    } catch (error) {
+        console.error("Error adding contact info:", error.response?.data || error.message);
+        throw error;
+    }
+}
+
+
+export async function fetchDocumentsByClient(clientId) {    
+
+    try {
+        const response = await axios.get(`${SERVER_URL}/documents/${clientId}`, {
+            headers: getAuthHeaders()
+        });
+        console.log(response.data);
+
+        return response.data; // Array of documents
+    } catch (error) {
+        console.error("Error fetching documents:", error);
+        alert("Error fetching documents of client");
+        throw error;
+    }
+}
+
+export const fetchProviders = async () => {
+    const cacheKey = "providers";
+    const cachedData = localStorage.getItem(cacheKey);
+    const now = new Date().getTime();
+
+    if (cachedData) {
+        const { data, timestamp } = JSON.parse(cachedData);
+        if (now - timestamp < 24 * 60 * 60 * 1000) {
+            return data;
+        }
+    }
+
+    try {
+        const response = await axios.get(`${SERVER_URL}/providers`, { headers: getAuthHeaders() });
+        const newCache = { data: response.data, timestamp: now };
+        localStorage.setItem(cacheKey, JSON.stringify(newCache));
+        return response.data;
+    } catch (error) {
+        const errorMsg = 'Error fetching required fields:' + String(error) + String(error?.response?.data)
+        alert(errorMsg);
+        throw error;
+    }
+};
+
+
+
+export async function addNewProvider(providerId, companyName, credJson) {
+    try {
+        const response = await axios.post(`${SERVER_URL}/providers/add`, {
+            provider_id: providerId,  // Send only the ID
+            company_name: companyName,
+            cred_json: credJson // Keep additional data in cred_json
+        }, { headers: getAuthHeaders() });
+
+        console.log("Success:", response.data);
+        return response.data;
+    } catch (error) {
+        // console.error("Error adding user credentials:", error.response?.data || error.message);
+        let errorMsg = "Error adding user credentials:" + error.response?.data?.error;
+        console.error(errorMsg);
+        // alert(errorMsg);
+        error.errorMsg = errorMsg;
+        throw error;
+    }
+}
+
+

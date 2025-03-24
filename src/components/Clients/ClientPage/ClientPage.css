@@ -1,0 +1,280 @@
+.client-page-container {
+    direction: rtl;
+    font-family: 'Rubik', 'Segoe UI', Tahoma, sans-serif;
+    padding: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.client-page-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+}
+
+.client-page-header {
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+}
+
+.client-page-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: #333;
+}
+
+.client-page-id {
+    font-size: 14px;
+    color: #777;
+}
+
+.client-page-section {
+    margin-bottom: 28px;
+}
+
+.client-page-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.client-page-section-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+}
+
+.client-page-info-row {
+    display: flex;
+    margin-bottom: 12px;
+}
+
+.client-page-info-label {
+    min-width: 120px;
+    font-weight: 500;
+    color: #555;
+}
+
+.client-page-info-value {
+    color: #333;
+}
+
+.client-page-notice {
+    background-color: #f8f8f8;
+    border-right: 4px solid #4a90e2;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 14px;
+    color: #555;
+    border-radius: 4px;
+}
+
+.client-page-contacts-list {
+    margin-bottom: 16px;
+}
+
+.client-page-contact-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin-bottom: 8px;
+}
+
+.client-page-no-data {
+    color: #999;
+    font-style: italic;
+    padding: 8px 0;
+}
+
+.client-page-add-form {
+    margin-top: 16px;
+}
+
+.client-page-input-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.client-page-phone-input-group {
+    position: relative;
+}
+
+.client-page-phone-prefix {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    padding: 0 12px;
+    border-radius: 6px 0 0 6px;
+    font-weight: 500;
+    color: #333;
+    border: 1px solid #ddd;
+    border-left: none;
+}
+
+.client-page-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.client-page-input:focus {
+    border-color: #4a90e2;
+}
+
+.client-page-input-error {
+    border-color: #e74c3c;
+}
+
+.client-page-error-message {
+    color: #e74c3c;
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+.client-page-edit-button {
+    background-color: transparent;
+    color: #4a90e2;
+    border: 1px solid #4a90e2;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.client-page-edit-button:hover {
+    background-color: #f0f7ff;
+}
+
+.client-page-add-button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.client-page-add-button:hover {
+    background-color: #3a80d2;
+}
+
+.client-page-remove-button {
+    background-color: transparent;
+    color: #e74c3c;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: all 0.2s;
+}
+
+.client-page-remove-button:hover {
+    text-decoration: underline;
+}
+
+.client-page-actions {
+    border-top: 1px solid #f0f0f0;
+    padding-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.client-page-update-button {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    min-width: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.client-page-update-button:hover {
+    background-color: #27ae60;
+}
+
+.client-page-update-button:disabled {
+    background-color: #95e3b6;
+    cursor: not-allowed;
+}
+
+.client-page-spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.client-page-stats {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 24px;
+}
+
+.client-page-stat-item {
+    display: flex;
+    gap: 8px;
+}
+
+.client-page-stat-label {
+    font-weight: 500;
+    color: #555;
+}
+
+.client-page-stat-value {
+    font-weight: 600;
+    color: #333;
+}
+
+@media (max-width: 600px) {
+    .client-page-container {
+        padding: 16px;
+    }
+    
+    .client-page-card {
+        padding: 16px;
+    }
+    
+    .client-page-info-row {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .client-page-input-group {
+        flex-direction: column;
+    }
+    
+    .client-page-add-button {
+        width: 100%;
+    }
+}

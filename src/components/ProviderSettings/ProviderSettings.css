@@ -1,101 +1,181 @@
 .provider-settings-container {
-    width: 500px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-    background: #f9f9f9;
+  width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+}
+
+.provider-settings-title {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #333;
+}
+
+.provider-settings-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: 15px;
+}
+
+.provider-settings-field select {
+  direction: rtl;
+  text-align: right;
+}
+
+.provider-settings-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.provider-settings-value {
+  width: 100%;
+  text-align: left;
+}
+
+.provider-settings-field input,
+.provider-settings-field select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: #fff;
+}
+
+.provider-settings-error {
+  color: red;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.provider-settings-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.provider-settings-buttons button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.provider-settings-edit {
+  background-color: #007bff;
+  color: white;
+}
+
+.provider-settings-save {
+  background-color: #28a745;
+  color: white;
+}
+
+.provider-settings-cancel {
+  background-color: #dc3545;
+  color: white;
+}
+
+.provider-settings-buttons button:hover {
+  opacity: 0.8;
+}
+
+.settings-provider-card {
+  background: #f8f9fa;
+  text-align: right;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  /* display: flex; */
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings-provider-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.settings-provider-action {
+  background-color: #28a745;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.settings-provider-action:hover {
+  background-color: #218838;
+}
+
+.provider-settings-show-button {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 15px auto;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.provider-settings-show-button:hover {
+  background: linear-gradient(135deg, #0056b3, #003f7f);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+.provider-settings-show-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+.spinner {
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #fff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
-  
-  .provider-settings-title {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    text-align: center;
-    color: #333;
-  }
-  
-  .provider-settings-field {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    margin-bottom: 15px;
-  }
-  .provider-settings-field select {
-    direction: rtl;
-    text-align: right;
-  }
-  .provider-settings-label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #555;
-  }
-  
-  .provider-settings-value {
-    width: 100%;
-    text-align: left;
-  }
-  
-  .provider-settings-field input,
-  .provider-settings-field select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-    background: #fff;
-  }
-  
-  .provider-settings-error {
-    color: red;
-    font-size: 0.9rem;
-    text-align: center;
-  }
-  
-  .provider-settings-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 15px;
-  }
-  
-  .provider-settings-buttons button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: 0.3s;
-  }
-  
-  .provider-settings-edit {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .provider-settings-save {
-    background-color: #28a745;
-    color: white;
-  }
-  
-  .provider-settings-cancel {
-    background-color: #dc3545;
-    color: white;
-  }
-  
-  .provider-settings-buttons button:hover {
-    opacity: 0.8;
-  }
-  .provider-settings-show-buttons {
-    display: block;
-    margin: auto;
-    margin: 5% auto;
-    color: #28a745;
-    background-color: antiquewhite;
-    border-radius: 25px;
-    min-width: 300px;
-    height: 30px;
-    font-size: 16px;
-  }
+}
+
+.provider-settings-refresh {
+  color: black;
+  margin: 2%;
+  height: auto;
+}
