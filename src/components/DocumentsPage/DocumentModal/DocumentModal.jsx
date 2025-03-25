@@ -4,7 +4,11 @@ import "./DocumentModal.css"
 
 // Document Modal Component
 const DocumentModal = ({ document, show, handleClose, handleCreatePlaybook }) => {
-  if (!document) return null;
+  if (!document) {
+    return null    
+  };
+  console.log(document);
+  
 
   // Currency symbols mapping
   const currencySymbols = {

@@ -2,6 +2,10 @@ import axios from "axios";
 import { getAuthHeaders } from "./general_be_api";
 import { SERVER_URL } from "../config";
 
+export async function addNewPlaybook() {
+    alert("not implemented")
+}
+
 export async function getPlaybook(playbookId) {
     try {        
         
@@ -118,7 +122,7 @@ export function isPlaybookConfigValid(config) {
             }
 
             if (Object.keys(alerts).length === 0 && i === 0) {
-                return { valid: false, error: "First phase alerts cannot be empty" };
+                return { valid: false, error: "פאזה ראשונה חייבת להכיל התראה כלשהי" };
             }
 
             const validAlerts = ["email", "sms", "whatsapp"];
@@ -174,7 +178,7 @@ export function isPlaybookConfigValid(config) {
             if (alertTimes.join() !== sortedTimes.join()) {
                 return {
                     valid: false,
-                    error: `Alert times must be in ascending order. Got: ${alertTimes.join(', ')}`
+                    error: `זמני ההתראות חייבים להופיע בסדר עולה. שנה את : ${alertTimes.join(', ')}`
                 };
             }
             

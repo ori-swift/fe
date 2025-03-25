@@ -6,7 +6,9 @@ import { AppContext } from '../../../App';
 import { ChevronDown, ChevronUp } from 'lucide-react'; // Import icons
 
 const ProviderClients = ({ ps }) => {
-    const [show, setShow] = useState(false);
+        
+
+    // const [show, setShow] = useState(false);
     const [clients, setClients] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +28,7 @@ const ProviderClients = ({ ps }) => {
 
     const handleClientClick = (client) => {        
         setSelectedClient(client);
-        navigate("/client-page"); // Fixed navigation path
+        navigate("/client-page/" + client.id); 
     };
 
     const handleSearch = (e) => {
@@ -49,28 +51,31 @@ const ProviderClients = ({ ps }) => {
         setCurrentPage(pageNumber);
     };
 
-    const toggleShow = (e) => {
-        e.stopPropagation(); // Prevent event from bubbling up
-        setShow(!show);
-    };
+    // const toggleShow = (e) => {
+    //     e.stopPropagation(); // Prevent event from bubbling up
+    //     setShow(!show);
+    // };
     console.log(ps);
     
     return (
         <div className="clients-list-container">
             <div className="clients-list-header-container">
-                <h2 className="clients-list-title" onClick={toggleShow}>
+                {/* <h2 className="clients-list-title" onClick={toggleShow}> */}
+                {/* <h2 className="clients-list-title" onClick={toggleShow}> */}
+                <h2 className="clients-list-title" >
                     לקוחות של {ps.company_name}
                 </h2>
-                <button 
+                {/* <button 
                     className="clients-list-toggle-button" 
                     onClick={toggleShow}
                     aria-label={show ? "הסתר לקוחות" : "הצג לקוחות"}
                 >
                     {show ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                </button>
+                </button> */}
             </div>
             
-            {show && (
+            {/* {show && ( */}
+            {true && (
                 <div className="clients-list-content">
                     <div className="clients-list-search-wrapper">
                         <input

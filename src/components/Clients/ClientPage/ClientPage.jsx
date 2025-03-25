@@ -2,9 +2,10 @@ import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../../../App';
 import "./ClientPage.css";
 import {addContactInfo} from '../../../api/general_be_api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const ClientPage = () => {
+    const {id} = useParams();
     const { selectedClient } = useContext(AppContext);
     const [emails, setEmails] = useState([]);
     const [phones, setPhones] = useState([]);
@@ -20,11 +21,15 @@ const ClientPage = () => {
 
     useEffect(() => {
         console.log(selectedClient);
+        console.log(id);
 
         if (selectedClient.name) {
             setEmails(selectedClient.emails || []);
             setPhones(selectedClient.phones || []);
-        } else {
+        } else if (id){
+            // fetchSingleClient
+        }
+         else {
             nav("/clients")
         }
     }, []);

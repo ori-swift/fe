@@ -31,9 +31,54 @@ export async function refreshProviderData(cred_id) {
     }
 }
 
-export async function getAllClients(cred_id) {
-    const cacheKey = `clients_${cred_id}`;
-    const cacheTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+// export async function getAllClients(cred_id) {
+//     const cacheKey = `clients_${cred_id}`;
+//     const cacheTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+//     // Check cache first
+//     const cachedData = localStorage.getItem(cacheKey);
+//     if (cachedData) {
+//         const parsedData = JSON.parse(cachedData);
+//         const now = new Date().getTime();
+//         if (now - parsedData.timestamp < cacheTime) {
+//             console.log("Using cache for clients");
+
+//             return parsedData.response.data;
+//         }
+//     }
+//     console.log("No cache for clients");
+
+//     // const data = { cred_id: cred_id };
+//     const token = localStorage.getItem("sc_token");
+
+//     try {
+//         const response = await axios.get(`${SERVER_URL}/clients/${cred_id}/`,
+//             // data,
+//             {
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                     "Authorization": `Token ${token}`
+//                 }
+//             });
+
+//         // console.log(response.data);
+
+//         // Cache the response
+//         localStorage.setItem(cacheKey, JSON.stringify({
+//             response: response,
+//             timestamp: new Date().getTime()
+//         }));
+
+//         return response.data;
+//     } catch (error) {
+//         console.log(error);
+//         alert("Error fetching clients.")
+//         return false;
+//     }
+// }
+export async function getAllClients() {
+    const cacheKey = `clients`;
+    const cacheTime = 0.5 * 60 * 60 * 1000; // 0.5 hour in milliseconds
 
     // Check cache first
     const cachedData = localStorage.getItem(cacheKey);
@@ -47,21 +92,21 @@ export async function getAllClients(cred_id) {
         }
     }
     console.log("No cache for clients");
-
-    // const data = { cred_id: cred_id };
-    const token = localStorage.getItem("sc_token");
+    
+    // const token = localStorage.getItem("sc_token");
 
     try {
-        const response = await axios.get(`${SERVER_URL}/clients/${cred_id}/`,
+        const response = await axios.get(`${SERVER_URL}/client/`,
             // data,
             {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Token ${token}`
-                }
+                headers: getAuthHeaders(),
+                // headers: {
+                //     "Content-Type": "application/json",
+                //     "Authorization": `Token ${token}`
+                // }
             });
 
-        // console.log(response.data);
+        console.log(response.data);
 
         // Cache the response
         localStorage.setItem(cacheKey, JSON.stringify({
@@ -109,6 +154,22 @@ export async function fetchDocumentsByClient(clientId) {
         throw error;
     }
 }
+
+export async function getDocumentById(documentId) {
+    try {
+        const response = await axios.get(`${SERVER_URL}/document/${documentId}`, {
+            headers: getAuthHeaders()
+        });
+        console.log(response.data);
+
+        return response.data; // Single document
+    } catch (error) {
+        console.error("Error fetching document:", error);
+        alert("Error fetching document");
+        throw error;
+    }
+}
+
 
 export const fetchProviders = async () => {
     const cacheKey = "providers";

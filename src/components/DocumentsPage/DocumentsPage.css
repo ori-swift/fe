@@ -1,177 +1,255 @@
+/* Base container styles */
 .documents-page-container {
-    font-family: Arial, sans-serif;
-    max-width: 1200px;
-    margin: 5%;
-    padding:.20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1200px;
+  margin: 2% auto;
+  padding: 25px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}
+
+.documents-page-title {
+  margin-bottom: 25px;
+  text-align: right;
+  color: #333;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+/* Controls section */
+.documents-page-controls {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.documents-page-search-input {
+  padding: 10px 15px;
+  width: 300px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s;
+}
+
+.documents-page-search-input:focus {
+  border-color: #4a90e2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.documents-page-filter-label {
+  margin-right: 8px;
+  font-weight: 500;
+  color: #555;
+}
+
+.documents-page-filter-select {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  min-width: 120px;
+}
+
+/* Table styles */
+.documents-page-table-container {
+  overflow-x: auto;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.documents-page-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: right;
+}
+
+.documents-page-table th {
+  background-color: #f7f9fc;
+  padding: 14px 16px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #eaeaea;
+  position: sticky;
+  top: 0;
+}
+
+.documents-page-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #eaeaea;
+  color: #444;
+}
+
+.documents-page-table-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.documents-page-table-row:hover {
+  background-color: #f5f9ff;
+}
+
+.documents-page-no-results {
+  text-align: center;
+  padding: 30px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Dropdown menu styling */
+.document-page-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.document-page-dropdown-btn {
+  padding: 8px 14px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.document-page-dropdown-btn:hover {
+  background-color: #3a7bc8;
+}
+
+.document-page-dropdown-btn:after {
+  content: "▼";
+  font-size: 0.7rem;
+  margin-right: 5px;
+}
+
+.document-page-dropdown-content {
+  position: absolute;
+  right: 0;
+  min-width: 220px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  overflow: hidden;
+  transform-origin: top right;
+  animation: dropdownFade 0.2s ease;
+}
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  .documents-page-title {
-    margin-bottom: 20px;
-    text-align: right;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
+}
+
+.document-page-button {
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 12px 18px;
+  text-align: right;
+  cursor: pointer;
+  color: #333;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.document-page-button:last-child {
+  border-bottom: none;
+}
+
+.document-page-button:hover {
+  background-color: #f7f9fc;
+  color: #4a90e2;
+}
+
+/* Pagination */
+.documents-page-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  align-items: center;
+  gap: 5px;
+}
+
+.documents-page-pagination-btn {
+  padding: 8px 15px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+  color: #555;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.documents-page-pagination-btn:hover:not(:disabled) {
+  background-color: #f5f9ff;
+  border-color: #4a90e2;
+  color: #4a90e2;
+}
+
+.documents-page-pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.documents-page-pagination-numbers {
+  display: flex;
+  gap: 5px;
+}
+
+.documents-page-pagination-number {
+  padding: 8px 14px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+  min-width: 40px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.documents-page-pagination-number:hover {
+  background-color: #f5f9ff;
+  border-color: #4a90e2;
+  color: #4a90e2;
+}
+
+.documents-page-pagination-active {
+  background-color: #4a90e2;
+  color: white;
+  border-color: #4a90e2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .documents-page-controls {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
+    flex-direction: column;
+    align-items: flex-start;
   }
   
-  .documents-page-search-input {
-    padding: 8px;
-    width: 250px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
+  .documents-page-search-input,
   .documents-page-filter-select {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-right: 10px;
-  }
-  
-  .documents-page-filter-label {
-    margin-left: 10px;
-  }
-  
-  .documents-page-table-container {
-    overflow-x: auto;
-  }
-  
-  .documents-page-table {
     width: 100%;
-    border-collapse: collapse;
-    text-align: right;
   }
-  
-  .documents-page-table th,
-  .documents-page-table td {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .documents-page-table th {
-    background-color: #f8f8f8;
-    font-weight: bold;
-  }
-  
-  .documents-page-table-row {
-    cursor: pointer;
-  }
-  
-  .documents-page-table-row:hover {
-    background-color: #f5f5f5;
-  }
-  
-  .documents-page-view-btn,
-  .documents-page-playbook-btn {
-    margin: 0 5px;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .documents-page-view-btn {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .documents-page-playbook-btn {
-    background-color: #28a745;
-    color: white;
-  }
-
-  .documents-page-view-btn:hover {
-    background-color: #0069d9;
-  }
-  
-  .documents-page-playbook-btn:hover {
-    background-color: #218838;
-  }
-  
-  .documents-page-no-results {
-    text-align: center;
-    padding: 20px;
-  }
-  
-  .documents-page-pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    align-items: center;
-  }
-  
-  .documents-page-pagination-btn {
-    padding: 8px 12px;
-    margin: 0 5px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .documents-page-pagination-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  .documents-page-pagination-numbers {
-    display: flex;
-  }
-  
-  .documents-page-pagination-number {
-    padding: 8px 12px;
-    margin: 0 2px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .documents-page-pagination-active {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-  }
-
-  .document-page-dropdown {
-    position: relative;
-    display: inline-block;
-    margin: 0 5px;
-  }
-  
-  .document-page-dropdown-btn {
-    cursor: pointer;
-    border: 1px solid #ccc;
-    padding: 5px 10px;
-    background: #f3f3f3;
-  }
-  
-  .document-page-dropdown-content {
-    display: none;
-    position: absolute;
-    min-width: 170px;
-    background-color: #fff;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    z-index: 1;
-  }
-  
-  /* .document-page-dropdown:hover .document-page-dropdown-content {
-    display: block;
-  } */
-  
-  .document-page-button {
-    display: block;
-    width: 100%;
-    border: none;
-    background: #fff;
-    padding: 8px 10px;
-    text-align: left;
-    cursor: pointer;
-  }
-  
-  .document-page-button:hover {
-    background-color: #f1f1f1;
-  }
-  
+}

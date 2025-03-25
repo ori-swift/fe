@@ -43,9 +43,7 @@ const DocumentsPage = () => {
         setShowModal(true);
     };
     const handleCloseModal = () => setShowModal(false);
-
-    const handleUpdatePlaybook = (id) => nav(`/playbook/${id}`);
-    const handleGeneratePlaybook = () => alert("not implemented yet");
+    
 
     const filteredDocuments = documents.filter((doc) => {
         if (filterStatus !== 'all') {
@@ -111,84 +109,20 @@ const DocumentsPage = () => {
                             <th>תאריך</th>
                             <th>סכום</th>
                             <th>סטטוס</th>
-                            <th>פעולות</th>
+                            {/* <th>פעולות</th> */}
                         </tr>
                     </thead>
                     <tbody>
                         {currentItems.length > 0 ? (
                             currentItems.map((doc) => (
-                                <tr key={doc.id} onClick={() => handleOpenModal(doc)} className="documents-page-table-row">
+                                // <tr key={doc.id} onClick={() => handleOpenModal(doc)} className="documents-page-table-row">
+                                <tr key={doc.id} onClick={() => nav("/document/"+doc.id)} className="documents-page-table-row">
                                     <td>{doc.id}</td>
                                     <td>{doc.client?.name}</td>
                                     <td>{doc.description}</td>
                                     <td>{formatDate(doc.document_date)}</td>
                                     <td>{doc.amount} {getCurrencySymbol(doc)}</td>
                                     <td>{doc.is_open ? "פתוח" : "סגור"}</td>
-                                    <td onClick={(e) => e.stopPropagation()}> {/* Prevent row click from interfering */}
-                                        <div className="document-page-dropdown">
-                                            <button
-                                                className="document-page-dropdown-btn"
-                                                onClick={(e) => {
-                                                    console.log(doc.id);
-                                                    console.log(doc.playbook.type);
-                                                    
-                                                    toggleDropdown(e, doc.id)}}
-                                            >
-                                                ניהול התראות
-                                            </button>
-                                            <div
-                                                className="document-page-dropdown-content"
-                                                style={{ display: openDropdownId === doc.id ? 'block' : 'none' }}
-                                            >
-                                                {doc.playbook.type === "document" && (
-                                                    <button
-                                                        className="document-page-button"
-                                                        onClick={() => handleUpdatePlaybook(doc.playbook.id)}
-                                                    >
-                                                        update playbook
-                                                    </button>
-                                                )}
-                                                {doc.playbook.type === "client" && (
-                                                    <>
-                                                        <button
-                                                            className="document-page-button"
-                                                            onClick={() => handleUpdatePlaybook(doc.playbook.id)}
-                                                        >
-                                                            update-client-playbook
-                                                        </button>
-                                                        <button
-                                                            className="document-page-button"
-                                                            onClick={handleGeneratePlaybook}
-                                                        >
-                                                            add-playbook
-                                                        </button>
-                                                    </>
-                                                )}
-                                                {doc.playbook.type === "company" && (
-                                                    <>
-                                                        <button
-                                                            className="document-page-button"
-                                                            onClick={() => handleUpdatePlaybook(doc.playbook.id)}
-                                                        >
-                                                            update-client-playbook
-                                                        </button>
-                                                        <button
-                                                            className="document-page-button"
-                                                            onClick={handleGeneratePlaybook}
-                                                        >
-                                                            generate-client-based-playbook
-                                                        </button>
-                                                        <button
-                                                            className="document-page-button"
-                                                            onClick={handleGeneratePlaybook}
-                                                        >
-                                                            generate-document-based-playbook
-                                                        </button>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </td>
                                 </tr>
                             ))
                         ) : (

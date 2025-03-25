@@ -4,7 +4,7 @@ import { AppContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
 
 const Clients = () => {
-    const { userData, isLogged } = useContext(AppContext);
+    const { userData, isLogged, selectedCompany } = useContext(AppContext);
     const nav = useNavigate()
     useEffect(() => {
         if (!isLogged) {
@@ -15,15 +15,16 @@ const Clients = () => {
     console.log("Clients rendered");
     
 
-    if (!userData?.credentials) {
+    if (!userData?.companies) {
         return <p>טוען...</p>;
     }
 
     return (
         <div>
-            {userData.credentials.map((ps) => {
+            <ProviderClients key={selectedCompany.id} ps={selectedCompany} />
+            {/* {userData.companies.map((ps) => {
                 return <ProviderClients key={ps.id} ps={ps} />
-            })}
+            })} */}
         </div>
     );
 }

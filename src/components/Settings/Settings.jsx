@@ -16,7 +16,7 @@ export default function Settings() {
     }
   }, [isLogged, nav]);
 
-  if (!userData?.credentials) {
+  if (!userData?.companies) {
     return <p>טוען...</p>;
   }
 
@@ -35,7 +35,7 @@ export default function Settings() {
         <h2 className="settings-title">החברות שלי</h2>
       </div>
       <div className="settings-list">
-        {userData.credentials.map((ps) => (
+        {userData.companies.map((ps) => (
           <div key={ps.id} className="settings-provider-card">
             <span className="settings-provider-name">{ps.company_name}</span>
             <ProviderSettings ps={ps} />
