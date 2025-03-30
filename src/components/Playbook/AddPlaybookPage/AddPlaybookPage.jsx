@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { isPlaybookConfigValid, addNewPlaybook } from "../../../api/playbook_api";
+import { isPlaybookConfigValid, addNewPlaybook, getPlaybook } from "../../../api/playbook_api";
 import LoadingSpinner from "../../../utils/LoadingSpinner";
 import ErrorMessage from "../../../utils/ErrorMessage";
 import { useConfirmation } from "../../../utils/ConfirmationContext";
@@ -8,8 +8,10 @@ import PlaybookContent from "../PlaybookContent/PlaybookContent";
 import TargetInfo from "../TargetInfo/TargetInfo";
 import ActionButtons from "../ActionButtons/ActionButtons";
 import "./../PlaybookPage/PlaybookPage.css";
+import { AppContext } from "../../../App";
 
 const AddPlaybookPage = () => {
+    
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const clientId = searchParams.get("clientId");
@@ -42,6 +44,38 @@ const AddPlaybookPage = () => {
         saving: false,
         targetType: "global"
     });
+
+    const {selectedCompany} = useContext(AppContext)
+
+    useEffect(() => {
+        // Fetch default company playbook as template
+        getPlaybook(selectedCompany.company_playbook_id).then((res) => {
+            console.log(res);
+            
+            // Update state with the fetched playbook data
+            setState(prevState => ({
+                ...prevState,
+                formData: {
+                    ...prevState.formData,
+                    only_business_days: res.only_business_days,
+                    config: res.config,
+                    company_id: res.company,
+                },
+                playbook: {
+                    ...prevState.playbook,
+                    company: res.company_data,
+                },
+                loading: false
+            }));
+        }).catch(error => {
+            console.error("Error fetching playbook:", error);
+            setState(prevState => ({
+                ...prevState,
+                error: "Failed to load playbook template",
+                loading: false
+            }));
+        });
+    }, [selectedCompany.company_playbook_id]);
 
     useEffect(() => {
         if (!clientId && !documentId) {

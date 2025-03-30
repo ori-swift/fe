@@ -1,11 +1,25 @@
+import { useNavigate } from "react-router-dom";
+import { deletePlaybook } from "../../../api/playbook_api";
+import { useConfirmation } from "../../../utils/ConfirmationContext";
+
 const ActionButtons = ({ editMode, saving, playbook, onEdit, onSave, onCancel }) => {
+    const nav = useNavigate();
+    const { confirmAction } = useConfirmation();
     if (!editMode) {
         return (
             <div className="playbook-page-actions">
                 {(playbook.document || playbook.client) && (
                     <button
                         className="playbook-page-remove-btn"
-                        onClick={() => alert("הסרת פלייבוק אינה מיושמת עדיין")}
+                        onClick={async () => {
+                            confirmAction(
+                                "האם אתה בטוח שברצונך להסיר את הפלייבוק?",
+                                async () => {
+                                    await deletePlaybook(playbook.id);
+                                    nav(-1);
+                                }
+                            );                            
+                        }}
                     >
                         הסר פלייבוק
                     </button>

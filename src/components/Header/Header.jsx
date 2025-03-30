@@ -17,6 +17,7 @@ const Header = ({ handleLogout, isLogged }) => {
         {isLogged && <button onClick={handleLogout} className="header-logout">התנתק {userData?.user?.username}</button>}
         {!isLogged && <Link to="/settings" className="header-link">התחבר</Link>}
         {isLogged && <Link to="/clients" className="header-link">לקוחות</Link>}
+        {isLogged && <Link to="/all-docs" className="header-link">מסמכים</Link>}
       </div>
     </nav>
   );
