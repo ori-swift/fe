@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { fetchDocumentsByClient } from '../../api/general_be_api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DocumentModal from './DocumentModal/DocumentModal';
 import { AppContext } from '../../App';
 import "./DocumentsPage.css"
@@ -11,10 +11,10 @@ const DocumentsPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-    const [filterStatus, setFilterStatus] = useState('all');
-    const [showDropdown, setShowDropdown] = useState(false);
+    const [filterStatus, setFilterStatus] = useState('all');    
     const [openDropdownId, setOpenDropdownId] = useState(null); // Track which row’s dropdown is open
-
+    
+    
     const toggleDropdown = (e, docId) => {
         e.stopPropagation();
         setOpenDropdownId((prev) => (prev === docId ? null : docId)); // Toggle specific row

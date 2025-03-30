@@ -2,6 +2,14 @@ import { useNavigate } from "react-router-dom";
 
 const TargetInfo = ({ playbook }) => {
     const nav = useNavigate();
+    
+    if (playbook.client_data){
+        playbook.client = playbook.client_data;
+    }
+    if (playbook.document_data){
+        playbook.document = playbook.document_data;
+    }
+    
     if (playbook.document) {
         return (
             <div className="playbook-page-target-info document">
@@ -20,6 +28,7 @@ const TargetInfo = ({ playbook }) => {
                         // e.preventDefault(); alert("צפייה במסמך אינה מיושמת עדיין");
                     }}>
                     {playbook.document.provider_doc_id}
+                    
                 </a>
             </div>
         );
@@ -49,7 +58,7 @@ const TargetInfo = ({ playbook }) => {
                     <line x1="2" y1="12" x2="22" y2="12"></line>
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                 </svg>
-                <span className="playbook-page-target-label">פלייבוק גלובלי</span>
+                <span className="playbook-page-target-label">פלייבוק גלובלי לחברה</span>
             </div>
         );
     }

@@ -1,12 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../../../App';
 import "./ClientPage.css";
-import {addContactInfo} from '../../../api/general_be_api';
+import { addContactInfo, getClient } from '../../../api/general_be_api';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const ClientPage = () => {
-    const {id} = useParams();
-    const { selectedClient } = useContext(AppContext);
+    const { id } = useParams();
+    const { selectedClient, selectedCompany } = useContext(AppContext);
+    const [clientData, setClientData] = useState({})
     const [emails, setEmails] = useState([]);
     const [phones, setPhones] = useState([]);
     const [newEmail, setNewEmail] = useState('');
@@ -19,17 +20,22 @@ const ClientPage = () => {
 
     const nav = useNavigate();
 
-    useEffect(() => {
-        console.log(selectedClient);
-        console.log(id);
-
+    useEffect(() => {        
+        
         if (selectedClient.name) {
+            setClientData(selectedClient);
             setEmails(selectedClient.emails || []);
             setPhones(selectedClient.phones || []);
-        } else if (id){
-            // fetchSingleClient
+        } else if (id) {
+            getClient(id, selectedCompany.id).then((res)=>{
+                setClientData(res)            
+                setEmails(res.emails || []);
+                setPhones(res.phones || []);
+
+            });
+            
         }
-         else {
+        else {
             nav("/clients")
         }
     }, []);
@@ -107,12 +113,12 @@ const ClientPage = () => {
     const handleSubmit = async () => {
         setIsLoading(true);
         try {
-            await addContactInfo(selectedClient.id, emails, phones);
+            await addContactInfo(clientData.id, emails, phones);
             setEmailsEditMode(false);
             setPhonesEditMode(false);
 
             // remove localstorage cache:
-            localStorage.removeItem(`clients_${selectedClient.provider}`);
+            localStorage.removeItem(`clients_${clientData.provider}`);
 
         } catch (error) {
             console.error('שגיאה בעדכון פרטי הלקוח:', error);
@@ -122,16 +128,22 @@ const ClientPage = () => {
         }
     };
 
-    if (!selectedClient) return <div className="client-page-container">לא נבחר לקוח</div>;
+    if (!clientData) return <div className="client-page-container">לא נבחר לקוח</div>;
+    
 
     return (
         <div className="client-page-container">
             <div className="client-page-card">
                 <div className="client-page-header">
-                    <h1 className="client-page-title">{selectedClient.name}</h1>
-                    <div className="client-page-id">מס' לקוח: {selectedClient.id}</div>
+                    <h1 className="client-page-title">{clientData.name}</h1>
+                    <div className="client-page-id">מס' לקוח: {clientData.id}</div>
+                    {clientData.client_playbook_id &&
+                        <button onClick={() => nav("/playbook/" + clientData.client_playbook_id)}
+                            className='doc-modal-playbook-btn' > עדכן פלייבוק </button>}
+                    {!clientData.client_playbook_id &&
+                        <button onClick={() => nav("/add-playbook?clientId=" + clientData.id)}
+                            className='doc-modal-playbook-btn' > צור פלייבוק </button>}
                 </div>
-
                 <div className="client-page-section">
                     <div className="client-page-section-header">
                         <h2>פרטי קשר</h2>
@@ -140,13 +152,13 @@ const ClientPage = () => {
                     <div className="client-page-info-row">
                         <div className="client-page-info-label">איש קשר:</div>
                         <div className="client-page-info-value">
-                            {selectedClient.contact_person_name || 'לא הוגדר'}
+                            {clientData.contact_person_name || 'לא הוגדר'}
                         </div>
                     </div>
 
                     <div className="client-page-notice">
-                        <p>שים לב: עריכת שדות כתובת ואיש קשר אפשרית רק דרך ספק החשבוניות.</p>
-                        <p>ביצירת יומן תזכורות על מסמכים ניתן להגדיר באופן ייחודי אנשי קשר וכתובות</p>
+                        <p>שים לב:  כתובת ואיש קשר מוצגים כפי שהם שהם מופיעים בספק החשבוניות שלך.</p>
+                        <p>ניתן להגדיר דרכינו (תחת הגדרות הפלייבוק) דרכי התקשרות נוספים</p>
                     </div>
                 </div>
 
@@ -279,9 +291,16 @@ const ClientPage = () => {
                 )}
 
                 <div className="client-page-stats">
-                    <div className="client-page-stat-item" onClick={()=>{nav("/documents")}}>
+                    <div
+                        className={`client-page-stat-item ${parseInt(clientData.open_docs_count) > 0 ? "clickable-stat" : ""}`}
+                        onClick={() => {
+                            if (parseInt(clientData.open_docs_count) > 0) {
+                                nav("/documents");
+                            }
+                        }}
+                    >
                         <div className="client-page-stat-label">מסמכים פתוחים:</div>
-                        <div className="client-page-stat-value">{selectedClient.open_docs_count}</div>
+                        <div className="client-page-stat-value">{clientData.open_docs_count}</div>
                     </div>
                 </div>
             </div>

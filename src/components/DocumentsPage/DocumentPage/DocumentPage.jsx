@@ -1,26 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './DocumentPage.css';
 import { getDocumentById } from '../../../api/general_be_api';
+import { AppContext } from '../../../App';
 
 const DocumentPage = ({ documentArg }) => {
     
     const [document, setDocument] = useState(documentArg)
-
-    const {id} = useParams();
+    const { selectedCompany } = useContext(AppContext);
+    // const {id} = useParams();
     const nav = useNavigate();
+
+    const {docId} = useParams();
+    console.log(docId);
 
     useEffect(()=>{
         if (!documentArg){
-            if (!id){
+            if (!docId){
                 alert("can't find which doc to load")
                 nav("/home")
             }
             else {
                 // fetch doc by id
-                console.log(id);
+                console.log(docId);
                 
-                getDocumentById(id).then((res)=>{
+                getDocumentById(docId, selectedCompany?.id).then((res)=>{
                     setDocument(res)
                 })
             }
@@ -49,7 +53,7 @@ const DocumentPage = ({ documentArg }) => {
   // Handle client navigation
   const handleClientNav = () => {
     if (document.client && document.client.id) {
-      nav(`/clients/${document.client.id}`);
+      nav(`/client-page/${document.client.id}`);
     }
   };
 
@@ -63,7 +67,7 @@ const DocumentPage = ({ documentArg }) => {
   // Handle create unique playbook
   const handleCreatePlaybook = () => {
     // alert("לא מיושם");
-    nav("/add-playbook")
+    nav("/add-playbook?documentId=" + document.id)
   };
 
   // Determine playbook level badge

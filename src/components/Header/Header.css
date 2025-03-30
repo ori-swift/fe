@@ -41,4 +41,8 @@
   .header-logout:hover {
     color: #e74c3c;
   }
-  
+  .header-link-company {
+    background-color: green;
+    padding: 0 5px;
+    border-radius: 15px;
+  }

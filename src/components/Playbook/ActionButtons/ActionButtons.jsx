@@ -23,6 +23,8 @@ const ActionButtons = ({ editMode, saving, playbook, onEdit, onSave, onCancel })
         );
     }
 
+    const isAddMode = window.location.pathname.includes('/add-playbook');
+
     // Create a fixed action button container for edit mode
     return (
         <div className="playbook-page-editing-actions-fixed">
@@ -43,7 +45,8 @@ const ActionButtons = ({ editMode, saving, playbook, onEdit, onSave, onCancel })
                             <polyline points="17 21 17 13 7 13 7 21"></polyline>
                             <polyline points="7 3 7 8 15 8"></polyline>
                         </svg>
-                        שמור שינויים
+                        {isAddMode ? "צור פלייבוק" : "שמור שינויים"}
+
                     </>
                 )}
             </button>

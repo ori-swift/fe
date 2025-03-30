@@ -22,7 +22,7 @@ const PlaybookContent = ({ formData, editMode, updateFormData, addPhase, validat
                             phase={phase}
                             phaseIdx={idx}
                             editMode={editMode}
-                            updatePhaseProperty={(property, value) => validateAndUpdateProperty(idx, property, value)}
+                            updatePhaseProperty={(property, value, shouldValidate) => validateAndUpdateProperty(idx, property, value, shouldValidate)}
                             removePhase={() => removePhase(idx)}
                             updateFormData={updateFormData}
                         />

@@ -710,7 +710,7 @@ button:disabled {
   border-bottom-left-radius: 8px;
   display: flex;
   gap: 10px;
-  background-color: red;
+  background-color: rgb(132, 160, 204);
 }
 
 /* Add some top padding to the content when in edit mode to prevent overlap */

@@ -1,0 +1,40 @@
+.phase-alerts-error {
+    color: #ff0000;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    text-align: right;
+    font-weight: bold;
+}
+
+/* Add these styles to PhaseAlerts.css */
+
+.playbook-page-alert-time-container {
+    display: flex;
+    align-items: center;
+}
+
+.playbook-page-remove-alert-time-btn {
+    margin-right: 8px;
+    background: none;
+    border: none;
+    color: #e74c3c;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 8px;
+    line-height: 1;
+    transition: all 0.2s;
+}
+
+.playbook-page-remove-alert-time-btn:hover {
+    color: #c0392b;
+    transform: scale(1.1);
+}
+
+.playbook-page-alert-error {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    margin-right: 4px;
+    display: block;
+}

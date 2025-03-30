@@ -76,10 +76,15 @@ export async function refreshProviderData(cred_id) {
 //         return false;
 //     }
 // }
-export async function getAllClients() {
-    const cacheKey = `clients`;
+export async function getAllClients(companyId) {
+    if (!companyId) {
+        console.error("Company ID is required");
+        return false;
+    }
+ 
+    const cacheKey = `clients_${companyId}`;
     const cacheTime = 0.5 * 60 * 60 * 1000; // 0.5 hour in milliseconds
-
+ 
     // Check cache first
     const cachedData = localStorage.getItem(cacheKey);
     if (cachedData) {
@@ -87,41 +92,86 @@ export async function getAllClients() {
         const now = new Date().getTime();
         if (now - parsedData.timestamp < cacheTime) {
             console.log("Using cache for clients");
-
             return parsedData.response.data;
         }
     }
     console.log("No cache for clients");
     
-    // const token = localStorage.getItem("sc_token");
-
     try {
-        const response = await axios.get(`${SERVER_URL}/client/`,
-            // data,
-            {
-                headers: getAuthHeaders(),
-                // headers: {
-                //     "Content-Type": "application/json",
-                //     "Authorization": `Token ${token}`
-                // }
-            });
-
+        const url = `${SERVER_URL}/client/?company=${companyId}`;
+            
+        const response = await axios.get(url, {
+            headers: getAuthHeaders()
+        });
+ 
         console.log(response.data);
-
-        // Cache the response
+ 
         localStorage.setItem(cacheKey, JSON.stringify({
             response: response,
             timestamp: new Date().getTime()
         }));
-
+ 
         return response.data;
     } catch (error) {
         console.log(error);
         alert("Error fetching clients.")
         return false;
     }
-}
+ }
 
+ export async function getClient(clientId, companyId = null) {
+    if (!clientId) {
+        alert("Client ID is required");
+        return false;
+    }
+
+    // If companyId is provided, check if client exists in localStorage
+    if (companyId) {
+        const cacheKey = `clients_${companyId}`;
+        const cachedData = localStorage.getItem(cacheKey);
+        
+        if (cachedData) {
+            const parsedData = JSON.parse(cachedData);
+            const clients = parsedData.response.data;
+            
+            // Look for client in the cached data
+            const cachedClient = clients.find(client => client.id === parseInt(clientId));
+            
+            if (cachedClient) {
+                console.log("Using cached client data");
+                return cachedClient;
+            }
+            console.log("Client not found in cache");
+        }
+    }
+    
+    // If not found in cache or companyId not provided, fetch from server
+    try {
+        const url = `${SERVER_URL}/client/${clientId}/`;
+        
+        const response = await axios.get(url, {
+            headers: getAuthHeaders()
+        });
+
+        console.log(response.data);
+        
+        // If companyId was provided but client wasn't in cache, clear the cache
+        // since it means the cache is out of date
+        if (companyId) {
+            const cacheKey = `clients_${companyId}`;
+            if (localStorage.getItem(cacheKey)) {
+                localStorage.removeItem(cacheKey);
+                console.log("Removed outdated client cache");
+            }
+        }
+
+        return response.data;
+    } catch (error) {
+        console.log(error);
+        alert("Error fetching client details.");
+        return false;
+    }
+}
 
 export async function addContactInfo(clientId, emails = [], phones = []) {
 
@@ -159,9 +209,7 @@ export async function getDocumentById(documentId) {
     try {
         const response = await axios.get(`${SERVER_URL}/document/${documentId}`, {
             headers: getAuthHeaders()
-        });
-        console.log(response.data);
-
+        });        
         return response.data; // Single document
     } catch (error) {
         console.error("Error fetching document:", error);

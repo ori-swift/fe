@@ -46,6 +46,10 @@ const PlaybookPage = () => {
     }, [id]);
 
     useEffect(() => {
+
+        if (!id){
+            alert("missing id param for playbook-page")
+        }
         fetchPlaybook();
     }, [fetchPlaybook]);
 
@@ -133,43 +137,113 @@ const PlaybookPage = () => {
         });
     };
 
-    const validateAndUpdateProperty = (phaseIdx, property, value) => {
+    const validateAndUpdateProperty = (phaseIdx, property, value, shouldValidate = true) => {
+        let errorMessage = "none"; // Default to "none" to indicate no error
+        
+        // Process the value
+        let processedValue = value;
+        
+        if (property === "start_day") {
+            processedValue = value === "" ? 0 : parseInt(value, 10);
+            
+            // If we're just updating during typing without validation, apply the change
+            if (!shouldValidate) {
+                updateFormData(currentFormData => {
+                    const updated = { ...currentFormData };
+                    updated.config.phases[phaseIdx][property] = processedValue;
+                    return updated;
+                });
+                return "none";
+            }
+            
+            // Otherwise, perform full validation
+            if (isNaN(processedValue) || processedValue < 0) {
+                errorMessage = "יום התחלה חייב להיות מספר חיובי";
+                setState(prev => ({ ...prev, error: errorMessage }));
+                return errorMessage;
+            }
+    
+            // Validate phase order
+            updateFormData(currentFormData => {
+                const updated = { ...currentFormData };
+                const phases = updated.config.phases;
+                
+                if ((phaseIdx > 0 && processedValue <= phases[phaseIdx - 1].start_day) ||
+                    (phaseIdx < phases.length - 1 && processedValue >= phases[phaseIdx + 1].start_day)) {
+                    errorMessage = "יום התחלה מפר את סדר הפאזות";
+                    setState(prev => ({ ...prev, error: errorMessage }));
+                    return currentFormData;
+                }
+                
+                updated.config.phases[phaseIdx][property] = processedValue;
+                setState(prev => ({ ...prev, error: "" }));
+                return updated;
+            });
+            
+            return errorMessage;
+        }
+    
+        if (property === "repeat_interval") {
+            if (value === "" || value === "null") {
+                processedValue = null;
+            } else {
+                processedValue = parseInt(value, 10);
+                
+                // If we need to validate
+                if (shouldValidate && (isNaN(processedValue) || processedValue < 1)) {
+                    errorMessage = "מרווח חזרה חייב להיות מספר חיובי";
+                    setState(prev => ({ ...prev, error: errorMessage }));
+                    return errorMessage;
+                }
+            }
+        }
+    
         updateFormData(currentFormData => {
             const updated = { ...currentFormData };
-            const phases = updated.config.phases;
-
-            if (property === "start_day") {
-                value = parseInt(value, 10);
-                if (isNaN(value) || value < 0) {
-                    setState(prev => ({ ...prev, error: "יום התחלה חייב להיות מספר חיובי" }));
-                    return currentFormData;
-                }
-
-                // Validate phase order
-                if ((phaseIdx > 0 && value <= phases[phaseIdx - 1].start_day) ||
-                    (phaseIdx < phases.length - 1 && value >= phases[phaseIdx + 1].start_day)) {
-                    setState(prev => ({ ...prev, error: "יום התחלה מפר את סדר הפאזות" }));
-                    return currentFormData;
-                }
-            }
-
-            if (property === "repeat_interval") {
-                if (value === "" || value === "null") {
-                    value = null;
-                } else {
-                    value = parseInt(value, 10);
-                    if (isNaN(value) || value < 1) {
-                        setState(prev => ({ ...prev, error: "מרווח חזרה חייב להיות מספר חיובי" }));
-                        return currentFormData;
-                    }
-                }
-            }
-
-            updated.config.phases[phaseIdx][property] = value;
+            updated.config.phases[phaseIdx][property] = processedValue;
             setState(prev => ({ ...prev, error: "" }));
             return updated;
         });
+        
+        return errorMessage;
     };
+    // const validateAndUpdateProperty = (phaseIdx, property, value) => {
+    //     updateFormData(currentFormData => {
+    //         const updated = { ...currentFormData };
+    //         const phases = updated.config.phases;
+
+    //         if (property === "start_day") {
+    //             value = parseInt(value, 10);
+    //             if (isNaN(value) || value < 0) {
+    //                 setState(prev => ({ ...prev, error: "יום התחלה חייב להיות מספר חיובי" }));
+    //                 return currentFormData;
+    //             }
+
+    //             // Validate phase order
+    //             if ((phaseIdx > 0 && value <= phases[phaseIdx - 1].start_day) ||
+    //                 (phaseIdx < phases.length - 1 && value >= phases[phaseIdx + 1].start_day)) {
+    //                 setState(prev => ({ ...prev, error: "יום התחלה מפר את סדר הפאזות" }));
+    //                 return currentFormData;
+    //             }
+    //         }
+
+    //         if (property === "repeat_interval") {
+    //             if (value === "" || value === "null") {
+    //                 value = null;
+    //             } else {
+    //                 value = parseInt(value, 10);
+    //                 if (isNaN(value) || value < 1) {
+    //                     setState(prev => ({ ...prev, error: "מרווח חזרה חייב להיות מספר חיובי" }));
+    //                     return currentFormData;
+    //                 }
+    //             }
+    //         }
+
+    //         updated.config.phases[phaseIdx][property] = value;
+    //         setState(prev => ({ ...prev, error: "" }));
+    //         return updated;
+    //     });
+    // };
 
     if (state.loading) return <LoadingSpinner message="טוען פלייבוק..." />;
     if (!state.playbook || !state.formData) return <ErrorMessage message="שגיאה בטעינת נתוני הפלייבוק" />;

@@ -233,3 +233,101 @@
     font-size: 0.9rem;
     color: #4a5568;
   }
+
+
+  /* Filter section styles */
+.clients-list-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.clients-list-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.clients-list-filter-checkbox,
+.clients-list-filter-radio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.clients-list-filter-label {
+  font-weight: 500;
+  color: #4a5568;
+  margin-left: 0.5rem;
+}
+
+.clients-list-filter-options {
+  display: flex;
+  gap: 1rem;
+}
+
+.clients-list-filter-text {
+  color: #4a5568;
+}
+
+.clients-list-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #3498db;
+  color: white;
+  border-radius: 12px;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+}
+
+.clients-list-clear-filters {
+  border: none;
+  background-color: #e2e8f0;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  color: #4a5568;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-right: auto;
+}
+
+.clients-list-clear-filters:hover:not(:disabled) {
+  background-color: #cbd5e0;
+}
+
+.clients-list-clear-filters:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Document count badge styles */
+.clients-list-docs-cell {
+  text-align: center;
+}
+
+.clients-list-docs-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  background-color: #3498db;
+  color: white;
+  border-radius: 12px;
+  padding: 0 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.clients-list-no-docs {
+  color: #a0aec0;
+  font-size: 0.85rem;
+}

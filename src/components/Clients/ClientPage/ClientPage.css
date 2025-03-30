@@ -278,3 +278,17 @@
         width: 100%;
     }
 }
+
+.clickable-stat {
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.clickable-stat:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: scale(1.02);
+}
+
+.clickable-stat:active {
+    transform: scale(0.98);
+}
