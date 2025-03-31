@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../../../App';
 import "./ClientPage.css";
-import { addContactInfo, getClient } from '../../../api/general_be_api';
+import { addContactInfo, createPlaybooksForClient, getClient } from '../../../api/general_be_api';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const ClientPage = () => {
@@ -20,26 +20,41 @@ const ClientPage = () => {
 
     const nav = useNavigate();
 
-    useEffect(() => {        
-        
+    useEffect(() => {
+        if (!selectedCompany) {
+            return;
+        }
         if (selectedClient.name) {
             setClientData(selectedClient);
             setEmails(selectedClient.emails || []);
             setPhones(selectedClient.phones || []);
         } else if (id) {
-            getClient(id, selectedCompany.id).then((res)=>{
-                setClientData(res)            
+            getClient(id, selectedCompany.id).then((res) => {
+                console.log(res);
+
+                setClientData(res)
                 setEmails(res.emails || []);
                 setPhones(res.phones || []);
 
             });
-            
+
         }
         else {
             nav("/clients")
         }
-    }, []);
+    }, [selectedCompany]);
 
+    const handleCreateClientPlaybook = async () => {
+        const res = await createPlaybooksForClient(clientData.id);
+        const cacheKey = `clients_${selectedCompany.id}`;
+        localStorage.removeItem(cacheKey);        
+        const playbooks = res.reduce((acc, pb) => {
+            acc[pb.doc_type] = pb.id;
+            return acc;
+        }, {});
+        setClientData({ ...clientData, playbooks });
+
+    }
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -129,7 +144,7 @@ const ClientPage = () => {
     };
 
     if (!clientData) return <div className="client-page-container">לא נבחר לקוח</div>;
-    
+
 
     return (
         <div className="client-page-container">
@@ -137,11 +152,17 @@ const ClientPage = () => {
                 <div className="client-page-header">
                     <h1 className="client-page-title">{clientData.name}</h1>
                     <div className="client-page-id">מס' לקוח: {clientData.id}</div>
-                    {clientData.client_playbook_id &&
-                        <button onClick={() => nav("/playbook/" + clientData.client_playbook_id)}
-                            className='doc-modal-playbook-btn' > עדכן פלייבוק </button>}
-                    {!clientData.client_playbook_id &&
-                        <button onClick={() => nav("/add-playbook?clientId=" + clientData.id)}
+                    {clientData.playbooks && Object.keys(clientData.playbooks).length > 0 &&
+                        <>
+                            <button onClick={() => nav("/playbook/" + clientData.playbooks.tax_invoice)}
+                                className='doc-modal-playbook-btn' > עדכן פלייבוק לחשבוניות מס </button>
+                            <button onClick={() => nav("/playbook/" + clientData.playbooks.proforma)}
+                                className='doc-modal-playbook-btn' > עדכן פלייבוק לדרישות תשלום </button>
+                        </>
+                    }
+
+                    {!clientData.playbooks || Object.keys(clientData.playbooks).length === 0 &&
+                        <button onClick={handleCreateClientPlaybook}
                             className='doc-modal-playbook-btn' > צור פלייבוק </button>}
                 </div>
                 <div className="client-page-section">

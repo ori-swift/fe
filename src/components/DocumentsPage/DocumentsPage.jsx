@@ -119,7 +119,7 @@ const DocumentsPage = () => {
                                 <tr key={doc.id} onClick={() => nav("/document/"+doc.id)} className="documents-page-table-row">
                                     <td>{doc.id}</td>
                                     <td>{doc.client?.name}</td>
-                                    <td>{doc.description}</td>
+                                    <td>{doc.doc_type}</td>
                                     <td>{formatDate(doc.document_date)}</td>
                                     <td>{doc.amount} {getCurrencySymbol(doc)}</td>
                                     <td>{doc.is_open ? "פתוח" : "סגור"}</td>

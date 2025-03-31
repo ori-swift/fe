@@ -6,6 +6,7 @@ import Header from './components/Header/Header';
 import { useNavigate } from 'react-router-dom';
 import CompanySelectionPage from './components/CompanySelectionPage/CompanySelectionPage';
 import { ConfirmationProvider } from './utils/ConfirmationContext';
+import Settings from './components/Settings/Settings';
 // import { ConfirmationProvider } from './context/ConfirmationContext';
 
 export const AppContext = createContext();
@@ -22,7 +23,7 @@ function App() {
   console.log("App rendered", isLogged, userData);
 
 
-  
+
   useEffect(() => {
     // check token
     const token = localStorage.getItem("sc_token");
@@ -44,16 +45,16 @@ function App() {
   useEffect(() => {
     // Check if there's a stored company in localStorage
     const storedCompany = localStorage.getItem('selected_company');
-    
+
     if (storedCompany) {
       try {
         // Parse the stored company data
         const parsedCompany = JSON.parse(storedCompany);
-        
+
         // Check if the stored company exists in userData.companies
         if (userData && userData.companies) {
           const foundCompany = userData.companies.find(company => company.id === parsedCompany.id);
-          
+
           // If the company is found in userData, set it as selected
           if (foundCompany) {
             setSelectedCompany(foundCompany);
@@ -86,9 +87,9 @@ function App() {
       }}>
         <div>
           <Header handleLogout={handleLogout} isLogged={isLogged} />
-          {(userData && !selectedCompany) ? 
-            <CompanySelectionPage />
-          :        
+          {(userData && !selectedCompany) ?
+            (userData.companies && userData.companies.length > 0 ? <CompanySelectionPage /> : <Settings />)
+            :
             <SiteRoutes />
           }
         </div>

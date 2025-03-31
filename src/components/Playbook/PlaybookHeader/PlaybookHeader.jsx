@@ -8,6 +8,7 @@ const PlaybookHeader = ({ playbook, editMode, error, saving, onEdit, onSave, onC
             <div className="playbook-page-header-content">
                 <div className="playbook-page-title-section">
                     <h1 className="playbook-page-title">פלייבוק</h1>
+                    <h1 className="playbook-page-title">{playbook.doc_type == 'tax_invoice'? "עבור חשבוניות מס": "עבור דרישות תשלום"}</h1>
                     <TargetInfo playbook={playbook} />
                 </div>
 

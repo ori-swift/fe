@@ -304,7 +304,7 @@ const AllDocs = () => {
                                     <th>לקוח</th>
                                     <th>מזהה מסמך</th>
                                     <th>תאריך</th>
-                                    <th>תיאור</th>
+                                    <th>סוג מסמך</th>
                                     <th>סטטוס</th>
                                     <th>סכום</th>
                                     <th>סכום פתוח</th>
@@ -312,14 +312,16 @@ const AllDocs = () => {
                             </thead>
                             <tbody>
                                 {documents.map(doc => (
-                                    <tr 
-                                    onClick={()=>{nav("/document/" + doc.id)}}
-                                    key={doc.id} className={doc.is_open ? "all-docs-row-open" : ""}>
+                                    <tr
+                                        onClick={() => { nav("/document/" + doc.id) }}
+                                        key={doc.id} className={doc.is_open ? "all-docs-row-open" : ""}>
                                         <td>{doc.id}</td>
                                         <td>{doc.client.name}</td>
                                         <td>{doc.provider_doc_id}</td>
                                         <td>{formatDate(doc.document_date)}</td>
-                                        <td className="all-docs-description">{doc.description || "-"}</td>
+                                        <td className="all-docs-description">
+                                            {doc.doc_type === 'tax_invoice' ? "חשבונית מס" : "דרישת תשלום"}
+                                        </td>
                                         <td>
                                             <span className={`all-docs-status ${doc.is_open ? "all-docs-status-open" : "all-docs-status-closed"}`}>
                                                 {doc.is_open ? "פתוח" : "סגור"}

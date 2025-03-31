@@ -15,8 +15,8 @@ export default function Settings() {
       nav("/auth");
     }
   }, [isLogged, nav]);
-
-  if (!userData?.companies) {
+  
+  if (!userData) {
     return <p>טוען...</p>;
   }
 

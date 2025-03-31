@@ -20,12 +20,12 @@ const DocumentPage = ({ documentArg }) => {
                 alert("can't find which doc to load")
                 nav("/home")
             }
-            else {
-                // fetch doc by id
-                console.log(docId);
+            else {                
                 
                 getDocumentById(docId, selectedCompany?.id).then((res)=>{
                     setDocument(res)
+                    console.log(res);
+                    
                 })
             }
         }
@@ -111,6 +111,13 @@ const DocumentPage = ({ documentArg }) => {
             <div className="document-page-info-item">
               <div className="document-page-label">מספר מסמך של הספק</div>
               <div className="document-page-value">{document.provider_doc_id}</div>
+            </div>
+            <div className="document-page-info-item">
+              <div className="document-page-label">סוג מסמך</div>
+              <div className="document-page-value">
+                {document.doc_type === "proforma" ? "דרישת תשלום" : 
+                 document.doc_type === "tax_invoice" ? "חשבונית מס" : document.doc_type || "-"}
+              </div>
             </div>
             <div className="document-page-info-item">
               <div className="document-page-label">תאריך</div>

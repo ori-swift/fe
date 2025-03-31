@@ -10,25 +10,25 @@ const CompanySelectionPage = () => {
   const navigate = useNavigate();
 
   // Filter companies based on search term
-  const filteredCompanies = userData?.companies?.filter(company => 
+  const filteredCompanies = userData?.companies?.filter(company =>
     company.company_name.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
   useEffect(() => {
     // Check if there's a stored company in localStorage
     const storedCompany = localStorage.getItem('selected_company');
-    
+
     if (storedCompany && userData?.companies) {
       const parsedCompany = JSON.parse(storedCompany);
       const foundCompany = userData.companies.find(company => company.id === parsedCompany.id);
-      
+
       // If the stored company exists in userData, set it as selected
       if (foundCompany) {
         setSelectedCompany(foundCompany);
         return;
       }
     }
-    
+
     // If no stored company or it doesn't exist in userData
     // Check if userData exists and has a companies array with exactly one company
     if (userData && userData.companies && userData.companies.length === 1) {
@@ -40,15 +40,13 @@ const CompanySelectionPage = () => {
   }, [userData, setSelectedCompany]); // Dependencies: userData and setSelectedCompany
 
   const handleCompanySelect = (company) => {
-    setSelectedCompany(company);
-    // Save selected company to localStorage
+    setSelectedCompany(company);    
     localStorage.setItem('selected_company', JSON.stringify(company));
   };
 
-  const handlePlaybookNavigation = () => {
-    if (selectedCompany) {
-      navigate(`/playbook/${selectedCompany.company_playbook_id}`);
-    }
+  const handlePlaybookNavigation = (type) => {
+
+    navigate(`/playbook/${selectedCompany.playbooks[type]}`);
   };
 
   return (
@@ -79,11 +77,18 @@ const CompanySelectionPage = () => {
                 <p><strong>מזהה:</strong> {selectedCompany.id}</p>
               </div>
             </div>
-            <button 
+            <button
               className="select-company-page-playbook-button"
-              onClick={handlePlaybookNavigation}
+              onClick={() => { handlePlaybookNavigation("tax_invoice") }}
             >
-              הגדרת פלייבוק כללי לחברה
+              הגדרת פלייבוק כללי לחברה לחשבוניות מס
+            </button>
+            <br />
+            <button
+              className="select-company-page-playbook-button"
+              onClick={() => { handlePlaybookNavigation("proforma") }}
+            >
+              הגדרת פלייבוק כללי לחברה לדרישות תשלום
             </button>
           </div>
         </div>
@@ -104,9 +109,8 @@ const CompanySelectionPage = () => {
           filteredCompanies.map((company) => (
             <div
               key={company.id}
-              className={`select-company-page-card ${
-                selectedCompany?.id === company.id ? 'select-company-page-card-selected' : ''
-              }`}
+              className={`select-company-page-card ${selectedCompany?.id === company.id ? 'select-company-page-card-selected' : ''
+                }`}
               onClick={() => handleCompanySelect(company)}
             >
               <div className="select-company-page-card-header">

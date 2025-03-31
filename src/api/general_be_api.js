@@ -81,10 +81,10 @@ export async function getAllClients(companyId) {
         console.error("Company ID is required");
         return false;
     }
- 
+
     const cacheKey = `clients_${companyId}`;
     const cacheTime = 0.5 * 60 * 60 * 1000; // 0.5 hour in milliseconds
- 
+
     // Check cache first
     const cachedData = localStorage.getItem(cacheKey);
     if (cachedData) {
@@ -96,30 +96,30 @@ export async function getAllClients(companyId) {
         }
     }
     console.log("No cache for clients");
-    
+
     try {
         const url = `${SERVER_URL}/client/?company=${companyId}`;
-            
+
         const response = await axios.get(url, {
             headers: getAuthHeaders()
         });
- 
+
         console.log(response.data);
- 
+
         localStorage.setItem(cacheKey, JSON.stringify({
             response: response,
             timestamp: new Date().getTime()
         }));
- 
+
         return response.data;
     } catch (error) {
         console.log(error);
         alert("Error fetching clients.")
         return false;
     }
- }
+}
 
- export async function getClient(clientId, companyId = null) {
+export async function getClient(clientId, companyId = null) {
     if (!clientId) {
         alert("Client ID is required");
         return false;
@@ -129,14 +129,14 @@ export async function getAllClients(companyId) {
     if (companyId) {
         const cacheKey = `clients_${companyId}`;
         const cachedData = localStorage.getItem(cacheKey);
-        
+
         if (cachedData) {
             const parsedData = JSON.parse(cachedData);
             const clients = parsedData.response.data;
-            
+
             // Look for client in the cached data
             const cachedClient = clients.find(client => client.id === parseInt(clientId));
-            
+
             if (cachedClient) {
                 console.log("Using cached client data");
                 return cachedClient;
@@ -144,17 +144,17 @@ export async function getAllClients(companyId) {
             console.log("Client not found in cache");
         }
     }
-    
+
     // If not found in cache or companyId not provided, fetch from server
     try {
         const url = `${SERVER_URL}/client/${clientId}/`;
-        
+
         const response = await axios.get(url, {
             headers: getAuthHeaders()
         });
 
         console.log(response.data);
-        
+
         // If companyId was provided but client wasn't in cache, clear the cache
         // since it means the cache is out of date
         if (companyId) {
@@ -173,6 +173,23 @@ export async function getAllClients(companyId) {
     }
 }
 
+
+
+export async function createPlaybooksForClient(clientId) {
+
+    try {
+        const response = await axios.post(`${SERVER_URL}/playbooks/`,
+            {
+                client_id: clientId
+            },
+            { headers: getAuthHeaders() });
+        return response.data;
+    } catch (error) {
+        console.error("Error creating playbooks for client:", error.response?.data || error.message);
+        alert("ERROR 985")
+        throw error;
+    }
+}
 export async function addContactInfo(clientId, emails = [], phones = []) {
 
     try {
@@ -189,7 +206,7 @@ export async function addContactInfo(clientId, emails = [], phones = []) {
 }
 
 
-export async function fetchDocumentsByClient(clientId) {    
+export async function fetchDocumentsByClient(clientId) {
 
     try {
         const response = await axios.get(`${SERVER_URL}/documents/${clientId}`, {
@@ -209,7 +226,7 @@ export async function getDocumentById(documentId) {
     try {
         const response = await axios.get(`${SERVER_URL}/document/${documentId}`, {
             headers: getAuthHeaders()
-        });        
+        });
         return response.data; // Single document
     } catch (error) {
         console.error("Error fetching document:", error);
