@@ -9,9 +9,10 @@ import TargetInfo from "../TargetInfo/TargetInfo";
 import ActionButtons from "../ActionButtons/ActionButtons";
 import "./../PlaybookPage/PlaybookPage.css";
 import { AppContext } from "../../../App";
+import { getDocumentById } from "../../../api/general_be_api";
 
 const AddPlaybookPage = () => {
-    
+
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const clientId = searchParams.get("clientId");
@@ -45,36 +46,40 @@ const AddPlaybookPage = () => {
         targetType: "global"
     });
 
-    const {selectedCompany} = useContext(AppContext)
+    const { selectedCompany } = useContext(AppContext)
 
     useEffect(() => {
         // Fetch default company playbook as template
-        getPlaybook(selectedCompany.company_playbook_id).then((res) => {
-            console.log(res);
-            
-            // Update state with the fetched playbook data
-            setState(prevState => ({
-                ...prevState,
-                formData: {
-                    ...prevState.formData,
-                    only_business_days: res.only_business_days,
-                    config: res.config,
-                    company_id: res.company,
-                },
-                playbook: {
-                    ...prevState.playbook,
-                    company: res.company_data,
-                },
-                loading: false
-            }));
-        }).catch(error => {
-            console.error("Error fetching playbook:", error);
-            setState(prevState => ({
-                ...prevState,
-                error: "Failed to load playbook template",
-                loading: false
-            }));
-        });
+
+        getDocumentById(documentId).then((document) => {
+
+            getPlaybook(selectedCompany.playbooks[document.doc_type]).then((res) => {                
+
+                // Update state with the fetched playbook data
+                setState(prevState => ({
+                    ...prevState,
+                    formData: {
+                        ...prevState.formData,
+                        only_business_days: res.only_business_days,
+                        config: res.config,
+                        company_id: res.company,
+                    },
+                    playbook: {
+                        ...prevState.playbook,
+                        company: res.company_data,
+                    },
+                    loading: false
+                }));
+            }).catch(error => {
+                console.error("Error fetching playbook:", error);
+                setState(prevState => ({
+                    ...prevState,
+                    error: "Failed to load playbook template",
+                    loading: false
+                }));
+            });
+        })
+
     }, [selectedCompany.company_playbook_id]);
 
     useEffect(() => {
@@ -106,9 +111,9 @@ const AddPlaybookPage = () => {
 
         setState(prev => ({ ...prev, saving: true }));
         try {
-            const response = await addNewPlaybook(state.formData, { 
-                documentId: documentId || null, 
-                clientId: clientId || null 
+            const response = await addNewPlaybook(state.formData, {
+                documentId: documentId || null,
+                clientId: clientId || null
             });
             navigate(`/playbook/${response.id}`);
         } catch (error) {

@@ -13,7 +13,7 @@ const ActionButtons = ({ editMode, saving, playbook, onEdit, onSave, onCancel })
                         className="playbook-page-remove-btn"
                         onClick={async () => {
                             confirmAction(
-                                "האם אתה בטוח שברצונך להסיר את הפלייבוק?",
+                                "האם אתה בטוח שברצונך להסיר את הפלייבוק? משמעות הדבר היא שכל המסמכים המשוייכים ללקוח החל מעתה יהיו במעקב הגדרות הפלייבוק הגלובלי, לכל סוגי המסמכים.",
                                 async () => {
                                     await deletePlaybook(playbook.id);
                                     nav(-1);

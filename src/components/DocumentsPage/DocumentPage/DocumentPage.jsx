@@ -5,31 +5,27 @@ import { getDocumentById } from '../../../api/general_be_api';
 import { AppContext } from '../../../App';
 
 const DocumentPage = ({ documentArg }) => {
-    
-    const [document, setDocument] = useState(documentArg)
-    const { selectedCompany } = useContext(AppContext);
-    // const {id} = useParams();
-    const nav = useNavigate();
 
-    const {docId} = useParams();
-    console.log(docId);
+  const [document, setDocument] = useState(documentArg)
+  const { selectedCompany } = useContext(AppContext);
+  const nav = useNavigate();
 
-    useEffect(()=>{
-        if (!documentArg){
-            if (!docId){
-                alert("can't find which doc to load")
-                nav("/home")
-            }
-            else {                
-                
-                getDocumentById(docId, selectedCompany?.id).then((res)=>{
-                    setDocument(res)
-                    console.log(res);
-                    
-                })
-            }
-        }
-    }, [])
+  const { docId } = useParams();
+
+  useEffect(() => {
+    if (!documentArg) {
+      if (!docId) {
+        alert("can't find which doc to load")
+        nav("/home")
+      }
+      else {
+
+        getDocumentById(docId, selectedCompany?.id).then((res) => {
+          setDocument(res)
+        })
+      }
+    }
+  }, [])
 
   if (!document) {
     return <div className="document-page-loading">טוען...</div>;
@@ -41,7 +37,7 @@ const DocumentPage = ({ documentArg }) => {
     'USD': '$',
     'EUR': '€'
   };
-  
+
   // Get currency symbol
   const getCurrencySymbol = (doc) => {
     if (doc.currency && currencySymbols[doc.currency]) {
@@ -73,10 +69,10 @@ const DocumentPage = ({ documentArg }) => {
   // Determine playbook level badge
   const getPlaybookLevelBadge = () => {
     if (!document.playbook) return null;
-    
+
     let badgeClass = "";
     let badgeText = "";
-    
+
     switch (document.playbook.type) {
       case 'document':
         badgeClass = "document-page-badge-document";
@@ -93,7 +89,7 @@ const DocumentPage = ({ documentArg }) => {
       default:
         return null;
     }
-    
+
     return <span className={`document-page-badge ${badgeClass}`}>{badgeText}</span>;
   };
 
@@ -115,8 +111,8 @@ const DocumentPage = ({ documentArg }) => {
             <div className="document-page-info-item">
               <div className="document-page-label">סוג מסמך</div>
               <div className="document-page-value">
-                {document.doc_type === "proforma" ? "דרישת תשלום" : 
-                 document.doc_type === "tax_invoice" ? "חשבונית מס" : document.doc_type || "-"}
+                {document.doc_type === "proforma" ? "דרישת תשלום" :
+                  document.doc_type === "tax_invoice" ? "חשבונית מס" : document.doc_type || "-"}
               </div>
             </div>
             <div className="document-page-info-item">
@@ -199,15 +195,15 @@ const DocumentPage = ({ documentArg }) => {
                   {getPlaybookLevelBadge()}
                 </div>
                 <div className="document-page-playbook-actions">
-                  <button 
-                    className="document-page-button document-page-button-view" 
+                  <button
+                    className="document-page-button document-page-button-view"
                     onClick={handleWatchPlaybook}
                   >
                     צפה בפלייבוק
                   </button>
                   {document.playbook.type !== 'document' && (
-                    <button 
-                      className="document-page-button document-page-button-create" 
+                    <button
+                      className="document-page-button document-page-button-create"
                       onClick={handleCreatePlaybook}
                     >
                       יצירת פלייבוק ייחודי
@@ -218,8 +214,8 @@ const DocumentPage = ({ documentArg }) => {
             ) : (
               <div className="document-page-playbook-empty">
                 <p>אין פלייבוק מקושר למסמך זה</p>
-                <button 
-                  className="document-page-button document-page-button-create" 
+                <button
+                  className="document-page-button document-page-button-create"
                   onClick={handleCreatePlaybook}
                 >
                   יצירת פלייבוק

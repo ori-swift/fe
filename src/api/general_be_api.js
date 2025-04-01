@@ -222,18 +222,26 @@ export async function fetchDocumentsByClient(clientId) {
     }
 }
 
+const documentCache = {};
 export async function getDocumentById(documentId) {
+    const cacheKey = `document_${documentId}`;
+    if (documentCache[cacheKey]) {                
+        return documentCache[cacheKey]
+    };    
+
     try {
         const response = await axios.get(`${SERVER_URL}/document/${documentId}`, {
             headers: getAuthHeaders()
         });
-        return response.data; // Single document
+        documentCache[cacheKey] = response.data;
+        return response.data;
     } catch (error) {
         console.error("Error fetching document:", error);
         alert("Error fetching document");
         throw error;
     }
 }
+
 
 
 export const fetchProviders = async () => {
