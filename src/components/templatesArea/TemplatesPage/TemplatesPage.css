@@ -1,0 +1,126 @@
+/* TemplatesPage.css */
+
+.templates-container {
+    padding: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .templates-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .templates-create-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .templates-filter-card {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .templates-filter-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .templates-filter-select,
+  .templates-search-input {
+    border-radius: 0.25rem;
+    border: 1px solid #ced4da;
+  }
+  
+  .templates-clear-btn {
+    height: 38px;
+  }
+  
+  .templates-section {
+    margin-bottom: 2.5rem;
+  }
+  
+  .templates-section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f0f0f0;
+  }
+  
+  .templates-table-wrapper {
+    overflow-x: auto;
+  }
+  
+  .templates-table {
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: white;
+  }
+  
+  .templates-table-header {
+    background-color: #f8f9fa;
+  }
+  
+  .templates-badge {
+    font-size: 0.85rem;
+    font-weight: normal;
+    padding: 0.35rem 0.65rem;
+  }
+  
+  .templates-content-preview {
+    white-space: pre-line;
+    font-size: 0.9rem;
+    max-height: 80px;
+    overflow: hidden;
+  }
+  
+  .templates-actions {
+    white-space: nowrap;
+    width: 110px;
+  }
+  
+  .templates-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 992px) {
+    .templates-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .templates-create-btn {
+      align-self: flex-start;
+    }
+  }
+
+  /* TemplatesPage.css */
+.templates-container.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.templates-header h2 {
+  font-weight: bold;
+}
+
+.templates-create-btn svg {
+  margin-left: 0.5rem;
+}
+
+.templates-table th, .templates-table td {
+  text-align: right;
+}

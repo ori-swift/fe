@@ -10,6 +10,8 @@ import DocumentPage from "./components/DocumentsPage/DocumentPage/DocumentPage";
 import AddPlaybookPage from "./components/Playbook/AddPlaybookPage/AddPlaybookPage";
 import CompanySelectionPage from "./components/CompanySelectionPage/CompanySelectionPage";
 import AllDocs from "./components/AllDocs/AllDocs";
+import TemplatesPage from "./components/templatesArea/TemplatesPage/TemplatesPage";
+
 
 
 function SiteRoutes() {
@@ -28,6 +30,7 @@ function SiteRoutes() {
       <Route path="/document/:docId" element={<DocumentPage />} />
       <Route path="/playbook/:id" element={<PlaybookPage />} />
       <Route path="/add-playbook" element={<AddPlaybookPage />} />
+      <Route path="/templates" element={<TemplatesPage />} />
 
     </Routes>
   );

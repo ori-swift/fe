@@ -12,8 +12,6 @@ const Clients = () => {
         }
     }, [])
 
-    console.log("Clients rendered");
-    
 
     if (!userData?.companies) {
         return <p>טוען...</p>;

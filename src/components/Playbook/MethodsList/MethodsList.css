@@ -1,0 +1,27 @@
+/* Alert Info Icon Styling */
+.methods-list-info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: green;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .methods-list-info-icon:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Method Badge Styling Enhancement */
+  .playbook-page-method-badge {
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+  }

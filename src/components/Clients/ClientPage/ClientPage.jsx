@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 const ClientPage = () => {
     const { id } = useParams();
-    const { selectedClient, selectedCompany } = useContext(AppContext);
+    const { selectedClient, selectedCompany, setSelectedClient } = useContext(AppContext);
     const [clientData, setClientData] = useState({})
     const [emails, setEmails] = useState([]);
     const [phones, setPhones] = useState([]);
@@ -36,6 +36,7 @@ const ClientPage = () => {
                 setEmails(res.emails || []);
                 setPhones(res.phones || []);
 
+                setSelectedClient(res)
             });
 
         }

@@ -4,6 +4,9 @@ import axios from "axios";
 
 
 export const checkToken = async (token) => {
+    if (!token){
+        const token = localStorage.getItem("sc_token")
+    }
     try {
         const res = await axios.get(`${SERVER_URL}/check-token`, {
             headers: { Authorization: `Token ${token}` }

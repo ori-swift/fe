@@ -282,10 +282,7 @@ export function isPlaybookConfigValid(config) {
  * @returns {Promise} - Promise resolving to the paginated documents data
  */
 export async function fetchDocumentsByCompany(companyId, page = 1, pageSize = 10, filters = {}) {
-    try {
-
-
-        console.log(companyId);
+    try {        
         
         // Build query parameters
         const queryParams = new URLSearchParams();

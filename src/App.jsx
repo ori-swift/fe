@@ -20,25 +20,31 @@ function App() {
 
   const nav = useNavigate();
 
-  console.log("App rendered", isLogged, userData);
+  // console.log("App rendered", isLogged, userData);
 
 
-
-  useEffect(() => {
-    // check token
+  const refetchUserDate = async () => {
     const token = localStorage.getItem("sc_token");
     if (token) {
-      checkToken(token).then((userData_) => {
-        if (userData_) {
-          // console.log(userData_);
-          setUserData(userData_);
-          setIsLogged(true);
-          // nav("/home")
-        }
-      });
-    } else {
-      nav("/auth");
+      const userData_ = await checkToken(token)
+      // console.log(userData_);
+      if (userData_) {
+        setUserData(userData_);
+        setIsLogged(true);
+
+        return true
+      }
     }
+    return false;
+  }
+
+  useEffect(() => {
+
+    refetchUserDate().then((res)=>{
+      if (!res){
+        nav("/auth");
+      }
+    })   
   }, [isLogged, nav]);
 
 
@@ -83,7 +89,7 @@ function App() {
     <ConfirmationProvider>
       <AppContext.Provider value={{
         isLogged, setIsLogged, userData, setUserData, setSelectedClient,
-        selectedClient, selectedCompany, setSelectedCompany
+        selectedClient, selectedCompany, setSelectedCompany, refetchUserDate
       }}>
         <div>
           <Header handleLogout={handleLogout} isLogged={isLogged} />
