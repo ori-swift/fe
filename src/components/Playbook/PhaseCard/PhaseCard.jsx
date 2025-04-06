@@ -2,7 +2,7 @@ import PhaseAlerts from "../PhaseAlerts/PhaseAlerts";
 import PhaseDetails from "../PhaseDetails/PhaseDetails";
 import PhaseHeader from "../PhaseHeader/PhaseHeader";
 
-const PhaseCard = ({ phase, phaseIdx, editMode, updatePhaseProperty, removePhase, updateFormData }) => {
+const PhaseCard = ({ phase, phaseIdx, editMode, updatePhaseProperty, removePhase, updateFormData, newMode }) => {
     const addAlertTime = () => {
         updateFormData(currentFormData => {
             const updated = { ...currentFormData };
@@ -52,6 +52,7 @@ const PhaseCard = ({ phase, phaseIdx, editMode, updatePhaseProperty, removePhase
                 editMode={editMode}
                 updateFormData={updateFormData}
                 addAlertTime={addAlertTime}
+                newMode={newMode}
             />
         </div>
     );

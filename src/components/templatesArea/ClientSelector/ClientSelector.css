@@ -1,0 +1,58 @@
+.client-selector-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .client-selector {
+    width: 100%;
+  }
+  
+  .client-selector-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    text-align: right;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+  }
+  
+  .selected-client-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .client-info-btn {
+    padding: 0;
+    margin-right: 10px;
+    color: #007bff;
+  }
+  
+  .client-selector-menu {
+    width: 100%;
+    max-height: 350px;
+    overflow: hidden;
+  }
+  
+  .client-dropdown-scroll {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+  
+  .client-search-input {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: #fff;
+  }
+  
+  .client-details-popover {
+    max-width: 300px;
+  }
+  
+  .client-details-actions {
+    margin-top: 15px;
+    text-align: center;
+  }

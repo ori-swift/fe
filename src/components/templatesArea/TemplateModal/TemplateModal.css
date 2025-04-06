@@ -222,3 +222,81 @@
     margin-bottom: 8px;
   }
 }
+
+.client-selector-container {
+  position: relative;
+  width: 100%;
+}
+
+.client-selector {
+  width: 100%;
+}
+
+.client-selector-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  text-align: right;
+  background-color: #fff;
+  border: 1px solid #ced4da;
+}
+
+.selected-client-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.client-info-btn {
+  padding: 0;
+  margin-right: 10px;
+  color: #007bff;
+}
+
+.client-selector-menu {
+  max-width: 50%;  
+  max-height: 350px;
+  overflow: hidden;
+  z-index: 1500 !important; /* Higher z-index to ensure it appears above other elements */
+  /* position: absolute !important; */
+  /* position: fixed ; */
+}
+
+.client-dropdown-scroll {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.client-search-input {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #fff;
+}
+
+.client-details-popover {
+  max-width: 300px;
+  z-index: 1200 !important; /* Even higher z-index than the dropdown */
+}
+
+.client-details-actions {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.variable-item {
+  white-space: normal;
+  padding: 8px 12px;
+}
+
+.variable-name {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.variable-description {
+  font-size: 0.85em;
+  color: #555;
+}

@@ -1,7 +1,7 @@
 import BusinessDaysSettings from "../BusinessDaysSettings/BusinessDaysSettings";
 import PhaseCard from "../PhaseCard/PhaseCard";
 
-const PlaybookContent = ({ formData, editMode, updateFormData, addPhase, validateAndUpdateProperty, removePhase }) => {
+const PlaybookContent = ({ formData, editMode, updateFormData, addPhase, validateAndUpdateProperty, removePhase, newMode }) => {
     return (
         <div className="playbook-page-content">
             <BusinessDaysSettings 
@@ -25,6 +25,7 @@ const PlaybookContent = ({ formData, editMode, updateFormData, addPhase, validat
                             updatePhaseProperty={(property, value, shouldValidate) => validateAndUpdateProperty(idx, property, value, shouldValidate)}
                             removePhase={() => removePhase(idx)}
                             updateFormData={updateFormData}
+                            newMode={newMode}
                         />
                     ))}
                 </div>

@@ -1,20 +1,21 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Modal, Button, Table, Form } from 'react-bootstrap';
 import { useConfirmation } from "../../../utils/ConfirmationContext";
 import './TemplateModal.css';
-import { updateTemplate } from '../../../api/alerts_api';
-import { checkToken } from '../../../api/auth_api';
+import { deleteTemplate, updateTemplate } from '../../../api/alerts_api';
 import { AppContext } from '../../../App';
+import ClientSelector from '../ClientSelector/ClientSelector'; // Adjust path as needed
+import SmartTemplateEditor from '../SmartTemplateEditor/SmartTemplateEditor';
 
-const TemplateModal = ({ show, onHide, template, updateAlertTemplate, deleteTemplate }) => {
+const TemplateModal = ({ show, onHide, template }) => {
   const [editMode, setEditMode] = useState(false);
   const [editedTemplate, setEditedTemplate] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const { confirmAction } = useConfirmation();
+  const { refetchUserDate } = useContext(AppContext);
 
-  const {refetchUserDate} = useContext(AppContext)
   // Initialize edited template when the modal is shown or template changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (template) {
       setEditedTemplate({ ...template });
     }
@@ -24,20 +25,21 @@ const TemplateModal = ({ show, onHide, template, updateAlertTemplate, deleteTemp
     setEditMode(true);
   };
 
-  const handleCancelEdit = (closeModal=false) => {
-    setEditMode(false);    
+  const handleCancelEdit = (closeModal = false) => {
+    setEditMode(false);
     setEditedTemplate({ ...template });
-    if (closeModal){
-      onHide()
+    if (closeModal) {
+      onHide();
     }
   };
 
   const handleSaveEdit = async () => {
     setIsSaving(true);
     try {
-      await updateTemplate(template.id, editedTemplate);      
-      refetchUserDate();
-      setEditMode(false);      
+      await updateTemplate(template.id, editedTemplate);
+      await refetchUserDate(); // Make sure this completes before continuing
+      setEditMode(false);
+      onHide();
     } catch (error) {
       console.error("שגיאה בשמירת התבנית:", error);
       alert("אירעה שגיאה בשמירת התבנית");
@@ -52,12 +54,16 @@ const TemplateModal = ({ show, onHide, template, updateAlertTemplate, deleteTemp
       async () => {
         try {
           await deleteTemplate(template.id);
-          refetchUserDate();
+          await refetchUserDate(); // Make sure this completes before continuing
           handleCancelEdit(true);
         } catch (error) {
           console.error("שגיאה במחיקת התבנית:", error);
           alert("אירעה שגיאה במחיקת התבנית");
         }
+      },
+      {
+        yesMsg: "כן, מחק",
+        noMsg: "חזור"
       }
     );
   };
@@ -69,12 +75,26 @@ const TemplateModal = ({ show, onHide, template, updateAlertTemplate, deleteTemp
     }));
   };
 
+  // Add a dropdown for document type selection instead of free text input
+  const renderDocTypeDropdown = () => {
+    return (
+      <Form.Select
+        value={editedTemplate.doc_type}
+        onChange={(e) => handleInputChange('doc_type', e.target.value)}
+        className="template-modal-input"
+      >
+        <option value="tax_invoice">חשבונית מס</option>
+        <option value="proforma">דרישת תשלום</option>
+      </Form.Select>
+    );
+  };
+
   if (!template || !editedTemplate) return null;
 
   return (
     <Modal
       show={show}
-      onHide={()=>{handleCancelEdit(true)}}
+      onHide={() => { handleCancelEdit(true) }}
       size="lg"
       aria-labelledby="alert-template-modal"
       centered
@@ -89,7 +109,7 @@ const TemplateModal = ({ show, onHide, template, updateAlertTemplate, deleteTemp
       <Modal.Body className="template-modal-body">
         <div className="template-modal-details">
           <Table striped bordered hover responsive className="template-modal-table">
-            <tbody>              
+            <tbody>
               <tr>
                 <td className="template-modal-label">הוגדר על ידי</td>
                 <td>{template.is_system ? "המערכת" : "החברה"}</td>
@@ -102,7 +122,7 @@ const TemplateModal = ({ show, onHide, template, updateAlertTemplate, deleteTemp
                       value={editedTemplate.alert_method}
                       onChange={(e) => handleInputChange('alert_method', e.target.value)}
                       className="template-modal-input"
-                      style={{textAlign: 'left'}}
+                      style={{ textAlign: 'left' }}
                     >
                       <option value="sms">SMS</option>
                       <option value="email">Email</option>
@@ -132,15 +152,10 @@ const TemplateModal = ({ show, onHide, template, updateAlertTemplate, deleteTemp
                 <td className="template-modal-label">סוג מסמך</td>
                 <td>
                   {editMode && !template.is_system ? (
-                    <Form.Control
-                      type="text"
-                      value={editedTemplate.doc_type}
-                      onChange={(e) => handleInputChange('doc_type', e.target.value)}
-                      className="template-modal-input"
-                    />
+                    renderDocTypeDropdown()
                   ) : (
                     <div>
-                      {(template.doc_type === "proforma") ? "דרישת תשלום": "חשבונית מס"}
+                      {(template.doc_type === "proforma") ? "דרישת תשלום" : "חשבונית מס"}
                     </div>
                   )}
                 </td>
@@ -164,10 +179,9 @@ const TemplateModal = ({ show, onHide, template, updateAlertTemplate, deleteTemp
                 <td className="template-modal-label">מזהה לקוח</td>
                 <td>
                   {editMode && !template.is_system ? (
-                    <Form.Control
-                      type="text"
-                      value={editedTemplate.client_id !== null ? editedTemplate.client_id : ''}
-                      onChange={(e) => handleInputChange('client_id', e.target.value === '' ? null : e.target.value)}
+                    <ClientSelector
+                      value={editedTemplate.client_id}
+                      onChange={(value) => handleInputChange('client_id', value === '' ? null : value)}
                       className="template-modal-input"
                     />
                   ) : (
@@ -197,20 +211,22 @@ const TemplateModal = ({ show, onHide, template, updateAlertTemplate, deleteTemp
             <h5>תוכן התבנית</h5>
             <div className="template-modal-content-container">
               {editMode && !template.is_system ? (
-                <Form.Control
-                  as="textarea"
-                  rows={6}
+                <SmartTemplateEditor
                   value={editedTemplate.template_content}
-                  onChange={(e) => handleInputChange('template_content', e.target.value)}
-                  className="template-modal-textarea"
+                  onChange={(value) => handleInputChange('template_content', value)}
                 />
               ) : (
-                <div className="template-modal-content-box">
-                  {template.template_content}
-                </div>
+                <SmartTemplateEditor
+                  value={template.template_content}
+                  readOnly={true}
+                />
               )}
             </div>
+            {!template.document_id && <div>
+              שים לב, הנתונים הנ"ל הינם דיפולטיביים, ועשויים להשתנות במידה והגדרת תבנית ההתראה ספציפית יותר
+            </div>}
           </div>
+
         </div>
       </Modal.Body>
       <Modal.Footer className="template-modal-footer">
@@ -218,15 +234,15 @@ const TemplateModal = ({ show, onHide, template, updateAlertTemplate, deleteTemp
           <>
             {!template.is_system && (
               <>
-                <Button 
-                  variant="danger" 
+                <Button
+                  variant="danger"
                   onClick={handleDeleteClick}
                   className="template-modal-delete-btn"
                 >
                   מחק תבנית
                 </Button>
-                <Button 
-                  variant="primary" 
+                <Button
+                  variant="primary"
                   onClick={handleEditClick}
                   className="template-modal-edit-btn"
                 >
@@ -234,9 +250,9 @@ const TemplateModal = ({ show, onHide, template, updateAlertTemplate, deleteTemp
                 </Button>
               </>
             )}
-            <Button 
-              variant="secondary" 
-              onClick={()=>{handleCancelEdit(true)}}
+            <Button
+              variant="secondary"
+              onClick={() => { handleCancelEdit(true) }}
               className="template-modal-close-btn"
             >
               סגור
@@ -244,16 +260,16 @@ const TemplateModal = ({ show, onHide, template, updateAlertTemplate, deleteTemp
           </>
         ) : (
           <>
-            <Button 
-              variant="success" 
+            <Button
+              variant="success"
               onClick={handleSaveEdit}
               disabled={isSaving}
               className="template-modal-save-btn"
             >
               {isSaving ? 'שומר...' : 'שמור שינויים'}
             </Button>
-            <Button 
-              variant="outline-secondary" 
+            <Button
+              variant="outline-secondary"
               onClick={handleCancelEdit}
               className="template-modal-cancel-btn"
             >

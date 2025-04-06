@@ -11,6 +11,7 @@ import AddPlaybookPage from "./components/Playbook/AddPlaybookPage/AddPlaybookPa
 import CompanySelectionPage from "./components/CompanySelectionPage/CompanySelectionPage";
 import AllDocs from "./components/AllDocs/AllDocs";
 import TemplatesPage from "./components/templatesArea/TemplatesPage/TemplatesPage";
+import AllPlaybooks from "./components/Playbook/AllPlaybooks/AllPlaybooks";
 
 
 
@@ -31,6 +32,7 @@ function SiteRoutes() {
       <Route path="/playbook/:id" element={<PlaybookPage />} />
       <Route path="/add-playbook" element={<AddPlaybookPage />} />
       <Route path="/templates" element={<TemplatesPage />} />
+      <Route path="/all-playbooks" element={<AllPlaybooks />} />
 
     </Routes>
   );

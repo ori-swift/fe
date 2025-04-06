@@ -18,6 +18,8 @@ const Header = ({ handleLogout, isLogged }) => {
         {!isLogged && <Link to="/settings" className="header-link">התחבר</Link>}
         {isLogged && <Link to="/clients" className="header-link">לקוחות</Link>}
         {isLogged && <Link to="/all-docs" className="header-link">מסמכים</Link>}
+        {isLogged && <Link to="/all-playbooks" className="header-link">פלייבוקים</Link>}
+        {isLogged && <Link to="/templates" className="header-link">תבניות התראה</Link>}
       </div>
     </nav>
   );

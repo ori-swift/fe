@@ -274,6 +274,7 @@ const AddPlaybookPage = () => {
                 addPhase={addPhase}
                 validateAndUpdateProperty={validateAndUpdateProperty}
                 removePhase={removePhase}
+                newMode={true}
             />
         </div>
     );

@@ -1,0 +1,287 @@
+.all-playbooks-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    direction: rtl;
+    text-align: right;
+  }
+  
+  .all-playbooks-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .all-playbooks-header h1 {
+    font-size: 28px;
+    color: #333;
+    margin: 0;
+  }
+  
+  .all-playbooks-count {
+    font-size: 14px;
+    color: #666;
+    background-color: #f5f5f5;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  
+  .all-playbooks-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .all-playbooks-filter-group {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .all-playbooks-search-input,
+  .all-playbooks-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .all-playbooks-search-input:focus,
+  .all-playbooks-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+  
+  .all-playbooks-reset-btn {
+    background-color: #f1f1f1;
+    border: none;
+    color: #333;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+  }
+  
+  .all-playbooks-reset-btn:hover {
+    background-color: #e1e1e1;
+  }
+  
+  .all-playbooks-no-results {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  
+  .all-playbooks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .all-playbooks-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .all-playbooks-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
+  
+  .all-playbooks-card-header {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .all-playbooks-id {
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+  }
+  
+  .all-playbooks-badge {
+    background-color: #e9f5fe;
+    color: #3498db;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .all-playbooks-card-body {
+    padding: 15px;
+    flex-grow: 1;
+  }
+  
+  .all-playbooks-company,
+  .all-playbooks-client {
+    margin-bottom: 10px;
+  }
+  
+  .all-playbooks-label {
+    color: #777;
+    font-size: 13px;
+    margin-left: 5px;
+  }
+  
+  .all-playbooks-value {
+    color: #333;
+    font-weight: 500;
+  }
+  
+  .all-playbooks-stats {
+    display: flex;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-top: 1px dashed #eee;
+    border-bottom: 1px dashed #eee;
+    padding: 10px 0;
+  }
+  
+  .all-playbooks-stat {
+    flex: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .all-playbooks-stat-value {
+    font-size: 22px;
+    font-weight: 600;
+    color: #3498db;
+  }
+  
+  .all-playbooks-stat-label {
+    font-size: 12px;
+    color: #777;
+    margin-top: 3px;
+  }
+  
+  .all-playbooks-document {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    color: #666;
+    font-size: 13px;
+  }
+  
+  .all-playbooks-doc-icon {
+    margin-left: 5px;
+  }
+  
+  .all-playbooks-card-footer {
+    background-color: #fafafa;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #777;
+    border-top: 1px solid #f0f0f0;
+  }
+  
+  .all-playbooks-biz-days {
+    padding: 2px 8px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+  }
+  
+  .all-playbooks-loading {
+    text-align: center;
+    padding: 50px;
+    color: #666;
+    font-size: 18px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .all-playbooks-grid {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    
+    .all-playbooks-filter-group {
+      min-width: 150px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .all-playbooks-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .all-playbooks-filters {
+      flex-direction: column;
+    }
+    
+    .all-playbooks-filter-group {
+      width: 100%;
+    }
+  }
+
+  .all-playbooks-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .all-playbooks-table thead {
+    background-color: #f5f5f5;
+  }
+  
+  .all-playbooks-table th,
+  .all-playbooks-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
+    text-align: right;
+  }
+  
+  .all-playbooks-table th {
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .all-playbooks-row {
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .all-playbooks-row:hover {
+    background-color: #f9f9f9;
+  }
+  
+  @media (max-width: 768px) {
+    .all-playbooks-table {
+      font-size: 12px;
+    }
+  
+    .all-playbooks-table th,
+    .all-playbooks-table td {
+      padding: 8px;
+    }
+  }
+  

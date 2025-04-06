@@ -1,3 +1,5 @@
+import "./ConfirmationDialog.css";
+
 const ConfirmationDialog = ({ message, onConfirm, onCancel, yesMsg, noMsg }) => {
     return (
         <div className="playbook-page-confirmation-overlay">
@@ -6,11 +8,11 @@ const ConfirmationDialog = ({ message, onConfirm, onCancel, yesMsg, noMsg }) => 
                 <p className="playbook-page-confirmation-message">{message}</p>
                 <div className="playbook-page-confirmation-actions">
                     <button className="playbook-page-confirm-btn" onClick={onConfirm}>
-                        {yesMsg? yesMsg : אישור}
+                        {yesMsg ? yesMsg : אישור}
                     </button>
                     <button className="playbook-page-cancel-btn" onClick={onCancel}>
-                        {noMsg? noMsg : ביטול}
-                        
+                        {noMsg ? noMsg : ביטול}
+
                     </button>
                 </div>
             </div>

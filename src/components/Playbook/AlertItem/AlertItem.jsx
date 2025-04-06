@@ -1,7 +1,7 @@
 import MethodsList from "../MethodsList/MethodsList";
 import TimeSelector from "../TimeSelector/TimeSelector";
 
-const AlertItem = ({ time, methods, phaseIdx, editMode, updateAlertTime, updateFormData, removeAlertTime }) => {
+const AlertItem = ({ time, methods, phaseIdx, editMode, updateAlertTime, updateFormData, removeAlertTime, newMode }) => {
     const handleMethod = (method, isAdding) => {
         updateFormData(currentFormData => {
             const updated = { ...currentFormData };
@@ -50,6 +50,7 @@ const AlertItem = ({ time, methods, phaseIdx, editMode, updateAlertTime, updateF
                 time={time}
                 editMode={editMode}
                 handleMethod={handleMethod}
+                newMode={newMode}
             />
             
             {editMode && hasNoMethods && (

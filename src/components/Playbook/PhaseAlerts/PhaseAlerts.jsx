@@ -2,7 +2,7 @@ import { useState } from "react";
 import AlertItem from "../AlertItem/AlertItem";
 import "./PhaseAlerts.css"
 
-const PhaseAlerts = ({ phase, phaseIdx, editMode, updateFormData, addAlertTime }) => {
+const PhaseAlerts = ({ phase, phaseIdx, editMode, updateFormData, addAlertTime, newMode }) => {
     const [timeError, setTimeError] = useState(false);
     
     const updateAlertTime = (oldTime, newTime) => {
@@ -100,6 +100,7 @@ const PhaseAlerts = ({ phase, phaseIdx, editMode, updateFormData, addAlertTime }
                             updateAlertTime={(newTime) => updateAlertTime(time, newTime)}
                             updateFormData={updateFormData}
                             removeAlertTime={removeAlertTime}
+                            newMode={newMode}
                         />
                     ))}
                 {timeError && (
