@@ -300,3 +300,10 @@
   font-size: 0.85em;
   color: #555;
 }
+
+.template-modal-error-msg {
+  color: red;
+  margin-bottom: 10px;
+  text-align: right;
+  width: 100%;
+}

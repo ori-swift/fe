@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import CompanySelectionPage from './components/CompanySelectionPage/CompanySelectionPage';
 import { ConfirmationProvider } from './utils/ConfirmationContext';
 import Settings from './components/Settings/Settings';
+import { Button } from 'react-bootstrap';
 // import { ConfirmationProvider } from './context/ConfirmationContext';
 
 export const AppContext = createContext();
@@ -48,7 +49,8 @@ function App() {
   }, [isLogged, nav]);
 
 
-  useEffect(() => {
+  useEffect(() => {      
+    
     // Check if there's a stored company in localStorage
     const storedCompany = localStorage.getItem('selected_company');
 
@@ -64,6 +66,7 @@ function App() {
           // If the company is found in userData, set it as selected
           if (foundCompany) {
             setSelectedCompany(foundCompany);
+            localStorage.setItem('selected_company', JSON.stringify(foundCompany));
           } else {
             // If company not found in current userData, clear localStorage
             localStorage.removeItem('selected_company');
@@ -80,6 +83,9 @@ function App() {
 
   const handleLogout = () => {
     setIsLogged(false);
+    setUserData(null);
+    setSelectedClient(null);
+    setSelectedCompany(null);
     // localStorage.removeItem("sc_token");
     localStorage.clear();
     nav("/auth");
@@ -96,7 +102,10 @@ function App() {
           {(userData && !selectedCompany) ?
             (userData.companies && userData.companies.length > 0 ? <CompanySelectionPage /> : <Settings />)
             :
+            <>
+            <Button className='back-btn' onClick={()=>{nav(-1)}}> חזרה </Button>
             <SiteRoutes />
+            </>
           }
         </div>
       </AppContext.Provider>

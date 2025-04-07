@@ -40,7 +40,7 @@ export async function getPlaybook(playbookId) {
         const response = await axios.get(`${SERVER_URL}/playbooks/${playbookId}/`, {
             headers: getAuthHeaders()
         });
-        console.log("Fetched playbook:", response.data);
+        // console.log("Fetched playbook:", response.data);
         return response.data;
     } catch (error) {
         console.error("Error fetching playbook:", error);
@@ -60,8 +60,7 @@ export async function getPlaybooks(filters = {}) {
         const response = await axios.get(`${SERVER_URL}/playbooks/?${queryParams}`, {
             headers: getAuthHeaders()
         });
-
-        console.log("Fetched playbooks:", response.data);
+        
         return response.data;
     } catch (error) {
         console.error("Error fetching playbooks:", error);

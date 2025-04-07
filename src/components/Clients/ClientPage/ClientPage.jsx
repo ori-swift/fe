@@ -1,8 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../../../App';
 import "./ClientPage.css";
-import { addContactInfo, createPlaybooksForClient, getClient } from '../../../api/general_be_api';
+import { addContactInfo, createPlaybooksForClient, getClient, updateClientSettings } from '../../../api/general_be_api';
 import { useNavigate, useParams } from 'react-router-dom';
+import moment from 'moment-timezone';
+import TimezoneSelector from '../TimezoneSelector/TimezoneSelector';
+
+
 
 const ClientPage = () => {
     const { id } = useParams();
@@ -17,8 +21,17 @@ const ClientPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [emailError, setEmailError] = useState('');
     const [phoneError, setPhoneError] = useState('');
+    const [selectedTimezone, setSelectedTimezone] = useState('');
+    const [pendingTimezone, setPendingTimezone] = useState('');
+    const [pendingRunAlerts, setPendingRunAlerts] = useState(null);
+    const [timezoneSearch, setTimezoneSearch] = useState('');
 
     const nav = useNavigate();
+
+    const timezones = moment.tz.names().filter(tz =>
+        ["Asia", "Europe", "America", "Africa"].some(zone => tz.startsWith(zone))
+    );
+
 
     useEffect(() => {
         if (!selectedCompany) {
@@ -28,15 +41,19 @@ const ClientPage = () => {
             setClientData(selectedClient);
             setEmails(selectedClient.emails || []);
             setPhones(selectedClient.phones || []);
+            setSelectedTimezone(selectedClient.timezone || '');
+            setPendingTimezone(selectedClient.timezone || '');
+            setPendingRunAlerts(selectedClient.run_alerts);
+
         } else if (id) {
             getClient(id, selectedCompany.id).then((res) => {
-                console.log(res);
-
                 setClientData(res)
                 setEmails(res.emails || []);
                 setPhones(res.phones || []);
-
+                setSelectedTimezone(res.timezone || '');
                 setSelectedClient(res)
+                setPendingTimezone(res.timezone || '');
+                setPendingRunAlerts(res.run_alerts);
             });
 
         }
@@ -45,10 +62,14 @@ const ClientPage = () => {
         }
     }, [selectedCompany]);
 
+    const filterTimezones = (search) => {
+        return timezones.filter(tz => tz.toLowerCase().includes(search.toLowerCase()));
+    };
+
     const handleCreateClientPlaybook = async () => {
         const res = await createPlaybooksForClient(clientData.id);
         const cacheKey = `clients_${selectedCompany.id}`;
-        localStorage.removeItem(cacheKey);        
+        localStorage.removeItem(cacheKey);
         const playbooks = res.reduce((acc, pb) => {
             acc[pb.doc_type] = pb.id;
             return acc;
@@ -153,6 +174,7 @@ const ClientPage = () => {
                 <div className="client-page-header">
                     <h1 className="client-page-title">{clientData.name}</h1>
                     <div className="client-page-id">מס' לקוח: {clientData.id}</div>
+
                     {clientData.playbooks && Object.keys(clientData.playbooks).length > 0 &&
                         <>
                             <button onClick={() => nav("/playbook/" + clientData.playbooks.tax_invoice)}
@@ -161,6 +183,61 @@ const ClientPage = () => {
                                 className='doc-modal-playbook-btn' > עדכן פלייבוק לדרישות תשלום </button>
                         </>
                     }
+
+                    <div className="client-page-switch-row">
+                        <label className="client-page-switch-label">
+                            {pendingRunAlerts ? "התראות פעילות" : "התראות כבויות"}
+                        </label>
+                        <div className="client-page-switch-container">
+                            <input
+                                type="checkbox"
+                                className="client-page-switch-checkbox"
+                                checked={pendingRunAlerts}
+                                onChange={() => setPendingRunAlerts(!pendingRunAlerts)}
+                            />
+                            {pendingRunAlerts !== clientData.run_alerts && (
+                                <button
+                                    className="client-page-update-button"
+                                    onClick={async () => {
+                                        setIsLoading(true);
+                                        try {
+                                            await updateClientSettings(clientData.id, { run_alerts: pendingRunAlerts });
+                                            setClientData({ ...clientData, run_alerts: pendingRunAlerts });
+                                            localStorage.removeItem(`clients_${selectedCompany.id}`);
+                                        } catch (e) {
+                                            alert("שגיאה בעדכון סטטוס ההתראות");
+                                        } finally {
+                                            setIsLoading(false);
+                                        }
+                                    }}
+                                >
+                                    שמור
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                    <div className="client-page-info-row">
+                        <div className="client-page-info-label">בחר אזור זמן:</div>
+                        <TimezoneSelector
+                            selectedTimezone={pendingTimezone}
+                            onTimezoneChange={setPendingTimezone}
+                            clientTimezone={clientData.timezone}
+                            onSave={async () => {
+                                setIsLoading(true);
+                                try {
+                                    await updateClientSettings(clientData.id, { timezone: pendingTimezone });
+                                    setClientData({ ...clientData, timezone: pendingTimezone });
+                                    localStorage.removeItem(`clients_${selectedCompany.id}`);
+                                } catch {
+                                    alert("שגיאה בעדכון אזור הזמן");
+                                } finally {
+                                    setIsLoading(false);
+                                }
+                            }}
+                        />
+                    </div>
+
+
 
                     {!clientData.playbooks || Object.keys(clientData.playbooks).length === 0 &&
                         <button onClick={handleCreateClientPlaybook}
@@ -326,6 +403,7 @@ const ClientPage = () => {
                     </div>
                 </div>
             </div>
+
         </div>
     );
 };

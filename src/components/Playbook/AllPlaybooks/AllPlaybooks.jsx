@@ -172,14 +172,14 @@ const AllPlaybooks = () => {
               <tr key={playbook.id} onClick={() => handlePlaybookClick(playbook.id)} className="all-playbooks-row">
                 <td>#{playbook.id}</td>
                 
-                <td>{playbook.client_data?.name || 'אין'}</td>
+                <td>{playbook.client_data?.name || 'גלובלי'}</td>
                 <td>
                   {playbook.doc_type === 'tax_invoice' ? 'חשבונית מס' :
                    playbook.doc_type === 'proforma' ? 'חשבונית עסקה' : playbook.doc_type || '-'}
                 </td>
                 <td>{playbook.config?.phases?.length || 0}</td>
                 <td>{countAlerts(playbook)}</td>
-                <td>{playbook.document ? `#${playbook.document}` : '-'}</td>
+                <td>{playbook.document ? `#${playbook.document}` : 'גלובלי'}</td>
                 <td>{formatDate(playbook.created_at)}</td>
                 <td>{playbook.only_business_days ? 'ימי עסקים בלבד' : 'כל הימים'}</td>
               </tr>

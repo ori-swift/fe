@@ -292,3 +292,42 @@
 .clickable-stat:active {
     transform: scale(0.98);
 }
+
+.client-page-switch-row {
+    display: flex;
+    max-width: 20%;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 10px 0;
+}
+
+.client-page-switch-label {
+    font-weight: bold;
+}
+
+.client-page-switch-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.client-page-switch-checkbox {
+    width: 40px;
+    height: 20px;
+}
+
+.client-page-spinner-small {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ccc;
+    border-top: 2px solid #333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+

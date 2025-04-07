@@ -32,13 +32,13 @@ const PlaybookPage = () => {
         setState(prev => ({ ...prev, loading: true }));
         try {
             const data = await getPlaybook(id);
-
-            console.log(data);
+            
             setContextData({
                 client_id: data.client?.id || null,
                 // document_id: data.document?.id || null,
                 document_data: data.document_data,
                 client_data: data.client_data,
+                client_id: data.client,
                 playbook_doc_type: data.doc_type,
             });
 
@@ -250,29 +250,6 @@ const PlaybookPage = () => {
         </PlaybookProvider>
     );
 
-
-    // return (
-    //     <div className={`playbook-page-container ${state.editMode ? 'edit-mode' : ''}`}>
-    //         <PlaybookHeader
-    //             playbook={state.playbook}
-    //             editMode={state.editMode}
-    //             error={state.error}
-    //             saving={state.saving}
-    //             onEdit={() => setState(prev => ({ ...prev, editMode: true }))}
-    //             onSave={handleSave}
-    //             onCancel={handleCancel}
-    //         />
-
-    //         <PlaybookContent
-    //             formData={state.formData}
-    //             editMode={state.editMode}
-    //             updateFormData={updateFormData}
-    //             addPhase={addPhase}
-    //             validateAndUpdateProperty={validateAndUpdateProperty}
-    //             removePhase={removePhase}
-    //         />
-    //     </div>
-    // );
 };
 
 export default PlaybookPage;

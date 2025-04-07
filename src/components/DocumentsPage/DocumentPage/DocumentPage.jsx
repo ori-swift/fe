@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './DocumentPage.css';
-import { getDocumentById } from '../../../api/general_be_api';
+import { getDocumentById, updateDocRunAlerts } from '../../../api/general_be_api';
 import { AppContext } from '../../../App';
 
 const DocumentPage = ({ documentArg }) => {
 
   const [document, setDocument] = useState(documentArg)
+
   const { selectedCompany } = useContext(AppContext);
   const nav = useNavigate();
 
@@ -99,6 +100,26 @@ const DocumentPage = ({ documentArg }) => {
         <h1 className="document-page-title">פרטי מסמך</h1>
         <div className="document-page-id">מספר מזהה: {document.id}</div>
       </div>
+      <div className="document-page-info-item">
+        <div className="document-page-label">{document.run_alerts? "התראות פעילות": "התראות כבויות"}</div>
+        <div className="document-page-value">
+          <input
+            type="checkbox"
+            checked={document.run_alerts}
+            onChange={async () => {
+              const newValue = !document.run_alerts;
+              try {
+                await updateDocRunAlerts(document.id, newValue);
+                setDocument({ ...document, run_alerts: newValue });
+              } catch (e) {
+                console.error(e);                
+                alert("שגיאה בעדכון סטטוס ההתראות");                
+              }
+            }}
+          />
+        </div>
+      </div>
+
 
       <div className="document-page-content">
         <div className="document-page-section">

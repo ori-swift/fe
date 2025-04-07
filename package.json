@@ -13,6 +13,7 @@
     "axios": "^1.8.1",
     "bootstrap": "^5.3.3",
     "lucide-react": "^0.479.0",
+    "moment-timezone": "^0.5.48",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",

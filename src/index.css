@@ -7,3 +7,8 @@
     height: 40px;
     min-width: 80px;
 }
+
+.back-btn{
+    color: black;
+    margin-left: 90%;
+}

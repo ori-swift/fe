@@ -4,45 +4,85 @@ import { useConfirmation } from "../../../utils/ConfirmationContext";
 import './TemplateModal.css';
 import { deleteTemplate, updateTemplate } from '../../../api/alerts_api';
 import { AppContext } from '../../../App';
-import ClientSelector from '../ClientSelector/ClientSelector'; // Adjust path as needed
+import ClientSelector from '../ClientSelector/ClientSelector';
 import SmartTemplateEditor from '../SmartTemplateEditor/SmartTemplateEditor';
 
 const TemplateModal = ({ show, onHide, template }) => {
   const [editMode, setEditMode] = useState(false);
   const [editedTemplate, setEditedTemplate] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const { confirmAction } = useConfirmation();
-  const { refetchUserDate } = useContext(AppContext);
+  const { refetchUserDate, selectedCompany } = useContext(AppContext);
 
   // Initialize edited template when the modal is shown or template changes
   useEffect(() => {
     if (template) {
       setEditedTemplate({ ...template });
+      setErrorMessage(''); // Reset error message when template changes
     }
   }, [template]);
 
   const handleEditClick = () => {
     setEditMode(true);
+    setErrorMessage(''); // Reset error message when entering edit mode
   };
 
   const handleCancelEdit = (closeModal = false) => {
     setEditMode(false);
     setEditedTemplate({ ...template });
+    setErrorMessage(''); // Reset error message when canceling
     if (closeModal) {
       onHide();
     }
   };
 
+  const validate = () => {
+    if (!editedTemplate.is_aggregate && editedTemplate.phase_number !== null && editedTemplate.phase_number <= 0) {
+      setErrorMessage('מספר שלב חייב להיות חיובי');
+      return false;
+    }
+    if (!editedTemplate.template_content || editedTemplate.template_content.trim() === '') {
+      setErrorMessage('תוכן התבנית הינו שדה חובה');
+      return false;
+    }
+    setErrorMessage('');
+    return true;
+  };
+
   const handleSaveEdit = async () => {
+    if (!validate()) return;
+
     setIsSaving(true);
     try {
-      await updateTemplate(template.id, editedTemplate);
+      const payload = { ...editedTemplate };
+      
+      // Process payload before sending to API
+      if (payload.alert_method === 'any') {
+        payload.alert_method = null;
+      }
+      
+      if (payload.is_aggregate) {
+        payload.doc_type = null;
+        payload.phase_number = null;
+      } else {
+        if (payload.doc_type === 'any') {
+          payload.doc_type = null;
+        }
+      }
+
+      await updateTemplate(template.id, payload);
       await refetchUserDate(); // Make sure this completes before continuing
       setEditMode(false);
       onHide();
     } catch (error) {
-      console.error("שגיאה בשמירת התבנית:", error);
-      alert("אירעה שגיאה בשמירת התבנית");
+      let errMsg = 'אירעה שגיאה בשמירת התבנית';
+      if (error.response?.data) {
+        errMsg = JSON.stringify(error.response?.data);
+        if (errMsg.includes("An identical alert template already exists"))
+          errMsg = "כבר ישנה תבנית קיימת עם הגדרות אלו";
+      }
+      setErrorMessage(errMsg);
     } finally {
       setIsSaving(false);
     }
@@ -58,7 +98,7 @@ const TemplateModal = ({ show, onHide, template }) => {
           handleCancelEdit(true);
         } catch (error) {
           console.error("שגיאה במחיקת התבנית:", error);
-          alert("אירעה שגיאה במחיקת התבנית");
+          setErrorMessage("אירעה שגיאה במחיקת התבנית");
         }
       },
       {
@@ -73,16 +113,40 @@ const TemplateModal = ({ show, onHide, template }) => {
       ...prev,
       [field]: value
     }));
+    
+    // Clear error when user makes changes
+    if (errorMessage) {
+      setErrorMessage('');
+    }
   };
 
-  // Add a dropdown for document type selection instead of free text input
+  // Add a dropdown for alert method selection
+  const renderAlertMethodDropdown = () => {
+    return (
+      <Form.Select
+        value={editedTemplate.alert_method || 'any'}
+        onChange={(e) => handleInputChange('alert_method', e.target.value)}
+        className="template-modal-input"
+        style={{ textAlign: 'left' }}
+      >
+        <option value="any">כל הסוגים</option>
+        <option value="sms">SMS</option>
+        <option value="email">Email</option>
+        <option value="whatsapp">WhatsApp</option>
+      </Form.Select>
+    );
+  };
+
+  // Add a dropdown for document type selection
   const renderDocTypeDropdown = () => {
     return (
       <Form.Select
-        value={editedTemplate.doc_type}
+        value={editedTemplate.doc_type || 'any'}
         onChange={(e) => handleInputChange('doc_type', e.target.value)}
         className="template-modal-input"
+        style={{ textAlign: 'left' }}
       >
+        <option value="any">כל הסוגים</option>
         <option value="tax_invoice">חשבונית מס</option>
         <option value="proforma">דרישת תשלום</option>
       </Form.Select>
@@ -110,26 +174,14 @@ const TemplateModal = ({ show, onHide, template }) => {
         <div className="template-modal-details">
           <Table striped bordered hover responsive className="template-modal-table">
             <tbody>
-              <tr>
-                <td className="template-modal-label">הוגדר על ידי</td>
-                <td>{template.is_system ? "המערכת" : "החברה"}</td>
-              </tr>
+              
               <tr>
                 <td className="template-modal-label">סוג התראה</td>
                 <td>
                   {editMode && !template.is_system ? (
-                    <Form.Select
-                      value={editedTemplate.alert_method}
-                      onChange={(e) => handleInputChange('alert_method', e.target.value)}
-                      className="template-modal-input"
-                      style={{ textAlign: 'left' }}
-                    >
-                      <option value="sms">SMS</option>
-                      <option value="email">Email</option>
-                      <option value="whatsapp">WhatsApp</option>
-                    </Form.Select>
+                    renderAlertMethodDropdown()
                   ) : (
-                    template.alert_method
+                    editedTemplate.alert_method || 'כל הסוגים'
                   )}
                 </td>
               </tr>
@@ -148,33 +200,43 @@ const TemplateModal = ({ show, onHide, template }) => {
                   )}
                 </td>
               </tr>
-              <tr>
-                <td className="template-modal-label">סוג מסמך</td>
-                <td>
-                  {editMode && !template.is_system ? (
-                    renderDocTypeDropdown()
-                  ) : (
-                    <div>
-                      {(template.doc_type === "proforma") ? "דרישת תשלום" : "חשבונית מס"}
-                    </div>
-                  )}
-                </td>
-              </tr>
-              <tr>
-                <td className="template-modal-label">מספר שלב</td>
-                <td>
-                  {editMode && !template.is_system ? (
-                    <Form.Control
-                      type="number"
-                      value={editedTemplate.phase_number !== null ? editedTemplate.phase_number : ''}
-                      onChange={(e) => handleInputChange('phase_number', e.target.value === '' ? null : parseInt(e.target.value))}
-                      className="template-modal-input"
-                    />
-                  ) : (
-                    template.phase_number !== null ? template.phase_number : 'לא מוגדר'
-                  )}
-                </td>
-              </tr>
+              {(!editMode || !editedTemplate.is_aggregate) && (
+                <>
+                  <tr>
+                    <td className="template-modal-label">סוג מסמך</td>
+                    <td>
+                      {editMode && !template.is_system ? (
+                        renderDocTypeDropdown()
+                      ) : (
+                        <div>
+                          {editedTemplate.doc_type === "proforma" 
+                            ? "דרישת תשלום" 
+                            : editedTemplate.doc_type === "tax_invoice" 
+                              ? "חשבונית מס" 
+                              : "כל הסוגים"}
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="template-modal-label">מספר שלב</td>
+                    <td>
+                      {editMode && !template.is_system ? (
+                        <Form.Control
+                          type="number"
+                          min="1"
+                          placeholder="כל השלבים"
+                          value={editedTemplate.phase_number !== null ? editedTemplate.phase_number : ''}
+                          onChange={(e) => handleInputChange('phase_number', e.target.value === '' ? null : parseInt(e.target.value))}
+                          className="template-modal-input"
+                        />
+                      ) : (
+                        editedTemplate.phase_number !== null ? editedTemplate.phase_number : 'כל השלבים'
+                      )}
+                    </td>
+                  </tr>
+                </>
+              )}
               <tr>
                 <td className="template-modal-label">מזהה לקוח</td>
                 <td>
@@ -185,7 +247,7 @@ const TemplateModal = ({ show, onHide, template }) => {
                       className="template-modal-input"
                     />
                   ) : (
-                    template.client_id !== null ? template.client_id : 'לא מוגדר'
+                    editedTemplate.client_id !== null ? editedTemplate.client_id : 'לא מוגדר'
                   )}
                 </td>
               </tr>
@@ -200,7 +262,7 @@ const TemplateModal = ({ show, onHide, template }) => {
                       className="template-modal-input"
                     />
                   ) : (
-                    template.document_id !== null ? template.document_id : 'לא מוגדר'
+                    editedTemplate.document_id !== null ? editedTemplate.document_id : 'לא מוגדר'
                   )}
                 </td>
               </tr>
@@ -222,14 +284,18 @@ const TemplateModal = ({ show, onHide, template }) => {
                 />
               )}
             </div>
-            {!template.document_id && <div>
+            <div>
               שים לב, הנתונים הנ"ל הינם דיפולטיביים, ועשויים להשתנות במידה והגדרת תבנית ההתראה ספציפית יותר
-            </div>}
+            </div>
           </div>
-
         </div>
       </Modal.Body>
       <Modal.Footer className="template-modal-footer">
+        {errorMessage && (
+          <div className="template-modal-error-msg">
+            {errorMessage}
+          </div>
+        )}
         {!editMode ? (
           <>
             {!template.is_system && (

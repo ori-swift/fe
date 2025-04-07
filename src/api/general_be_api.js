@@ -91,7 +91,7 @@ export async function getAllClients(companyId) {
         const parsedData = JSON.parse(cachedData);
         const now = new Date().getTime();
         if (now - parsedData.timestamp < cacheTime) {
-            console.log("Using cache for clients");
+            // console.log("Using cache for clients");
             return parsedData.response.data;
         }
     }
@@ -102,9 +102,7 @@ export async function getAllClients(companyId) {
 
         const response = await axios.get(url, {
             headers: getAuthHeaders()
-        });
-
-        console.log(response.data);
+        });        
 
         localStorage.setItem(cacheKey, JSON.stringify({
             response: response,
@@ -151,9 +149,7 @@ export async function getClient(clientId, companyId = null) {
 
         const response = await axios.get(url, {
             headers: getAuthHeaders()
-        });
-
-        console.log(response.data);
+        });        
 
         // If companyId was provided but client wasn't in cache, clear the cache
         // since it means the cache is out of date
@@ -243,7 +239,6 @@ export async function getDocumentById(documentId) {
 }
 
 
-
 export const fetchProviders = async () => {
     const cacheKey = "providers";
     const cachedData = localStorage.getItem(cacheKey);
@@ -269,7 +264,6 @@ export const fetchProviders = async () => {
 };
 
 
-
 export async function addNewProvider(providerId, companyName, credJson) {
     try {
         const response = await axios.post(`${SERVER_URL}/providers/add`, {
@@ -291,3 +285,33 @@ export async function addNewProvider(providerId, companyName, credJson) {
 }
 
 
+export async function updateClientSettings(clientId, data) {
+    try {
+        const response = await axios.patch(
+            `${SERVER_URL}/client/${clientId}/update_client/`,
+            data,
+            { headers: getAuthHeaders() }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error updating client settings:", error.response?.data || error.message);
+        alert(error.response?.data?.error || "Failed to update client settings");
+        throw error;
+    }
+}
+
+
+export async function updateDocRunAlerts(docId, runAlerts) {
+    try {
+        const response = await axios.patch(
+            `${SERVER_URL}/documents/${docId}/update_run_alerts/`,
+            { run_alerts: runAlerts },
+            { headers: getAuthHeaders() }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error updating document run_alerts:", error.response?.data || error.message);
+        alert(error.response?.data?.error || "Failed to update document run_alerts");
+        throw error;
+    }
+}
