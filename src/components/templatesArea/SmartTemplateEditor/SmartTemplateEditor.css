@@ -23,6 +23,8 @@
   
   .template-preview {
     margin-top: 8px;
+    max-width: 100%;
+    overflow: scroll;
     padding: 10px;
     border: 1px dashed #ced4da;
     border-radius: 4px;

@@ -1,17 +1,17 @@
-import React, { useContext, useState } from 'react';
-import { Modal, Button, Table, Form } from 'react-bootstrap';
+import React, { useContext, useState, useEffect } from 'react';
+import { Modal, Button, Table, Form, Alert } from 'react-bootstrap';
 import './TemplateModal.css';
 import { addTemplate } from '../../../api/alerts_api';
 import { AppContext } from '../../../App';
 import ClientSelector from '../ClientSelector/ClientSelector';
 import SmartTemplateEditor from '../SmartTemplateEditor/SmartTemplateEditor';
 
+const SMS_CHARACTER_LIMIT = 198;
+
 const AddTemplateModal = ({ show, onHide }) => {
     const [newTemplate, setNewTemplate] = useState({
-        alert_method: 'any',
-        is_aggregate: false,
-        doc_type: 'any',
-        phase_number: null,
+        alert_method: '',        
+        doc_type: '',        
         client_id: null,
         document_id: null,
         template_content: '',
@@ -19,7 +19,24 @@ const AddTemplateModal = ({ show, onHide }) => {
     });
     const [isSaving, setIsSaving] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [characterCount, setCharacterCount] = useState(0);
     const { refetchUserDate, selectedCompany } = useContext(AppContext);
+
+    useEffect(() => {
+        // Update character count whenever template content changes
+        setCharacterCount(newTemplate.template_content.length);
+    }, [newTemplate.template_content]);
+    
+    // Effect to handle document_id and doc_type relationship
+    useEffect(() => {
+        if (newTemplate.document_id) {
+            // If document is selected, doc_type becomes null
+            setNewTemplate(prev => ({
+                ...prev,
+                doc_type: null
+            }));
+        }
+    }, [newTemplate.document_id]);
 
     const handleInputChange = (field, value) => {
         setNewTemplate(prev => ({
@@ -29,14 +46,27 @@ const AddTemplateModal = ({ show, onHide }) => {
     };
 
     const validate = () => {
-        if (!newTemplate.is_aggregate && newTemplate.phase_number !== null && newTemplate.phase_number <= 0) {
-            setErrorMessage('מספר שלב חייב להיות חיובי');
+        if (!newTemplate.alert_method) {
+            setErrorMessage('סוג התראה הינו שדה חובה');
             return false;
         }
+        
+        if (!newTemplate.document_id && !newTemplate.doc_type) {
+            setErrorMessage('סוג מסמך הינו שדה חובה כאשר לא נבחר מסמך ספציפי');
+            return false;
+        }
+        
         if (!newTemplate.template_content || newTemplate.template_content.trim() === '') {
             setErrorMessage('תוכן התבנית הינו שדה חובה');
             return false;
         }
+
+        // Add SMS character limit validation
+        if (newTemplate.alert_method === 'sms' && characterCount > SMS_CHARACTER_LIMIT) {
+            setErrorMessage(`הודעת SMS מוגבלת ל-${SMS_CHARACTER_LIMIT} תווים. אנא קצר את התוכן`);
+            return false;
+        }
+
         setErrorMessage('');
         return true;
     };
@@ -51,13 +81,11 @@ const AddTemplateModal = ({ show, onHide }) => {
                 company: selectedCompany.id
             };
 
-            if (payload.alert_method === 'any') delete payload.alert_method;
-            if (payload.is_aggregate) {
+            // Do not delete alert_method as it's now required
+            
+            // Only include doc_type if document_id is null
+            if (payload.document_id !== null) {
                 delete payload.doc_type;
-                delete payload.phase_number;
-            } else {
-                if (payload.doc_type === 'any') delete payload.doc_type;
-                if (payload.phase_number === null) delete payload.phase_number;
             }
 
             await addTemplate(payload);
@@ -74,6 +102,15 @@ const AddTemplateModal = ({ show, onHide }) => {
         } finally {
             setIsSaving(false);
         }
+    };
+
+    // Determine if SMS warning should be shown
+    const showSmsWarning = newTemplate.alert_method === 'sms';
+    
+    // Character count styling
+    const characterCountStyle = {
+        color: newTemplate.alert_method === 'sms' && characterCount > SMS_CHARACTER_LIMIT ? 'red' : 'inherit',
+        fontWeight: newTemplate.alert_method === 'sms' && characterCount > SMS_CHARACTER_LIMIT ? 'bold' : 'normal'
     };
 
     return (
@@ -101,65 +138,38 @@ const AddTemplateModal = ({ show, onHide }) => {
                                         onChange={(e) => handleInputChange('alert_method', e.target.value)}
                                         className="template-modal-input"
                                         style={{ textAlign: 'left' }}
+                                        required
                                     >
-                                        <option value="any">כל הסוגים</option>
+                                        <option value="">בחר סוג התראה</option>
                                         <option value="sms">SMS</option>
                                         <option value="email">Email</option>
                                         <option value="whatsapp">WhatsApp</option>
                                     </Form.Select>
                                 </td>
                             </tr>
-
+                           
                             <tr>
-                                <td className="template-modal-label">עבור קבוצת מסמכים</td>
+                                <td className="template-modal-label">סוג מסמך</td>
                                 <td>
-                                    <Form.Check
-                                        type="checkbox"
-                                        checked={newTemplate.is_aggregate}
-                                        onChange={(e) => handleInputChange('is_aggregate', e.target.checked)}
-                                        className="template-modal-checkbox"
-                                    />
+                                    <Form.Select
+                                        value={newTemplate.doc_type !== null ? newTemplate.doc_type : ''}
+                                        onChange={(e) => handleInputChange('doc_type', e.target.value)}
+                                        className="template-modal-input"
+                                        style={{ textAlign: 'left' }}
+                                        disabled={newTemplate.document_id !== null}
+                                        required={newTemplate.document_id === null}
+                                    >
+                                        <option value="">בחר סוג מסמך</option>
+                                        <option value="tax_invoice">חשבונית מס</option>
+                                        <option value="proforma">דרישת תשלום</option>
+                                    </Form.Select>
+                                    {newTemplate.document_id !== null && (
+                                        <div className="text-muted mt-1" style={{ fontSize: '0.8rem' }}>
+                                            סוג מסמך לא רלוונטי כאשר נבחר מסמך ספציפי
+                                        </div>
+                                    )}
                                 </td>
                             </tr>
-
-                            {!newTemplate.is_aggregate && (
-                                <>
-                                    <tr>
-                                        <td className="template-modal-label">סוג מסמך</td>
-                                        <td>
-                                            <Form.Select
-                                                value={newTemplate.doc_type}
-                                                onChange={(e) => handleInputChange('doc_type', e.target.value)}
-                                                className="template-modal-input"
-                                                style={{ textAlign: 'left' }}
-                                            >
-                                                <option value="any">כל הסוגים</option>
-                                                <option value="tax_invoice">חשבונית מס</option>
-                                                <option value="proforma">דרישת תשלום</option>
-                                            </Form.Select>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td className="template-modal-label">מספר שלב</td>
-                                        <td>
-                                            <Form.Control
-                                                type="number"
-                                                min="1"
-                                                placeholder="כל השלבים"
-                                                value={newTemplate.phase_number !== null ? newTemplate.phase_number : ''}
-                                                onChange={(e) =>
-                                                    handleInputChange(
-                                                        'phase_number',
-                                                        e.target.value === '' ? null : parseInt(e.target.value)
-                                                    )
-                                                }
-                                                className="template-modal-input"
-                                            />
-                                        </td>
-                                    </tr>
-                                </>
-                            )}
 
                             <tr>
                                 <td className="template-modal-label">מזהה לקוח</td>
@@ -191,15 +201,25 @@ const AddTemplateModal = ({ show, onHide }) => {
                     </Table>
 
                     <div className="template-modal-content-section">
-                        <h5>תוכן התבנית</h5>
+                        <h5>
+                            תוכן התבנית 
+                            <span style={characterCountStyle} className="ms-2">
+                                ({characterCount} / {newTemplate.alert_method === 'sms' ? SMS_CHARACTER_LIMIT : '∞'})
+                            </span>
+                        </h5>
+                        
+                        {showSmsWarning && (
+                            <Alert variant="warning" className="mt-2 mb-2">
+                                <strong>שים לב:</strong> הודעות SMS מוגבלות ל-{SMS_CHARACTER_LIMIT} תווים. 
+                                אם התוכן הסופי (כולל משתנים שיוחלפו) יחרוג ממגבלה זו, רק {SMS_CHARACTER_LIMIT} התווים הראשונים יישלחו.
+                            </Alert>
+                        )}
+                        
                         <div className="template-modal-content-container">
                             <SmartTemplateEditor
                                 value={newTemplate.template_content}
                                 onChange={(value) => handleInputChange('template_content', value)}
                             />
-                        </div>
-                        <div>
-                            שים לב, הנתונים הנ"ל הינם דיפולטיביים, ועשויים להשתנות במידה והגדרת תבנית ההתראה ספציפית יותר
                         </div>
                     </div>
                 </div>
@@ -213,7 +233,7 @@ const AddTemplateModal = ({ show, onHide }) => {
                 <Button
                     variant="success"
                     onClick={handleSave}
-                    disabled={isSaving}
+                    disabled={isSaving || (newTemplate.alert_method === 'sms' && characterCount > SMS_CHARACTER_LIMIT)}
                     className="template-modal-save-btn"
                 >
                     {isSaving ? 'שומר...' : 'שמור תבנית'}

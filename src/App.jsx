@@ -78,6 +78,8 @@ function App() {
         // localStorage.removeItem('selected_company');
       }
     }
+    console.log(userData);
+    
   }, [userData]);
 
 

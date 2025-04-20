@@ -116,9 +116,7 @@ const MethodsListForEdit = ({ methods, phaseIdx, time, editMode, handleMethod })
             {
             client_id,
             doc_type: document_data?.doc_type || playbook_doc_type,
-            method,
-            phase_number: phaseIdx,
-            is_aggregate: false,
+            method,            
             }
         );
         console.log(alertTemplate);

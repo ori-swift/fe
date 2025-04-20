@@ -38,10 +38,7 @@ const TemplateModal = ({ show, onHide, template }) => {
   };
 
   const validate = () => {
-    if (!editedTemplate.is_aggregate && editedTemplate.phase_number !== null && editedTemplate.phase_number <= 0) {
-      setErrorMessage('מספר שלב חייב להיות חיובי');
-      return false;
-    }
+
     if (!editedTemplate.template_content || editedTemplate.template_content.trim() === '') {
       setErrorMessage('תוכן התבנית הינו שדה חובה');
       return false;
@@ -56,20 +53,16 @@ const TemplateModal = ({ show, onHide, template }) => {
     setIsSaving(true);
     try {
       const payload = { ...editedTemplate };
-      
+
       // Process payload before sending to API
       if (payload.alert_method === 'any') {
         payload.alert_method = null;
       }
-      
-      if (payload.is_aggregate) {
+
+      if (payload.doc_type === 'any') {
         payload.doc_type = null;
-        payload.phase_number = null;
-      } else {
-        if (payload.doc_type === 'any') {
-          payload.doc_type = null;
-        }
       }
+
 
       await updateTemplate(template.id, payload);
       await refetchUserDate(); // Make sure this completes before continuing
@@ -113,7 +106,7 @@ const TemplateModal = ({ show, onHide, template }) => {
       ...prev,
       [field]: value
     }));
-    
+
     // Clear error when user makes changes
     if (errorMessage) {
       setErrorMessage('');
@@ -174,7 +167,7 @@ const TemplateModal = ({ show, onHide, template }) => {
         <div className="template-modal-details">
           <Table striped bordered hover responsive className="template-modal-table">
             <tbody>
-              
+
               <tr>
                 <td className="template-modal-label">סוג התראה</td>
                 <td>
@@ -185,22 +178,8 @@ const TemplateModal = ({ show, onHide, template }) => {
                   )}
                 </td>
               </tr>
-              <tr>
-                <td className="template-modal-label">עבור קבוצת מסמכים</td>
-                <td>
-                  {editMode && !template.is_system ? (
-                    <Form.Check
-                      type="checkbox"
-                      checked={editedTemplate.is_aggregate}
-                      onChange={(e) => handleInputChange('is_aggregate', e.target.checked)}
-                      className="template-modal-checkbox"
-                    />
-                  ) : (
-                    template.is_aggregate ? 'כן' : 'לא'
-                  )}
-                </td>
-              </tr>
-              {(!editMode || !editedTemplate.is_aggregate) && (
+
+              {!editMode  && (
                 <>
                   <tr>
                     <td className="template-modal-label">סוג מסמך</td>
@@ -209,29 +188,12 @@ const TemplateModal = ({ show, onHide, template }) => {
                         renderDocTypeDropdown()
                       ) : (
                         <div>
-                          {editedTemplate.doc_type === "proforma" 
-                            ? "דרישת תשלום" 
-                            : editedTemplate.doc_type === "tax_invoice" 
-                              ? "חשבונית מס" 
+                          {editedTemplate.doc_type === "proforma"
+                            ? "דרישת תשלום"
+                            : editedTemplate.doc_type === "tax_invoice"
+                              ? "חשבונית מס"
                               : "כל הסוגים"}
                         </div>
-                      )}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="template-modal-label">מספר שלב</td>
-                    <td>
-                      {editMode && !template.is_system ? (
-                        <Form.Control
-                          type="number"
-                          min="1"
-                          placeholder="כל השלבים"
-                          value={editedTemplate.phase_number !== null ? editedTemplate.phase_number : ''}
-                          onChange={(e) => handleInputChange('phase_number', e.target.value === '' ? null : parseInt(e.target.value))}
-                          className="template-modal-input"
-                        />
-                      ) : (
-                        editedTemplate.phase_number !== null ? editedTemplate.phase_number : 'כל השלבים'
                       )}
                     </td>
                   </tr>
@@ -283,9 +245,6 @@ const TemplateModal = ({ show, onHide, template }) => {
                   readOnly={true}
                 />
               )}
-            </div>
-            <div>
-              שים לב, הנתונים הנ"ל הינם דיפולטיביים, ועשויים להשתנות במידה והגדרת תבנית ההתראה ספציפית יותר
             </div>
           </div>
         </div>

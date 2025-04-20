@@ -60,23 +60,21 @@ const ClientPage = () => {
         else {
             nav("/clients")
         }
+        console.log(clientData);
+
     }, [selectedCompany]);
 
-    const filterTimezones = (search) => {
-        return timezones.filter(tz => tz.toLowerCase().includes(search.toLowerCase()));
-    };
 
-    const handleCreateClientPlaybook = async () => {
-        const res = await createPlaybooksForClient(clientData.id);
+    const handleCreateClientPlaybook = async (docType) => {
+        const res = await createPlaybooksForClient(clientData.id, docType);
         const cacheKey = `clients_${selectedCompany.id}`;
         localStorage.removeItem(cacheKey);
-        const playbooks = res.reduce((acc, pb) => {
-            acc[pb.doc_type] = pb.id;
-            return acc;
-        }, {});
-        setClientData({ ...clientData, playbooks });
 
-    }
+        // Update the client data with the new playbook
+        const updatedPlaybooks = { ...(clientData.playbooks || {}) };
+        updatedPlaybooks[docType] = res.id;
+        setClientData({ ...clientData, playbooks: updatedPlaybooks });
+    };
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -175,14 +173,59 @@ const ClientPage = () => {
                     <h1 className="client-page-title">{clientData.name}</h1>
                     <div className="client-page-id">מס' לקוח: {clientData.id}</div>
 
-                    {clientData.playbooks && Object.keys(clientData.playbooks).length > 0 &&
-                        <>
-                            <button onClick={() => nav("/playbook/" + clientData.playbooks.tax_invoice)}
-                                className='doc-modal-playbook-btn' > עדכן פלייבוק לחשבוניות מס </button>
-                            <button onClick={() => nav("/playbook/" + clientData.playbooks.proforma)}
-                                className='doc-modal-playbook-btn' > עדכן פלייבוק לדרישות תשלום </button>
-                        </>
-                    }
+                    {/* Playbook Buttons Section */}
+                    <div className="client-page-playbooks">
+                        {clientData.playbooks && Object.keys(clientData.playbooks).length > 0 ? (
+                            <>
+                                {clientData.playbooks.tax_invoice ? (
+                                    <button
+                                        onClick={() => nav("/playbook/" + clientData.playbooks.tax_invoice)}
+                                        className='doc-modal-playbook-btn update-btn'
+                                    >
+                                        עדכן פלייבוק לחשבוניות מס
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => handleCreateClientPlaybook('tax_invoice')}
+                                        className='doc-modal-playbook-btn create-btn'
+                                    >
+                                        צור פלייבוק לחשבוניות מס
+                                    </button>
+                                )}
+
+                                {clientData.playbooks.proforma ? (
+                                    <button
+                                        onClick={() => nav("/playbook/" + clientData.playbooks.proforma)}
+                                        className='doc-modal-playbook-btn update-btn'
+                                    >
+                                        עדכן פלייבוק לדרישות תשלום
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => handleCreateClientPlaybook('proforma')}
+                                        className='doc-modal-playbook-btn create-btn'
+                                    >
+                                        צור פלייבוק לדרישות תשלום
+                                    </button>
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    onClick={() => handleCreateClientPlaybook('tax_invoice')}
+                                    className='doc-modal-playbook-btn create-btn'
+                                >
+                                    צור פלייבוק לחשבוניות מס
+                                </button>
+                                <button
+                                    onClick={() => handleCreateClientPlaybook('proforma')}
+                                    className='doc-modal-playbook-btn create-btn'
+                                >
+                                    צור פלייבוק לדרישות תשלום
+                                </button>
+                            </>
+                        )}
+                    </div>
 
                     <div className="client-page-switch-row">
                         <label className="client-page-switch-label">
@@ -238,10 +281,6 @@ const ClientPage = () => {
                     </div>
 
 
-
-                    {!clientData.playbooks || Object.keys(clientData.playbooks).length === 0 &&
-                        <button onClick={handleCreateClientPlaybook}
-                            className='doc-modal-playbook-btn' > צור פלייבוק </button>}
                 </div>
                 <div className="client-page-section">
                     <div className="client-page-section-header">

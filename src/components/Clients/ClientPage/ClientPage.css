@@ -331,3 +331,68 @@
     100% { transform: rotate(360deg); }
 }
 
+/* Playbook buttons container */
+.client-page-playbooks {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+/* Base styles for both button types */
+.doc-modal-playbook-btn {
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-align: center;
+    border: none;
+}
+
+/* Update button style */
+.doc-modal-playbook-btn.update-btn {
+    background-color: #4a90e2;
+    color: white;
+    box-shadow: 0 2px 4px rgba(74, 144, 226, 0.2);
+}
+
+.doc-modal-playbook-btn.update-btn:hover {
+    background-color: #3a80d2;
+    box-shadow: 0 3px 6px rgba(74, 144, 226, 0.3);
+}
+
+/* Create button style */
+.doc-modal-playbook-btn.create-btn {
+    background-color: #f0f7ff;
+    color: #4a90e2;
+    border: 1px dashed #4a90e2;
+}
+
+.doc-modal-playbook-btn.create-btn:hover {
+    background-color: #e0f0ff;
+    border: 1px solid #4a90e2;
+}
+
+/* Add icons using pseudo-elements */
+.doc-modal-playbook-btn.update-btn::before {
+    content: "🔄 ";  /* Update icon */
+}
+
+.doc-modal-playbook-btn.create-btn::before {
+    content: "✨ ";  /* Create/new icon */
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+    .client-page-playbooks {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .doc-modal-playbook-btn {
+        flex: 1;
+        min-width: 200px;
+    }
+}

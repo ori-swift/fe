@@ -171,12 +171,13 @@ export async function getClient(clientId, companyId = null) {
 
 
 
-export async function createPlaybooksForClient(clientId) {
+export async function createPlaybooksForClient(clientId, docType) {
 
     try {
         const response = await axios.post(`${SERVER_URL}/playbooks/`,
             {
-                client_id: clientId
+                client_id: clientId,
+                doc_type: docType
             },
             { headers: getAuthHeaders() });
         return response.data;
