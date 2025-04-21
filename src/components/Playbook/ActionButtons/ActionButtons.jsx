@@ -1,10 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { deletePlaybook } from "../../../api/playbook_api";
 import { useConfirmation } from "../../../utils/ConfirmationContext";
+import { useContext } from "react";
+import { AppContext } from "../../../App";
 
 const ActionButtons = ({ editMode, saving, playbook, onEdit, onSave, onCancel }) => {
     const nav = useNavigate();
     const { confirmAction } = useConfirmation();
+    const {selectedCompany} = useContext(AppContext)
+    
     if (!editMode) {
         return (
             <div className="playbook-page-actions">
@@ -25,6 +29,8 @@ const ActionButtons = ({ editMode, saving, playbook, onEdit, onSave, onCancel })
                                 "האם אתה בטוח שברצונך להסיר את הפלייבוק? משמעות הדבר היא שכל המסמכים המשוייכים ללקוח החל מעתה יהיו במעקב הגדרות הפלייבוק הגלובלי, לכל סוגי המסמכים.",
                                 async () => {
                                     await deletePlaybook(playbook.id);
+                                    // purge cache
+                                    localStorage.removeItem(`clients_${selectedCompany.id}`);
                                     nav(-1);
                                 }
                             );

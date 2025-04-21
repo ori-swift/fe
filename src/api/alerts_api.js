@@ -105,8 +105,7 @@ export async function updateTemplate(templateId, templateData) {
     );
     return response.data;
   } catch (error) {
-    console.error("Error updating alert template:", error.response?.data || error.message);
-    alert("335 ERROR update template")
+    console.error("Error updating alert template:", error.response?.data || error.message);    
     throw error;
   }
 }

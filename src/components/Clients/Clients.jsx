@@ -19,10 +19,7 @@ const Clients = () => {
 
     return (
         <div>
-            <ProviderClients key={selectedCompany.id} ps={selectedCompany} />
-            {/* {userData.companies.map((ps) => {
-                return <ProviderClients key={ps.id} ps={ps} />
-            })} */}
+            <ProviderClients key={selectedCompany.id} ps={selectedCompany} />            
         </div>
     );
 }

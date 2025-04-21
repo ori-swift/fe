@@ -190,7 +190,7 @@ export async function createPlaybooksForClient(clientId, docType) {
 export async function addContactInfo(clientId, emails = [], phones = []) {
 
     try {
-        const response = await axios.put(`${SERVER_URL}/clients/${clientId}/add_contact_info/`, {
+        const response = await axios.put(`${SERVER_URL}/client/${clientId}/add_contact_info/`, {
             emails,
             phones
         },

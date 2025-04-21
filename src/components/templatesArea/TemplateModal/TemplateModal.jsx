@@ -23,6 +23,17 @@ const TemplateModal = ({ show, onHide, template }) => {
     }
   }, [template]);
 
+  // Effect to handle document_id and doc_type relationship
+  useEffect(() => {
+    if (editedTemplate?.document_id) {
+      // If document is selected, doc_type becomes null
+      setEditedTemplate(prev => ({
+        ...prev,
+        doc_type: null
+      }));
+    }
+  }, [editedTemplate?.document_id]);
+
   const handleEditClick = () => {
     setEditMode(true);
     setErrorMessage(''); // Reset error message when entering edit mode
@@ -38,11 +49,16 @@ const TemplateModal = ({ show, onHide, template }) => {
   };
 
   const validate = () => {
-
     if (!editedTemplate.template_content || editedTemplate.template_content.trim() === '') {
       setErrorMessage('תוכן התבנית הינו שדה חובה');
       return false;
     }
+    
+    if (!editedTemplate.document_id && !editedTemplate.doc_type) {
+      setErrorMessage('סוג מסמך הינו שדה חובה כאשר לא נבחר מסמך ספציפי');
+      return false;
+    }
+    
     setErrorMessage('');
     return true;
   };
@@ -59,10 +75,12 @@ const TemplateModal = ({ show, onHide, template }) => {
         payload.alert_method = null;
       }
 
-      if (payload.doc_type === 'any') {
+      // Only include doc_type if document_id is null
+      if (payload.document_id !== null) {
+        delete payload.doc_type;
+      } else if (payload.doc_type === 'any') {
         payload.doc_type = null;
       }
-
 
       await updateTemplate(template.id, payload);
       await refetchUserDate(); // Make sure this completes before continuing
@@ -138,6 +156,7 @@ const TemplateModal = ({ show, onHide, template }) => {
         onChange={(e) => handleInputChange('doc_type', e.target.value)}
         className="template-modal-input"
         style={{ textAlign: 'left' }}
+        disabled={editedTemplate.document_id !== null}
       >
         <option value="any">כל הסוגים</option>
         <option value="tax_invoice">חשבונית מס</option>
@@ -167,7 +186,6 @@ const TemplateModal = ({ show, onHide, template }) => {
         <div className="template-modal-details">
           <Table striped bordered hover responsive className="template-modal-table">
             <tbody>
-
               <tr>
                 <td className="template-modal-label">סוג התראה</td>
                 <td>
@@ -179,26 +197,32 @@ const TemplateModal = ({ show, onHide, template }) => {
                 </td>
               </tr>
 
-              {!editMode  && (
-                <>
-                  <tr>
-                    <td className="template-modal-label">סוג מסמך</td>
-                    <td>
-                      {editMode && !template.is_system ? (
-                        renderDocTypeDropdown()
+              <tr>
+                <td className="template-modal-label">סוג מסמך</td>
+                <td>
+                  {editMode && !template.is_system ? (
+                    renderDocTypeDropdown()
+                  ) : (
+                    <div>
+                      {editedTemplate.document_id !== null ? (
+                        <span className="text-muted">לא רלוונטי (נבחר מסמך ספציפי)</span>
+                      ) : editedTemplate.doc_type === "proforma" ? (
+                        "דרישת תשלום"
+                      ) : editedTemplate.doc_type === "tax_invoice" ? (
+                        "חשבונית מס"
                       ) : (
-                        <div>
-                          {editedTemplate.doc_type === "proforma"
-                            ? "דרישת תשלום"
-                            : editedTemplate.doc_type === "tax_invoice"
-                              ? "חשבונית מס"
-                              : "כל הסוגים"}
-                        </div>
+                        "כל הסוגים"
                       )}
-                    </td>
-                  </tr>
-                </>
-              )}
+                    </div>
+                  )}
+                  {editMode && editedTemplate.document_id !== null && (
+                    <div className="text-muted mt-1" style={{ fontSize: '0.8rem' }}>
+                      סוג מסמך לא רלוונטי כאשר נבחר מסמך ספציפי
+                    </div>
+                  )}
+                </td>
+              </tr>
+
               <tr>
                 <td className="template-modal-label">מזהה לקוח</td>
                 <td>
@@ -213,6 +237,7 @@ const TemplateModal = ({ show, onHide, template }) => {
                   )}
                 </td>
               </tr>
+              
               <tr>
                 <td className="template-modal-label">מזהה מסמך</td>
                 <td>

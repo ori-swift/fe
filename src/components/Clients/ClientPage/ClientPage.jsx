@@ -37,7 +37,7 @@ const ClientPage = () => {
         if (!selectedCompany) {
             return;
         }
-        if (selectedClient.name) {
+        if (selectedClient.name) {            
             setClientData(selectedClient);
             setEmails(selectedClient.emails || []);
             setPhones(selectedClient.phones || []);
