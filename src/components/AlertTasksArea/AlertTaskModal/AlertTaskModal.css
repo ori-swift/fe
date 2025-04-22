@@ -1,0 +1,146 @@
+/* AlertTaskModal.css */
+.alert-task-modal .modal-content {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 100%;
+  }
+  
+  .alert-task-modal .modal-dialog {
+    max-width: 95%;
+    margin: 1.75rem auto;
+  }
+  
+  .alert-task-modal .modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #eaeaea;
+  }
+  
+  .alert-task-modal .modal-title {
+    color: #094067;
+    font-weight: 600;
+  }
+  
+  .alert-task-modal-content {
+    padding: 0.5rem;
+  }
+  
+  .alert-task-modal-section {
+    margin-bottom: 2rem;
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .alert-task-modal-section h4 {
+    color: #094067;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 0.5rem;
+  }
+  
+  .alert-task-modal-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .alert-task-modal-info-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+  }
+  
+  .alert-task-modal-label {
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+  }
+  
+  .alert-task-modal-info-item a {
+    color: #094067;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .alert-task-modal-info-item a:hover {
+    text-decoration: underline;
+  }
+  
+  .alert-task-modal-notes {
+    margin-top: 1rem;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+  }
+  
+  .alert-task-modal-notes p {
+    margin-top: 0.5rem;
+    white-space: pre-line;
+    color: #333;
+  }
+  
+  .alert-task-modal-methods-table {
+    margin-top: 1rem;
+    width: 100%;
+    table-layout: fixed;
+  }
+  
+  .alert-task-modal-methods-table th {
+    background-color: #f2f2f2;
+    text-align: right;
+    word-wrap: break-word;
+    font-size: 0.9rem;
+  }
+  
+  .alert-task-modal-methods-table td {
+    text-align: right;
+    vertical-align: middle;
+    word-wrap: break-word;
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+  }
+  
+  .alert-task-modal-methods-table td.notes-column {
+    max-width: 200px;
+    cursor: help;
+  }
+  
+  /* Status color indicators for the modal */
+  .status-pending {
+    color: #f59e0b;
+    font-weight: 500;
+  }
+  
+  .status-in_progress {
+    color: #3b82f6;
+    font-weight: 500;
+  }
+  
+  .status-completed {
+    color: #10b981;
+    font-weight: 500;
+  }
+  
+  .status-failed {
+    color: #ef4444;
+    font-weight: 500;
+  }
+  
+  .alert-task-modal .modal-footer {
+    border-top: 2px solid #eaeaea;
+  }
+  
+  .alert-task-modal .modal-footer button {
+    background-color: #094067;
+    border-color: #094067;
+  }
+  
+  .alert-task-modal .modal-footer button:hover {
+    background-color: #0a4b7c;
+    border-color: #0a4b7c;
+  }

@@ -8,6 +8,7 @@ import CompanySelectionPage from './components/CompanySelectionPage/CompanySelec
 import { ConfirmationProvider } from './utils/ConfirmationContext';
 import Settings from './components/Settings/Settings';
 import { Button } from 'react-bootstrap';
+import { clearLocalStorageExcept } from './utils/helpers';
 // import { ConfirmationProvider } from './context/ConfirmationContext';
 
 export const AppContext = createContext();
@@ -20,10 +21,7 @@ function App() {
   const [selectedCompany, setSelectedCompany] = useState();
 
   const nav = useNavigate();
-
-  // console.log("App rendered", isLogged, userData);
-
-
+  
   const refetchUserDate = async () => {
     const token = localStorage.getItem("sc_token");
     if (token) {

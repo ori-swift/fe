@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './DocumentPage.css';
-import { getDocumentById, updateDocRunAlerts } from '../../../api/general_be_api';
+import {  updateDocRunAlerts } from '../../../api/general_be_api';
 import { AppContext } from '../../../App';
+import { getDocumentById } from '../../../api/documents_api';
 
 const DocumentPage = ({ documentArg }) => {
 
@@ -22,6 +23,8 @@ const DocumentPage = ({ documentArg }) => {
       else {
 
         getDocumentById(docId, selectedCompany?.id).then((res) => {
+          console.log(res);
+          
           setDocument(res)
         })
       }

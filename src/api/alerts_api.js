@@ -105,7 +105,7 @@ export async function updateTemplate(templateId, templateData) {
     );
     return response.data;
   } catch (error) {
-    console.error("Error updating alert template:", error.response?.data || error.message);    
+    console.error("Error updating alert template:", error.response?.data || error.message);
     throw error;
   }
 }
@@ -126,3 +126,27 @@ export async function getTemplateVars() {
     throw error;
   }
 }
+
+export async function fetchAlertTasks({ clientId, documentId, status, startDate, endDate, companyId, page = 1 }) {
+  try {
+    const params = { company_id: companyId };
+    if (clientId) params.client_id = clientId;
+    if (documentId) params.document_id = documentId;
+    if (status) params.status = status;
+    if (startDate) params.start_date = startDate;
+    if (endDate) params.end_date = endDate;
+    params.page = page;
+
+    const response = await axios.get(`${SERVER_URL}/alert-tasks/`, {
+      headers: getAuthHeaders(),
+      params,
+    });
+
+    return response.data; // includes count, next, previous, results
+  } catch (error) {
+    console.error("Error fetching alert tasks:", error);
+    alert("234 ERROR")
+    throw error;
+  }
+}
+

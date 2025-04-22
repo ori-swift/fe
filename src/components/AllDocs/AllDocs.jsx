@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 
 import './AllDocs.css';
-import { fetchDocumentsByCompany } from '../../api/playbook_api';
+
 import { AppContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
+import { fetchDocumentsByCompany } from '../../api/documents_api';
 
 const AllDocs = () => {
     // State variables
@@ -54,7 +55,8 @@ const AllDocs = () => {
                 pageSize,
                 filters
             );
-
+            console.log(response);
+            
             setDocuments(response.results);
             setTotalCount(response.count);
             setTotalPages(Math.ceil(response.count / pageSize));
@@ -273,7 +275,7 @@ const AllDocs = () => {
 
                 {error && <div className="all-docs-error">{error}</div>}
 
-                {!loading && !error && documents.length === 0 && (
+                {!loading && !error && documents?.length === 0 && (
                     <div className="all-docs-empty">לא נמצאו מסמכים. נסה לשנות את הסינון.</div>
                 )}
 

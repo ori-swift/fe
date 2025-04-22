@@ -2,7 +2,7 @@ import ErrorMessage from "../../../utils/ErrorMessage";
 import ActionButtons from "../ActionButtons/ActionButtons";
 import TargetInfo from "../TargetInfo/TargetInfo";
 
-const PlaybookHeader = ({ playbook, editMode, error, saving, onEdit, onSave, onCancel, docId, clientId }) => {
+const PlaybookHeader = ({ playbook, editMode, error, saving, onEdit, onSave, onCancel }) => {
     return (
         <div className="playbook-page-header">
             <div className="playbook-page-header-content">

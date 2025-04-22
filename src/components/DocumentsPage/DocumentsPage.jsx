@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { fetchDocumentsByClient } from '../../api/general_be_api';
+
 import { useNavigate, useParams } from 'react-router-dom';
 import DocumentModal from './DocumentModal/DocumentModal';
 import { AppContext } from '../../App';
 import "./DocumentsPage.css"
+import { fetchDocumentsByClient } from '../../api/documents_api';
 
 const DocumentsPage = () => {
     const [documents, setDocuments] = useState([]);

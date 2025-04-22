@@ -38,7 +38,7 @@ const PlaybookPage = () => {
                 // document_id: data.document?.id || null,
                 document_data: data.document_data,
                 client_data: data.client_data,
-                client_id: data.client,
+                // client_id: data.client,
                 playbook_doc_type: data.doc_type,
             });
 

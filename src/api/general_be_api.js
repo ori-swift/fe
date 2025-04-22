@@ -102,7 +102,7 @@ export async function getAllClients(companyId) {
 
         const response = await axios.get(url, {
             headers: getAuthHeaders()
-        });        
+        });
 
         localStorage.setItem(cacheKey, JSON.stringify({
             response: response,
@@ -149,7 +149,7 @@ export async function getClient(clientId, companyId = null) {
 
         const response = await axios.get(url, {
             headers: getAuthHeaders()
-        });        
+        });
 
         // If companyId was provided but client wasn't in cache, clear the cache
         // since it means the cache is out of date
@@ -198,43 +198,6 @@ export async function addContactInfo(clientId, emails = [], phones = []) {
         return response.data;
     } catch (error) {
         console.error("Error adding contact info:", error.response?.data || error.message);
-        throw error;
-    }
-}
-
-
-export async function fetchDocumentsByClient(clientId) {
-
-    try {
-        const response = await axios.get(`${SERVER_URL}/documents/${clientId}`, {
-            headers: getAuthHeaders()
-        });
-        console.log(response.data);
-
-        return response.data; // Array of documents
-    } catch (error) {
-        console.error("Error fetching documents:", error);
-        alert("Error fetching documents of client");
-        throw error;
-    }
-}
-
-const documentCache = {};
-export async function getDocumentById(documentId) {
-    const cacheKey = `document_${documentId}`;
-    if (documentCache[cacheKey]) {                
-        return documentCache[cacheKey]
-    };    
-
-    try {
-        const response = await axios.get(`${SERVER_URL}/document/${documentId}`, {
-            headers: getAuthHeaders()
-        });
-        documentCache[cacheKey] = response.data;
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching document:", error);
-        alert("Error fetching document");
         throw error;
     }
 }

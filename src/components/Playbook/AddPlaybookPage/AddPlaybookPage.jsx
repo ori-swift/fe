@@ -9,7 +9,8 @@ import TargetInfo from "../TargetInfo/TargetInfo";
 import ActionButtons from "../ActionButtons/ActionButtons";
 import "./../PlaybookPage/PlaybookPage.css";
 import { AppContext } from "../../../App";
-import { getDocumentById } from "../../../api/general_be_api";
+import { getDocumentById } from "../../../api/documents_api";
+
 
 const AddPlaybookPage = () => {
 

@@ -3,6 +3,7 @@ import { deletePlaybook } from "../../../api/playbook_api";
 import { useConfirmation } from "../../../utils/ConfirmationContext";
 import { useContext } from "react";
 import { AppContext } from "../../../App";
+import { clearLocalStorageExcept } from "../../../utils/helpers";
 
 const ActionButtons = ({ editMode, saving, playbook, onEdit, onSave, onCancel }) => {
     const nav = useNavigate();
@@ -30,7 +31,8 @@ const ActionButtons = ({ editMode, saving, playbook, onEdit, onSave, onCancel })
                                 async () => {
                                     await deletePlaybook(playbook.id);
                                     // purge cache
-                                    localStorage.removeItem(`clients_${selectedCompany.id}`);
+                                    clearLocalStorageExcept();
+                                    // localStorage.removeItem(`clients_${selectedCompany.id}`);
                                     nav(-1);
                                 }
                             );

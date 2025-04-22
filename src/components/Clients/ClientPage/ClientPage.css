@@ -396,3 +396,46 @@
         min-width: 200px;
     }
 }
+
+/* Add these styles to your ClientPage.css file */
+
+/* WhatsApp icon styling */
+.whatsapp-icon {
+    color: #25D366; /* WhatsApp brand color */
+    margin-right: 8px;
+    margin-left: 8px;
+}
+
+/* Phone display with icon alignment */
+.phone-display {
+    display: flex;
+    align-items: center;
+}
+
+/* Container for phone action buttons/controls */
+.client-page-phone-actions {
+    display: flex;
+    align-items: center;
+}
+
+/* WhatsApp checkbox label */
+.client-page-whatsapp-label {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.client-page-whatsapp-label input {
+    margin-right: 5px;
+}
+
+/* Make sure contact items are properly spaced and aligned */
+.client-page-contact-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
