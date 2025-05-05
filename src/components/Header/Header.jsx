@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 import { useContext } from "react";
 import { AppContext } from "../../App";
+import { IS_DEV, SERVER_URL } from "../../config";
 
 const Header = ({ handleLogout, isLogged }) => {
 
@@ -9,7 +10,7 @@ const Header = ({ handleLogout, isLogged }) => {
   
   const nav = useNavigate();
   return (
-    <nav className="header-container">
+    <nav className="header-container">      
       <div className="header-logo" onClick={()=>nav("/home")}>Swift-Collect</div>
       <div className="header-links">
         <Link to="/settings" className="header-link">הגדרות</Link>

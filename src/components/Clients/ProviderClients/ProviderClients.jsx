@@ -23,6 +23,10 @@ const ProviderClients = ({ ps }) => {
     useEffect(() => {
         setIsLoading(true);
         getAllClients(ps.id).then(res => {
+            console.log("All clients:");
+            console.log(res);
+            
+            
             const normalizePhones = p =>
                 Array.isArray(p) && p.length && typeof p[0] === 'string'
                     ? p.map(num => ({ number: num, has_whatsapp: false }))
@@ -52,6 +56,25 @@ const ProviderClients = ({ ps }) => {
         setFilters({ hasOpenDocs: false, hasRunAlerts: false, sortBy: 'name' });
         setSearchTerm('');
         setCurrentPage(1);
+    };
+
+    const getStatusDisplay = (overdueValue) => {
+        if (overdueValue === 0) {
+            return <span className="status-ok">תקין</span>;
+        } else if (overdueValue > 0 && overdueValue <= 30) {
+            return <span className="status-overdue-orange">באיחור</span>;
+        } else {
+            return <span className="status-overdue-red">באיחור</span>;
+        }
+    };
+
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('he-IL', { 
+            style: 'currency', 
+            currency: 'ILS',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(amount);
     };
 
     const filteredClients = clients
@@ -174,7 +197,8 @@ const ProviderClients = ({ ps }) => {
                                     <tr>
                                         <th className="clients-list-header">שם</th>
                                         <th className="clients-list-header">אימייל</th>
-                                        <th className="clients-list-header">טלפון</th>
+                                        <th className="clients-list-header">סטטוס</th>
+                                        <th className="clients-list-header">סכום פתוח</th>
                                         <th className="clients-list-header">מסמכים פתוחים</th>
                                     </tr>
                                 </thead>
@@ -199,20 +223,11 @@ const ProviderClients = ({ ps }) => {
                                                     </div>
                                                 )}
                                             </td>
-                                            <td className="clients-list-cell clients-list-phone-cell">
-                                                {client.phones?.[0]?.number && (
-                                                    <div className="clients-list-contact">
-                                                        <span className="clients-list-phone-icon"></span>
-                                                        <span className="clients-list-info">
-                                                            {client.phones[0].number}
-                                                            {client.phones[0].has_whatsapp && (
-                                                                <svg className="whatsapp-icon" viewBox="0 0 448 512" width="14" height="14">
-                                                                    <path fill="#25D366" d="M380.9 97.1C339 55.1 283.2 32 223.9 32..." />
-                                                                </svg>
-                                                            )}
-                                                        </span>
-                                                    </div>
-                                                )}
+                                            <td className="clients-list-cell clients-list-status-cell">
+                                                {getStatusDisplay(client.is_overdue)}
+                                            </td>
+                                            <td className="clients-list-cell clients-list-amount-cell">
+                                                {formatCurrency(client.total_open_amount || 0)}
                                             </td>
                                             <td className="clients-list-cell clients-list-docs-cell">
                                                 {client.open_docs_count > 0 ? (

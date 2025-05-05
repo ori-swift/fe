@@ -13,7 +13,7 @@ const DocumentsPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');    
-    const [openDropdownId, setOpenDropdownId] = useState(null); // Track which row’s dropdown is open
+    const [openDropdownId, setOpenDropdownId] = useState(null); // Track which row's dropdown is open
     
     
     const toggleDropdown = (e, docId) => {
@@ -45,6 +45,39 @@ const DocumentsPage = () => {
     };
     const handleCloseModal = () => setShowModal(false);
     
+    // Calculate days passed since the document date
+    const calculateDaysPassed = (dateString) => {
+        if (!dateString) return 0;
+        
+        const documentDate = new Date(dateString);
+        const today = new Date();
+        
+        // Reset time part for accurate day calculation
+        documentDate.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
+        
+        const timeDiff = today - documentDate;
+        const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        
+        return daysDiff;
+    };
+    
+    // New function to determine status display based on calculated days passed
+    const getStatusDisplay = (doc) => {
+        if (!doc.is_open) {
+            return <span className="status-closed">סגור</span>;
+        }
+        
+        const daysPassed = calculateDaysPassed(doc.due_date);
+        
+        if (daysPassed <= 0) {
+            return <span className="status-ok">פתוח</span>;
+        } else if (daysPassed > 0 && daysPassed <= 30) {
+            return <span className="status-overdue-orange">באיחור</span>;
+        } else {
+            return <span className="status-overdue-red">באיחור חמור</span>;
+        }
+    };
 
     const filteredDocuments = documents.filter((doc) => {
         if (filterStatus !== 'all') {
@@ -108,9 +141,9 @@ const DocumentsPage = () => {
                             <th>לקוח</th>
                             <th>תיאור</th>
                             <th>תאריך</th>
+                            <th>מועד תשלום</th>
                             <th>סכום</th>
-                            <th>סטטוס</th>
-                            {/* <th>פעולות</th> */}
+                            <th>סטטוס</th>                            
                         </tr>
                     </thead>
                     <tbody>
@@ -122,8 +155,9 @@ const DocumentsPage = () => {
                                     <td>{doc.client?.name}</td>
                                     <td>{doc.doc_type}</td>
                                     <td>{formatDate(doc.document_date)}</td>
+                                    <td>{formatDate(doc.due_date)}</td>
                                     <td>{doc.amount} {getCurrencySymbol(doc)}</td>
-                                    <td>{doc.is_open ? "פתוח" : "סגור"}</td>
+                                    <td className="documents-page-status-cell">{getStatusDisplay(doc)}</td>
                                 </tr>
                             ))
                         ) : (
@@ -175,4 +209,3 @@ const DocumentsPage = () => {
 };
 
 export default DocumentsPage;
-

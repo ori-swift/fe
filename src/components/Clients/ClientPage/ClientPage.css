@@ -439,3 +439,59 @@
     padding: 8px 0;
     border-bottom: 1px solid #eee;
 }
+
+.client-page-playbooks-section {
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.client-page-playbooks-title {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.client-page-playbook-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.client-page-playbook-label {
+    flex: 0 0 160px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.client-page-playbook-select {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+}
+
+.client-page-stat-overdue {
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+.client-page-stat-item {
+    margin-left: 20px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 120px;
+}
+
+.client-page-stats {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 20px;
+}

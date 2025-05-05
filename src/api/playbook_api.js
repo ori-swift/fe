@@ -2,27 +2,27 @@ import axios from "axios";
 import { getAuthHeaders } from "./general_be_api";
 import { SERVER_URL } from "../config";
 
-export async function addNewPlaybook(data, { documentId = null, clientId = null }) {
-    try {
-        // Validate inputs
-        if ((!documentId && !clientId) || (documentId && clientId)) {
-            throw new Error("Either documentId OR clientId must be provided, not both or neither");
+
+function removePlaybookCache() {
+    Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("playbooks_")) {
+            localStorage.removeItem(key);
         }
+    });
+}
 
-        // Clean unwanted fields from data
-        const { company_id, client, document, ...cleanData } = data;
 
-        const requestData = {
-            ...cleanData,
-            document_id: documentId || null,
-            client_id: clientId || null
-        };
-
+export async function addNewPlaybook(data) {
+    try {
+        console.log(data);
+        
         const response = await axios.post(
             `${SERVER_URL}/playbooks/`,
-            requestData,
+            data,
             { headers: getAuthHeaders() }
         );
+
+        removePlaybookCache();
 
         return response.data;
     } catch (error) {
@@ -36,11 +36,37 @@ export async function addNewPlaybook(data, { documentId = null, clientId = null 
 }
 export async function getPlaybook(playbookId) {
     try {
-
+        // Get company ID from localStorage
+        const selectedCompanyStr = localStorage.getItem("selected_company");
+        if (!selectedCompanyStr) {
+            throw new Error("No selected company found in localStorage");
+        }
+        
+        const selectedCompany = JSON.parse(selectedCompanyStr);
+        const companyId = selectedCompany.id;
+        
+        // Check if we have a cache for this company's playbooks
+        const cacheKey = `playbooks_${companyId}`;
+        const cachedPlaybooks = localStorage.getItem(cacheKey);
+        
+        if (cachedPlaybooks) {
+            try {
+                const playbooks = JSON.parse(cachedPlaybooks);
+                const playbook = playbooks.find(p => p.id === playbookId);
+                
+                if (playbook) {
+                    return playbook; // Return the cached playbook if found
+                }
+                // If not found in cache, we'll continue to the API call
+            } catch (e) {
+                localStorage.removeItem(cacheKey); // corrupt cache
+            }
+        }
+        
+        // Fallback to original implementation if not found in cache
         const response = await axios.get(`${SERVER_URL}/playbooks/${playbookId}/`, {
             headers: getAuthHeaders()
         });
-        // console.log("Fetched playbook:", response.data);
         return response.data;
     } catch (error) {
         console.error("Error fetching playbook:", error);
@@ -49,18 +75,27 @@ export async function getPlaybook(playbookId) {
     }
 }
 
-export async function getPlaybooks(filters = {}) {
-    try {
-        let queryParams = new URLSearchParams();
+export async function getPlaybooks(companyId) {
+    const cacheKey = `playbooks_${companyId}`;
+    const cached = localStorage.getItem(cacheKey);
 
-        if (filters.document) queryParams.append('document', filters.document);
-        if (filters.client) queryParams.append('client', filters.client);
-        if (filters.company) queryParams.append('company', filters.company);
+    if (cached) {
+        try {                        
+            return JSON.parse(cached);
+        } catch (e) {
+            localStorage.removeItem(cacheKey); // corrupt cache
+        }
+    }
+
+    try {
+        const queryParams = new URLSearchParams();
+        queryParams.append('company', companyId);
 
         const response = await axios.get(`${SERVER_URL}/playbooks/?${queryParams}`, {
             headers: getAuthHeaders()
         });
-        
+
+        localStorage.setItem(cacheKey, JSON.stringify(response.data));
         return response.data;
     } catch (error) {
         console.error("Error fetching playbooks:", error);
@@ -70,6 +105,7 @@ export async function getPlaybooks(filters = {}) {
 }
 
 export async function updatePlaybook(playbookId, data) {
+
     try {
         const response = await axios.patch(
             `${SERVER_URL}/playbooks/${playbookId}/`,
@@ -77,6 +113,7 @@ export async function updatePlaybook(playbookId, data) {
             { headers: getAuthHeaders() }
         );
         console.log("Updated playbook:", response.data);
+        removePlaybookCache()
         return response.data;
     } catch (error) {
         console.error("Error updating playbook:", error);
@@ -93,6 +130,8 @@ export async function deletePlaybook(playbookId) {
             `${SERVER_URL}/playbooks/${playbookId}/`,
             { headers: getAuthHeaders() }
         );
+
+        removePlaybookCache()
 
         // Validate response
         if (response.status === 200 || response.status === 204) {
@@ -118,7 +157,6 @@ export async function deletePlaybook(playbookId) {
     }
 }
 
-
 export async function createPlaybook(data) {
     try {
         const response = await axios.post(
@@ -127,6 +165,7 @@ export async function createPlaybook(data) {
             { headers: getAuthHeaders() }
         );
         console.log("Created playbook:", response.data);
+        removePlaybookCache()
         return response.data;
     } catch (error) {
         console.error("Error creating playbook:", error);

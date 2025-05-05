@@ -46,6 +46,7 @@ const PlaybookPage = () => {
                 ...prev,
                 playbook: data,
                 formData: {
+                    title: data.title,
                     only_business_days: data.only_business_days,
                     config: JSON.parse(JSON.stringify(data.config)),
                     document_id: data.document?.id || null,
@@ -79,10 +80,13 @@ const PlaybookPage = () => {
 
         setState(prev => ({ ...prev, saving: true }));
         try {
+            
             await updatePlaybook(id, state.formData);
             await fetchPlaybook();
             setState(prev => ({ ...prev, editMode: false, saving: false }));
         } catch (error) {
+            console.log(error);
+            
             setState(prev => ({ ...prev, error: "Failed to save playbook", saving: false }));
         }
     };
@@ -96,6 +100,7 @@ const PlaybookPage = () => {
                         ...prev,
                         formData: {
                             only_business_days: state.playbook.only_business_days,
+                            title: state.playbook.title,
                             config: JSON.parse(JSON.stringify(state.playbook.config)),
                             document_id: state.playbook.document?.id || null,
                             client_id: state.playbook.client?.id || null,
@@ -227,6 +232,7 @@ const PlaybookPage = () => {
     if (!state.playbook || !state.formData) return <ErrorMessage message="שגיאה בטעינת נתוני הפלייבוק" />;
     return (
         <PlaybookProvider value={contextData}>
+            
             <div className={`playbook-page-container ${state.editMode ? 'edit-mode' : ''}`}>
                 <PlaybookHeader
                     playbook={state.playbook}

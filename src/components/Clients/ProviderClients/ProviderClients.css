@@ -331,3 +331,62 @@
   color: #a0aec0;
   font-size: 0.85rem;
 }
+
+/* Add these CSS rules to your existing ProviderClients.css file */
+
+/* Status column styles */
+.clients-list-status-cell {
+  text-align: center;
+  padding: 5px 8px;
+}
+
+.status-ok {
+  color: #2ecc71;
+  font-weight: 600;
+}
+
+.status-overdue-orange {
+  color: #e67e22;
+  font-weight: 600;
+}
+
+.status-overdue-red {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+/* Amount column styles */
+.clients-list-amount-cell {
+  text-align: left;
+  direction: ltr;
+  font-family: 'Roboto', 'Arial', sans-serif;
+  font-weight: 500;
+  padding-left: 15px;
+}
+
+/* Ensure all text is right-aligned for Hebrew (RTL) */
+.clients-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  direction: rtl;
+}
+
+.clients-list-header {
+  text-align: right;
+  padding: 12px 15px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  font-weight: 600;
+}
+
+/* Add hover effect for the rows */
+.clients-list-row:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+  cursor: pointer;
+}
+
+/* Make columns more responsive */
+.clients-list-table-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}

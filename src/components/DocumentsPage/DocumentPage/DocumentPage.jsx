@@ -1,18 +1,38 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './DocumentPage.css';
-import {  updateDocRunAlerts } from '../../../api/general_be_api';
 import { AppContext } from '../../../App';
-import { getDocumentById } from '../../../api/documents_api';
+import { getDocumentById, updateDocument } from '../../../api/documents_api';
+import { getPlaybook, getPlaybooks } from '../../../api/playbook_api';
+import DocumentPdfViewer from '../../DocumentPdfViewer/DocumentPdfViewer';
 
 const DocumentPage = ({ documentArg }) => {
 
   const [document, setDocument] = useState(documentArg)
+  const [playbook, setPlaybook] = useState(null);
+  const [playbooks, setPlaybooks] = useState([]);
 
   const { selectedCompany } = useContext(AppContext);
   const nav = useNavigate();
 
   const { docId } = useParams();
+
+
+useEffect(() => {
+  if (selectedCompany?.id) {
+    getPlaybooks(selectedCompany.id)
+      .then(setPlaybooks)
+      .catch(console.error);
+  }
+}, [selectedCompany?.id]);
+
+
+  useEffect(() => {
+    if (document?.playbook) {
+      getPlaybook(document.playbook).then(setPlaybook).catch(console.error);
+    }
+  }, [document?.playbook]);
+
 
   useEffect(() => {
     if (!documentArg) {
@@ -24,7 +44,7 @@ const DocumentPage = ({ documentArg }) => {
 
         getDocumentById(docId, selectedCompany?.id).then((res) => {
           console.log(res);
-          
+
           setDocument(res)
         })
       }
@@ -64,47 +84,19 @@ const DocumentPage = ({ documentArg }) => {
     }
   };
 
-  // Handle create unique playbook
-  const handleCreatePlaybook = () => {
-    // alert("לא מיושם");
-    nav("/add-playbook?documentId=" + document.id)
-  };
-
-  // Determine playbook level badge
-  const getPlaybookLevelBadge = () => {
-    if (!document.playbook) return null;
-
-    let badgeClass = "";
-    let badgeText = "";
-
-    switch (document.playbook.type) {
-      case 'document':
-        badgeClass = "document-page-badge-document";
-        badgeText = "פלייבוק ייחודי למסמך";
-        break;
-      case 'client':
-        badgeClass = "document-page-badge-client";
-        badgeText = "פלייבוק ברמת לקוח";
-        break;
-      case 'company':
-        badgeClass = "document-page-badge-company";
-        badgeText = "פלייבוק ברמת חברה";
-        break;
-      default:
-        return null;
-    }
-
-    return <span className={`document-page-badge ${badgeClass}`}>{badgeText}</span>;
-  };
-
   return (
     <div className="document-page-container">
       <div className="document-page-header">
         <h1 className="document-page-title">פרטי מסמך</h1>
         <div className="document-page-id">מספר מזהה: {document.id}</div>
       </div>
+
+    <div>
+    <DocumentPdfViewer docId={document?.id}/>
+    </div>
+
       <div className="document-page-info-item">
-        <div className="document-page-label">{document.run_alerts? "התראות פעילות": "התראות כבויות"}</div>
+        <div className="document-page-label">{document.run_alerts ? "התראות פעילות" : "התראות כבויות"}</div>
         <div className="document-page-value">
           <input
             type="checkbox"
@@ -112,11 +104,11 @@ const DocumentPage = ({ documentArg }) => {
             onChange={async () => {
               const newValue = !document.run_alerts;
               try {
-                await updateDocRunAlerts(document.id, newValue);
+                await updateDocument(document.id, {runAlerts: newValue});
                 setDocument({ ...document, run_alerts: newValue });
               } catch (e) {
-                console.error(e);                
-                alert("שגיאה בעדכון סטטוס ההתראות");                
+                console.error(e);
+                alert("שגיאה בעדכון סטטוס ההתראות");
               }
             }}
           />
@@ -211,42 +203,20 @@ const DocumentPage = ({ documentArg }) => {
 
         <div className="document-page-section document-page-playbook-section">
           <h2 className="document-page-section-title">פלייבוק</h2>
-          <div className="document-page-playbook-info">
-            {document.playbook ? (
-              <>
-                <div className="document-page-playbook-header">
-                  <div className="document-page-playbook-id">מזהה פלייבוק: {document.playbook.id}</div>
-                  {getPlaybookLevelBadge()}
-                </div>
-                <div className="document-page-playbook-actions">
-                  <button
-                    className="document-page-button document-page-button-view"
-                    onClick={handleWatchPlaybook}
-                  >
-                    צפה בפלייבוק
-                  </button>
-                  {document.playbook.type !== 'document' && (
-                    <button
-                      className="document-page-button document-page-button-create"
-                      onClick={handleCreatePlaybook}
-                    >
-                      יצירת פלייבוק ייחודי
-                    </button>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="document-page-playbook-empty">
-                <p>אין פלייבוק מקושר למסמך זה</p>
-                <button
-                  className="document-page-button document-page-button-create"
-                  onClick={handleCreatePlaybook}
-                >
-                  יצירת פלייבוק
-                </button>
-              </div>
-            )}
-          </div>
+
+          {playbook && (
+            <div className="document-page-footer">
+              <button
+                className="document-page-footer-playbook"
+                onClick={() => nav(`/playbook/${playbook.id}`)}
+              >
+                פלייבוק: {playbook.title}
+              </button>
+            </div>
+          )}
+
+
+
         </div>
       </div>
     </div>

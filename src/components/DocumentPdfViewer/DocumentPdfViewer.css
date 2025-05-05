@@ -1,0 +1,27 @@
+.documentpdfviewer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+  }
+  
+  .documentpdfviewer-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .documentpdfviewer-button:hover:not(:disabled) {
+    background-color: #0056b3;
+  }
+  
+  .documentpdfviewer-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  

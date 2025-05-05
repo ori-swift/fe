@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './AllPlaybooks.css';
 import { getPlaybooks } from '../../../api/playbook_api';
 import { AppContext } from '../../../App';
@@ -21,7 +21,7 @@ const AllPlaybooks = () => {
   useEffect(() => {
     const fetchPlaybooks = async () => {
       try {
-        const result = await getPlaybooks({company:selectedCompany.id});
+        const result = await getPlaybooks(selectedCompany.id);
         setPlaybooks(result);
         setFilteredPlaybooks(result);
       } catch (error) {
@@ -114,6 +114,8 @@ const AllPlaybooks = () => {
 
   return (
     <div className="all-playbooks-container">
+      <Link to={"/add-playbook"}>צור פלייבוק חדש </Link>
+      <br/>
       <div className="all-playbooks-header">
         <h1>פלייבוקים</h1>
         <div className="all-playbooks-count">{filteredPlaybooks.length} מתוך {playbooks.length} פלייבוקים</div>
@@ -157,12 +159,10 @@ const AllPlaybooks = () => {
         <table className="all-playbooks-table">
           <thead>
             <tr>
-              <th>#</th>              
-              <th>לקוח</th>
-              <th>סוג מסמך</th>
+              <th>#</th>                                          
+              <th>שם</th>                                          
               <th>שלבים</th>
-              <th>התראות</th>
-              <th>מסמך</th>
+              <th>התראות</th>              
               <th>נוצר בתאריך</th>
               <th>ימי עבודה</th>
             </tr>
@@ -170,16 +170,10 @@ const AllPlaybooks = () => {
           <tbody>
             {filteredPlaybooks.map(playbook => (
               <tr key={playbook.id} onClick={() => handlePlaybookClick(playbook.id)} className="all-playbooks-row">
-                <td>#{playbook.id}</td>
-                
-                <td>{playbook.client_data?.name || 'גלובלי'}</td>
-                <td>
-                  {playbook.doc_type === 'tax_invoice' ? 'חשבונית מס' :
-                   playbook.doc_type === 'proforma' ? 'חשבונית עסקה' : playbook.doc_type || '-'}
-                </td>
+                <td>#{playbook.id}</td>                                                
+                <td>{playbook.title}</td>                                                
                 <td>{playbook.config?.phases?.length || 0}</td>
-                <td>{countAlerts(playbook)}</td>
-                <td>{playbook.document ? `#${playbook.document}` : 'גלובלי'}</td>
+                <td>{countAlerts(playbook)}</td>                
                 <td>{formatDate(playbook.created_at)}</td>
                 <td>{playbook.only_business_days ? 'ימי עסקים בלבד' : 'כל הימים'}</td>
               </tr>

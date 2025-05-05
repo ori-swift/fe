@@ -9,6 +9,7 @@ import { ConfirmationProvider } from './utils/ConfirmationContext';
 import Settings from './components/Settings/Settings';
 import { Button } from 'react-bootstrap';
 import { clearLocalStorageExcept } from './utils/helpers';
+import { IS_DEV, SERVER_URL } from './config';
 // import { ConfirmationProvider } from './context/ConfirmationContext';
 
 export const AppContext = createContext();
@@ -98,6 +99,9 @@ function App() {
         selectedClient, selectedCompany, setSelectedCompany, refetchUserDate
       }}>
         <div>
+        <div style={{backgroundColor: IS_DEV ?  'red': 'green'}}>
+        {SERVER_URL.includes("127.") ? "Dev" : "Stage"}
+      </div>
           <Header handleLogout={handleLogout} isLogged={isLogged} />
           {(userData && !selectedCompany) ?
             (userData.companies && userData.companies.length > 0 ? <CompanySelectionPage /> : <Settings />)

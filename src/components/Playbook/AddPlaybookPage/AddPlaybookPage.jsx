@@ -10,14 +10,12 @@ import ActionButtons from "../ActionButtons/ActionButtons";
 import "./../PlaybookPage/PlaybookPage.css";
 import { AppContext } from "../../../App";
 import { getDocumentById } from "../../../api/documents_api";
+import { clearLocalStorageExcept } from "../../../utils/helpers";
 
 
 const AddPlaybookPage = () => {
 
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const clientId = searchParams.get("clientId");
-    const documentId = searchParams.get("documentId");
 
     const { confirmAction } = useConfirmation();
 
@@ -33,13 +31,7 @@ const AddPlaybookPage = () => {
                     }
                 ]
             },
-            document_id: documentId || null,
-            client_id: clientId || null,
             company_id: null,
-        },
-        playbook: {
-            document: documentId ? { id: documentId, provider_doc_id: documentId } : null,
-            client: clientId ? { id: clientId, name: clientId } : null,
         },
         error: "",
         loading: true,
@@ -51,55 +43,36 @@ const AddPlaybookPage = () => {
 
     useEffect(() => {
         // Fetch default company playbook as template
-
-        getDocumentById(documentId).then((document) => {
-
-            getPlaybook(selectedCompany.playbooks[document.doc_type]).then((res) => {                
-
-                // Update state with the fetched playbook data
-                setState(prevState => ({
-                    ...prevState,
-                    formData: {
-                        ...prevState.formData,
-                        only_business_days: res.only_business_days,
-                        config: res.config,
-                        company_id: res.company,
-                    },
-                    playbook: {
-                        ...prevState.playbook,
-                        company: res.company_data,
-                    },
-                    loading: false
-                }));
-            }).catch(error => {
-                console.error("Error fetching playbook:", error);
-                setState(prevState => ({
-                    ...prevState,
-                    error: "Failed to load playbook template",
-                    loading: false
-                }));
-            });
-        })
-
-    }, [selectedCompany.company_playbook_id]);
-
-    useEffect(() => {
-        if (!clientId && !documentId) {
-            alert("ERROR: no client/document specify.");
-            navigate("/home");
+        if (!selectedCompany)
             return;
-        }
+        getPlaybook(selectedCompany.playbook).then((res) => {
 
-        setState(prev => ({
-            ...prev,
-            formData: {
-                ...prev.formData,
-                company_id: 1,
-            },
-            loading: false,
-            targetType: documentId ? "document" : (clientId ? "client" : "global")
-        }));
-    }, [documentId, clientId, navigate]);
+            // Update state with the fetched playbook data
+            setState(prevState => ({
+                ...prevState,
+                formData: {
+                    ...prevState.formData,
+                    only_business_days: res.only_business_days,
+                    config: res.config,
+                    company_id: res.company,
+                },
+                playbook: {
+                    ...prevState.playbook,
+                    company: res.company_data,
+                },
+                loading: false
+            }));
+        }).catch(error => {
+            console.error("Error fetching playbook:", error);
+            setState(prevState => ({
+                ...prevState,
+                error: "Failed to load playbook template",
+                loading: false
+            }));
+        });
+
+
+    }, [selectedCompany]);
 
     const handleSave = async () => {
         setState(prev => ({ ...prev, error: "" }));
@@ -112,12 +85,12 @@ const AddPlaybookPage = () => {
 
         setState(prev => ({ ...prev, saving: true }));
         try {
-            const response = await addNewPlaybook(state.formData, {
-                documentId: documentId || null,
-                clientId: clientId || null
-            });
+            console.log(selectedCompany.id);  // shows 26
+            
+            const response = await addNewPlaybook({...state.formData, company_id: selectedCompany.id});
             navigate(`/playbook/${response.id}`);
         } catch (error) {
+            console.log(error);            
             setState(prev => ({
                 ...prev,
                 error: "שגיאה ביצירת פלייבוק חדש",
@@ -253,7 +226,7 @@ const AddPlaybookPage = () => {
                 <div className="playbook-page-header-content">
                     <div className="playbook-page-title-section">
                         <h1 className="playbook-page-title">יצירת פלייבוק</h1>
-                        <TargetInfo playbook={state.playbook} />
+
                     </div>
 
                     <ActionButtons

@@ -250,32 +250,33 @@ export async function addNewProvider(providerId, companyName, credJson) {
 
 
 export async function updateClientSettings(clientId, data) {
+    /*
+    BE code allows these args:
+
+        run_alerts = request.data.get("run_alerts")
+        timezone = request.data.get("timezone")
+        proforma_playbook_id = request.data.get("proforma_playbook_id")
+        tax_invoice_playbook_id = request.data.get("tax_invoice_playbook_id")
+     */
+
     try {
         const response = await axios.patch(
             `${SERVER_URL}/client/${clientId}/update_client/`,
             data,
             { headers: getAuthHeaders() }
         );
+        
+        // purge cache
+        Object.keys(localStorage).forEach((key) => {
+            if (key.startsWith("clients_")) {
+                localStorage.removeItem(key);
+            }
+        });
+
         return response.data;
     } catch (error) {
         console.error("Error updating client settings:", error.response?.data || error.message);
         alert(error.response?.data?.error || "Failed to update client settings");
-        throw error;
-    }
-}
-
-
-export async function updateDocRunAlerts(docId, runAlerts) {
-    try {
-        const response = await axios.patch(
-            `${SERVER_URL}/documents/${docId}/update_run_alerts/`,
-            { run_alerts: runAlerts },
-            { headers: getAuthHeaders() }
-        );
-        return response.data;
-    } catch (error) {
-        console.error("Error updating document run_alerts:", error.response?.data || error.message);
-        alert(error.response?.data?.error || "Failed to update document run_alerts");
         throw error;
     }
 }

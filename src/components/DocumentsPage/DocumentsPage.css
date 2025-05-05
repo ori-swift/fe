@@ -253,3 +253,57 @@
     width: 100%;
   }
 }
+
+/* Add these CSS rules to your existing DocumentsPage.css file */
+
+/* Status column styles */
+.documents-page-status-cell {
+  text-align: center;
+  padding: 5px 8px;
+}
+
+.status-ok {
+  color: #2ecc71;
+  font-weight: 600;
+}
+
+.status-closed {
+  color: #7f8c8d;
+  font-weight: 600;
+}
+
+.status-overdue-orange {
+  color: #e67e22;
+  font-weight: 600;
+}
+
+.status-overdue-red {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+/* Enhance table readability */
+.documents-page-table {
+  width: 100%;
+  border-collapse: collapse;
+  direction: rtl;
+}
+
+.documents-page-table th {
+  text-align: right;
+  padding: 12px 15px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  font-weight: 600;
+}
+
+.documents-page-table-row:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+  cursor: pointer;
+}
+
+/* Responsive table container */
+.documents-page-table-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}

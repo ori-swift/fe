@@ -82,3 +82,42 @@ export async function getDocumentById(documentId) {
         throw error;
     }
 }
+
+export async function updateDocument(docId, { runAlerts = null, playbookId = null }) {
+    try {
+        const payload = {};
+        if (runAlerts !== null) payload.run_alerts = runAlerts;
+        if (playbookId !== null) payload.playbook_id = playbookId;
+
+        const response = await axios.patch(
+            `${SERVER_URL}/document/update/${docId}`,
+            payload,
+            { headers: getAuthHeaders() }
+        );
+        // remove doc from cache
+        localStorage.removeItem(`document_${docId}`)
+        return response.data;
+    } catch (error) {
+        console.error("Error updating document:", error.response?.data || error.message);
+        alert(error.response?.data?.error || "Failed to update document");
+        throw error;
+    }
+}
+
+export async function getDocumentPdfLink(docId) {
+    try {
+        const response = await axios.get(
+            `${SERVER_URL}/document/pdf-link/${docId}`,
+            { headers: getAuthHeaders() }
+        );
+
+        // console.log("PDF link received:", response.data);
+        return response.data;
+    } catch (error) {
+        let errorMsg = "Error fetching PDF link: " + (error.response?.data?.error || error.message);
+        console.error(errorMsg);
+        alert(errorMsg)
+        error.errorMsg = errorMsg;
+        throw error;
+    }
+}

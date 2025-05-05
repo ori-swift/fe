@@ -6,11 +6,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment-timezone';
 import TimezoneSelector from '../TimezoneSelector/TimezoneSelector';
 import { clearLocalStorageExcept } from '../../../utils/helpers';
+import { getPlaybooks } from '../../../api/playbook_api';
 
 const ClientPage = () => {
     const { id } = useParams();
     const { selectedClient, selectedCompany, setSelectedClient } = useContext(AppContext);
-    const [clientData, setClientData] = useState({})
+    const [clientData, setClientData] = useState({});
     const [emails, setEmails] = useState([]);
     const [phones, setPhones] = useState([]);
     const [newEmail, setNewEmail] = useState('');
@@ -23,54 +24,37 @@ const ClientPage = () => {
     const [selectedTimezone, setSelectedTimezone] = useState('');
     const [pendingTimezone, setPendingTimezone] = useState('');
     const [pendingRunAlerts, setPendingRunAlerts] = useState(null);
-    const [timezoneSearch, setTimezoneSearch] = useState('');
+
+    const [playbooks, setPlaybooks] = useState([]);
+
+    useEffect(() => {
+        if (selectedCompany?.id) {
+            getPlaybooks(selectedCompany.id)
+                .then(setPlaybooks)
+                .catch(console.error);
+        }
+    }, [selectedCompany?.id]);
 
     const nav = useNavigate();
-
-    const timezones = moment.tz.names().filter(tz =>
-        ["Asia", "Europe", "America", "Africa"].some(zone => tz.startsWith(zone))
-    );
 
     useEffect(() => {
         if (!selectedCompany) {
             return;
         }
-        if (selectedClient.name) {            
-            setClientData(selectedClient);
-            setEmails(selectedClient.emails || []);
-            
-            // Convert phones to the right format if they're still strings
-            if (selectedClient.phones && selectedClient.phones.length > 0) {
-                if (typeof selectedClient.phones[0] === 'string') {
-                    // Old format - convert strings to objects
-                    setPhones(selectedClient.phones.map(phone => ({ 
-                        number: phone, 
-                        has_whatsapp: false 
-                    })));
-                } else {
-                    // New format - already objects
-                    setPhones(selectedClient.phones || []);
-                }
-            } else {
-                setPhones([]);
-            }
-            
-            setSelectedTimezone(selectedClient.timezone || '');
-            setPendingTimezone(selectedClient.timezone || '');
-            setPendingRunAlerts(selectedClient.run_alerts);
 
-        } else if (id) {
+        // Always fetch fresh client data when component mounts or when returning to it
+        if (id) {
             getClient(id, selectedCompany.id).then((res) => {
-                setClientData(res)
+                setClientData(res);
                 setEmails(res.emails || []);
-                
+
                 // Convert phones to the right format if they're still strings
                 if (res.phones && res.phones.length > 0) {
                     if (typeof res.phones[0] === 'string') {
                         // Old format - convert strings to objects
-                        setPhones(res.phones.map(phone => ({ 
-                            number: phone, 
-                            has_whatsapp: false 
+                        setPhones(res.phones.map(phone => ({
+                            number: phone,
+                            has_whatsapp: false
                         })));
                     } else {
                         // New format - already objects
@@ -79,36 +63,17 @@ const ClientPage = () => {
                 } else {
                     setPhones([]);
                 }
-                
+
                 setSelectedTimezone(res.timezone || '');
-                setSelectedClient(res)
+                setSelectedClient(res);
                 setPendingTimezone(res.timezone || '');
                 setPendingRunAlerts(res.run_alerts);
             });
-
+        } else {
+            nav("/clients");
         }
-        else {
-            nav("/clients")
-        }
-        console.log(clientData);
+    }, [selectedCompany, id]); // Add id as a dependency
 
-    }, [selectedCompany]);
-
-
-    const handleCreateClientPlaybook = async (docType) => {
-
-        clearLocalStorageExcept();
-
-        const res = await createPlaybooksForClient(clientData.id, docType);
-        // const cacheKey = `clients_${selectedCompany.id}`;
-        // localStorage.removeItem(cacheKey);
-
-        // Update the client data with the new playbook
-        const updatedPlaybooks = { ...(clientData.playbooks || {}) };
-        updatedPlaybooks[docType] = res.id;
-        setClientData({ ...clientData, playbooks: updatedPlaybooks });
-    };
-    
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -158,7 +123,7 @@ const ClientPage = () => {
         }
 
         let formattedPhone = newPhone;
-        
+
         // Check if this phone already exists
         if (phones.some(p => p.number === formattedPhone || p.number === `972${formattedPhone.replace(/^0/, '')}`)) {
             setPhoneError('מספר הטלפון כבר קיים');
@@ -181,11 +146,10 @@ const ClientPage = () => {
         }
     };
 
-    // Add a new function to toggle WhatsApp status
     const toggleWhatsApp = (phoneNumber) => {
-        setPhones(phones.map(phone => 
-            phone.number === phoneNumber 
-                ? { ...phone, has_whatsapp: !phone.has_whatsapp } 
+        setPhones(phones.map(phone =>
+            phone.number === phoneNumber
+                ? { ...phone, has_whatsapp: !phone.has_whatsapp }
                 : phone
         ));
     };
@@ -210,6 +174,9 @@ const ClientPage = () => {
 
     if (!clientData) return <div className="client-page-container">לא נבחר לקוח</div>;
 
+    console.log(clientData);
+    console.log(playbooks);
+
 
     return (
         <div className="client-page-container">
@@ -218,58 +185,94 @@ const ClientPage = () => {
                     <h1 className="client-page-title">{clientData.name}</h1>
                     <div className="client-page-id">מס' לקוח: {clientData.id}</div>
 
-                    {/* Playbook Buttons Section */}
-                    <div className="client-page-playbooks">
-                        {clientData.playbooks && Object.keys(clientData.playbooks).length > 0 ? (
-                            <>
-                                {clientData.playbooks.tax_invoice ? (
-                                    <button
-                                        onClick={() => nav("/playbook/" + clientData.playbooks.tax_invoice)}
-                                        className='doc-modal-playbook-btn update-btn'
-                                    >
-                                        עדכן פלייבוק לחשבוניות מס
-                                    </button>
-                                ) : (
-                                    <button
-                                        onClick={() => handleCreateClientPlaybook('tax_invoice')}
-                                        className='doc-modal-playbook-btn create-btn'
-                                    >
-                                        צור פלייבוק לחשבוניות מס
-                                    </button>
-                                )}
+                    <div className="client-page-playbooks-section">
+                        <h3 className="client-page-playbooks-title">פלייבוקים</h3>
 
-                                {clientData.playbooks.proforma ? (
-                                    <button
-                                        onClick={() => nav("/playbook/" + clientData.playbooks.proforma)}
-                                        className='doc-modal-playbook-btn update-btn'
-                                    >
-                                        עדכן פלייבוק לדרישות תשלום
-                                    </button>
-                                ) : (
-                                    <button
-                                        onClick={() => handleCreateClientPlaybook('proforma')}
-                                        className='doc-modal-playbook-btn create-btn'
-                                    >
-                                        צור פלייבוק לדרישות תשלום
-                                    </button>
-                                )}
-                            </>
-                        ) : (
-                            <>
-                                <button
-                                    onClick={() => handleCreateClientPlaybook('tax_invoice')}
-                                    className='doc-modal-playbook-btn create-btn'
-                                >
-                                    צור פלייבוק לחשבוניות מס
-                                </button>
-                                <button
-                                    onClick={() => handleCreateClientPlaybook('proforma')}
-                                    className='doc-modal-playbook-btn create-btn'
-                                >
-                                    צור פלייבוק לדרישות תשלום
-                                </button>
-                            </>
-                        )}
+                        <div className="client-page-playbook-row">
+                            <div className="client-page-playbook-label">חשבונית מס:</div>
+                            <select
+                                className="client-page-playbook-select"
+                                value={clientData.playbook_tax_invoice || ''}
+                                onChange={async (e) => {
+                                    const selectedId = e.target.value;
+                                    try {
+                                        setIsLoading(true);
+                                        await updateClientSettings(clientData.id, {
+                                            tax_invoice_playbook_id: selectedId || null
+                                        });
+                                        setClientData({
+                                            ...clientData,
+                                            playbook_tax_invoice: selectedId ? parseInt(selectedId) : null
+                                        });
+                                        Object.keys(localStorage).forEach((key) => {
+                                            if (key.startsWith("clients_")) {
+                                                localStorage.removeItem(key);
+                                            }
+                                        });
+                                    } catch (err) {
+                                        alert("שגיאה בעדכון פלייבוק לחשבונית מס");
+                                        console.error(err);
+                                    } finally {
+                                        setIsLoading(false);
+                                    }
+                                }}
+                            >
+                                <option value="">בחר פלייבוק</option>
+                                {playbooks?.map((pb) => (
+                                    <option key={pb.id} value={pb.id}>
+                                        {pb.title}
+                                    </option>
+                                ))}
+                            </select>
+                            {clientData.playbook_tax_invoice && !isLoading && (
+                                <div className="client-page-playbook-current">
+                                    נוכחי: {playbooks.find(pb => pb.id === clientData.playbook_tax_invoice)?.title || 'לא ידוע'}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="client-page-playbook-row">
+                            <div className="client-page-playbook-label">חשבונית פרופורמה:</div>
+                            <select
+                                className="client-page-playbook-select"
+                                value={clientData.playbook_proforma || ''}
+                                onChange={async (e) => {
+                                    const selectedId = e.target.value;
+                                    try {
+                                        setIsLoading(true);
+                                        await updateClientSettings(clientData.id, {
+                                            proforma_playbook_id: selectedId || null
+                                        });
+                                        setClientData({
+                                            ...clientData,
+                                            playbook_proforma: selectedId ? parseInt(selectedId) : null
+                                        });
+                                        Object.keys(localStorage).forEach((key) => {
+                                            if (key.startsWith("clients_")) {
+                                                localStorage.removeItem(key);
+                                            }
+                                        });
+                                    } catch (err) {
+                                        alert("שגיאה בעדכון פלייבוק לחשבונית פרופורמה");
+                                        console.error(err);
+                                    } finally {
+                                        setIsLoading(false);
+                                    }
+                                }}
+                            >
+                                <option value="">בחר פלייבוק</option>
+                                {playbooks?.map((pb) => (
+                                    <option key={pb.id} value={pb.id}>
+                                        {pb.title}
+                                    </option>
+                                ))}
+                            </select>
+                            {clientData.playbook_proforma && !isLoading && (
+                                <div className="client-page-playbook-current">
+                                    נוכחי: {playbooks.find(pb => pb.id === clientData.playbook_proforma)?.title || 'לא ידוע'}
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="client-page-switch-row">
@@ -291,7 +294,11 @@ const ClientPage = () => {
                                         try {
                                             await updateClientSettings(clientData.id, { run_alerts: pendingRunAlerts });
                                             setClientData({ ...clientData, run_alerts: pendingRunAlerts });
-                                            localStorage.removeItem(`clients_${selectedCompany.id}`);
+                                            Object.keys(localStorage).forEach((key) => {
+                                                if (key.startsWith("clients_")) {
+                                                    localStorage.removeItem(key);
+                                                }
+                                            });
                                         } catch (e) {
                                             alert("שגיאה בעדכון סטטוס ההתראות");
                                         } finally {
@@ -315,7 +322,11 @@ const ClientPage = () => {
                                 try {
                                     await updateClientSettings(clientData.id, { timezone: pendingTimezone });
                                     setClientData({ ...clientData, timezone: pendingTimezone });
-                                    localStorage.removeItem(`clients_${selectedCompany.id}`);
+                                    Object.keys(localStorage).forEach((key) => {
+                                        if (key.startsWith("clients_")) {
+                                            localStorage.removeItem(key);
+                                        }
+                                    });
                                 } catch {
                                     alert("שגיאה בעדכון אזור הזמן");
                                 } finally {
@@ -324,8 +335,6 @@ const ClientPage = () => {
                             }}
                         />
                     </div>
-
-
                 </div>
                 <div className="client-page-section">
                     <div className="client-page-section-header">
@@ -340,7 +349,7 @@ const ClientPage = () => {
                     </div>
 
                     <div className="client-page-notice">
-                        <p>שים לב:  כתובת ואיש קשר מוצגים כפי שהם שהם מופיעים בספק החשבוניות שלך.</p>
+                        <p>שים לב: כתובת ואיש קשר מוצגים כפי שהם שהם מופיעים בספק החשבוניות שלך.</p>
                         <p>ניתן להגדיר דרכינו (תחת הגדרות הפלייבוק) דרכי התקשרות נוספים</p>
                     </div>
                 </div>
@@ -417,13 +426,12 @@ const ClientPage = () => {
                                         {phone.number}
                                         {phone.has_whatsapp && (
                                             <svg className="whatsapp-icon" viewBox="0 0 448 512" width="16" height="16">
-                                                <path fill="#25D366" d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-7-.2-10.7-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+                                                <path fill="#25D366" d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-7-.2-10.7-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
                                             </svg>
                                         )}
                                     </span>
                                     {phonesEditMode && (
                                         <div className="client-page-phone-actions">
-                                            {/* Add WhatsApp checkbox */}
                                             <label className="client-page-whatsapp-label">
                                                 <input
                                                     type="checkbox"
@@ -503,6 +511,18 @@ const ClientPage = () => {
                         <div className="client-page-stat-label">מסמכים פתוחים:</div>
                         <div className="client-page-stat-value">{clientData.open_docs_count}</div>
                     </div>
+                    {clientData.total_open_amount > 0 && (
+                        <div className="client-page-stat-item">
+                            <div className="client-page-stat-label">סכום פתוח:</div>
+                            <div className="client-page-stat-value">{clientData.total_open_amount} ₪</div>
+                        </div>
+                    )}
+                    {clientData.is_overdue > 0 && (
+                        <div className="client-page-stat-item client-page-stat-overdue">
+                            <div className="client-page-stat-label">באיחור:</div>
+                            <div className="client-page-stat-value">{clientData.is_overdue} ימים</div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
