@@ -27,7 +27,7 @@ function App() {
     const token = localStorage.getItem("sc_token");
     if (token) {
       const userData_ = await checkToken(token)
-      // console.log(userData_);
+      console.log(userData_);
       if (userData_) {
         setUserData(userData_);
         setIsLogged(true);
@@ -44,7 +44,10 @@ function App() {
       if (!res){
         nav("/auth");
       }
-    })   
+    }).catch((e)=>{
+      console.log(e);
+      alert("Error on useEffect")
+    })
   }, [isLogged, nav]);
 
 

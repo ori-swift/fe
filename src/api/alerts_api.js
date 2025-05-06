@@ -110,6 +110,22 @@ export async function updateTemplate(templateId, templateData) {
   }
 }
 
+export async function getCompanyTemplates(companyId) {
+  try {
+    const response = await axios.get(`${SERVER_URL}/alert-templates/?company_id=${companyId}`, {
+      headers: getAuthHeaders(),
+    });
+    console.log(response.data);
+    
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching alert templates:", error.response?.data || error.message);
+    throw error;
+  }
+}
+
+
+
 export async function getTemplateVars() {
   console.log(getAuthHeaders());
 

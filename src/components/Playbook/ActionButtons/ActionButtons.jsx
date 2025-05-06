@@ -22,7 +22,8 @@ const ActionButtons = ({ editMode, saving, playbook, onEdit, onSave, onCancel })
                     </svg>
                     ערוך פרטים
                 </button>
-                {(playbook.document || playbook.client) && (
+                {/* {(playbook.document || playbook.client) && ( */}
+                {true && (
                     <button
                         className="playbook-page-remove-btn"
                         onClick={async () => {

@@ -1,6 +1,8 @@
 /* Base Modal Styling */
 .template-modal-container {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  direction: rtl;
+  text-align: right;
 }
 
 .template-modal-container .modal-content {
@@ -22,17 +24,6 @@
   color: #2c3e50;
 }
 
-.template-modal-header .close {
-  outline: none;
-  color: #6c757d;
-  opacity: 0.8;
-  transition: opacity 0.2s;
-}
-
-.template-modal-header .close:hover {
-  opacity: 1;
-}
-
 /* Body */
 .template-modal-body {
   padding: 20px;
@@ -43,7 +34,7 @@
   text-align: right;
 }
 
-/* Table styling */
+/* Table */
 .template-modal-table {
   border-collapse: separate;
   border-spacing: 0;
@@ -66,9 +57,8 @@
   color: #495057;
 }
 
-/* Form inputs */
-.template-modal-input,
-.template-modal-textarea {
+/* Inputs */
+.template-modal-input {
   display: block;
   width: 100%;
   padding: 8px 12px;
@@ -76,24 +66,18 @@
   line-height: 1.5;
   color: #495057;
   background-color: #fff;
-  background-clip: padding-box;
   border: 1px solid #ced4da;
   border-radius: 4px;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.template-modal-input:focus,
-.template-modal-textarea:focus {
+.template-modal-input:focus {
   border-color: #80bdff;
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-.template-modal-checkbox {
-  margin-right: 0;
-}
-
-/* Content section */
+/* Content Section */
 .template-modal-content-section {
   margin-top: 24px;
 }
@@ -107,22 +91,6 @@
 
 .template-modal-content-container {
   margin-bottom: 15px;
-}
-
-.template-modal-content-box {
-  padding: 15px;
-  border: 1px solid #eaeaea;
-  border-radius: 4px;
-  background-color: #f8f9fa;
-  min-height: 100px;
-  white-space: pre-wrap;
-  font-family: inherit;
-  color: #495057;
-}
-
-.template-modal-textarea {
-  min-height: 120px;
-  resize: vertical;
 }
 
 /* Footer */
@@ -173,134 +141,20 @@
   border-color: #1e7e34;
 }
 
-.template-modal-cancel-btn {
+.template-modal-cancel-btn,
+.template-modal-close-btn {
   color: #6c757d;
   border-color: #6c757d;
 }
 
-.template-modal-cancel-btn:hover {
+.template-modal-cancel-btn:hover,
+.template-modal-close-btn:hover {
   color: #fff;
   background-color: #6c757d;
   border-color: #6c757d;
 }
 
-.template-modal-close-btn {
-  background-color: #6c757d;
-  border-color: #6c757d;
-}
-
-.template-modal-close-btn:hover {
-  background-color: #5a6268;
-  border-color: #545b62;
-}
-
-/* Modal backdrop */
-.modal-backdrop {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-/* Modal animation */
-.modal.fade .modal-dialog {
-  transition: transform 0.3s ease-out;
-}
-
-.modal.show .modal-dialog {
-  transform: none;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .template-modal-label {
-    width: 40%;
-  }
-  
-  .template-modal-footer {
-    flex-wrap: wrap;
-  }
-  
-  .template-modal-footer .btn {
-    margin-bottom: 8px;
-  }
-}
-
-.client-selector-container {
-  position: relative;
-  width: 100%;
-}
-
-.client-selector {
-  width: 100%;
-}
-
-.client-selector-toggle {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  text-align: right;
-  background-color: #fff;
-  border: 1px solid #ced4da;
-}
-
-.selected-client-display {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.client-info-btn {
-  padding: 0;
-  margin-right: 10px;
-  color: #007bff;
-}
-
-.client-selector-menu {
-  max-width: 50%;  
-  max-height: 350px;
-  overflow: hidden;
-  z-index: 1500 !important; /* Higher z-index to ensure it appears above other elements */
-  /* position: absolute !important; */
-  /* position: fixed ; */
-}
-
-.client-dropdown-scroll {
-  max-height: 250px;
-  overflow-y: auto;
-}
-
-.client-search-input {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background-color: #fff;
-}
-
-.client-details-popover {
-  max-width: 300px;
-  z-index: 1200 !important; /* Even higher z-index than the dropdown */
-}
-
-.client-details-actions {
-  margin-top: 15px;
-  text-align: center;
-}
-
-.variable-item {
-  white-space: normal;
-  padding: 8px 12px;
-}
-
-.variable-name {
-  font-weight: bold;
-  color: #007bff;
-}
-
-.variable-description {
-  font-size: 0.85em;
-  color: #555;
-}
-
+/* Error Message */
 .template-modal-error-msg {
   color: red;
   margin-bottom: 10px;
