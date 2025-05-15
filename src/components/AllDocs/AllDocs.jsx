@@ -479,8 +479,8 @@ const AllDocs = () => {
                           );
                         })()}
                       </td>
-                      <td className="doc-amount">{formatCurrency(doc.amount - doc.vat_part)}</td>
                       <td className="doc-amount">{formatCurrency(doc.amount)}</td>
+                      <td className="doc-amount">{formatCurrency(doc.amount * (1+Number(doc.vat_rate)))}</td>
                       <td className="doc-amount">{formatCurrency(doc.amount_opened)}</td>
                     </tr>
                   ))}

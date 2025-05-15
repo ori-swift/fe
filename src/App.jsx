@@ -22,7 +22,7 @@ function App() {
   const [selectedCompany, setSelectedCompany] = useState();
 
   const nav = useNavigate();
-  
+
   const refetchUserDate = async () => {
     const token = localStorage.getItem("sc_token");
     if (token) {
@@ -40,19 +40,19 @@ function App() {
 
   useEffect(() => {
 
-    refetchUserDate().then((res)=>{
-      if (!res){
+    refetchUserDate().then((res) => {
+      if (!res) {
         nav("/auth");
       }
-    }).catch((e)=>{
+    }).catch((e) => {
       console.log(e);
       alert("Error on useEffect")
     })
   }, [isLogged, nav]);
 
 
-  useEffect(() => {      
-    
+  useEffect(() => {
+
     // Check if there's a stored company in localStorage
     const storedCompany = localStorage.getItem('selected_company');
 
@@ -81,7 +81,7 @@ function App() {
       }
     }
     console.log(userData);
-    
+
   }, [userData]);
 
 
@@ -102,16 +102,16 @@ function App() {
         selectedClient, selectedCompany, setSelectedCompany, refetchUserDate
       }}>
         <div>
-        <div style={{backgroundColor: IS_DEV ?  'red': 'green'}}>
-        {SERVER_URL.includes("127.") ? "Dev" : "Stage"}
-      </div>
+          <div style={{ backgroundColor: IS_DEV ? 'red' : 'green', position: 'fixed', width: '100%', height: '8px', fontSize: '8px' }}>
+            {SERVER_URL.includes("127.") ? "Dev" : "Stage"}
+          </div>
           <Header handleLogout={handleLogout} isLogged={isLogged} />
           {(userData && !selectedCompany) ?
             (userData.companies && userData.companies.length > 0 ? <CompanySelectionPage /> : <Settings />)
             :
             <>
-            <Button className='back-btn' onClick={()=>{nav(-1)}}> חזרה </Button>
-            <SiteRoutes />
+              <Button className='back-btn' onClick={() => { nav(-1) }}> חזרה </Button>
+              <SiteRoutes />
             </>
           }
         </div>

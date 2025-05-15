@@ -225,9 +225,22 @@ const ClientPage = () => {
                                 ))}
                             </select>
                             {clientData.playbook_tax_invoice && !isLoading && (
-                                <div className="client-page-playbook-current">
-                                    נוכחי: {playbooks.find(pb => pb.id === clientData.playbook_tax_invoice)?.title || 'לא ידוע'}
-                                </div>
+                               <div className="client-page-playbook-current">
+                               נוכחי:{" "}
+                               {(() => {
+                                 const pb = playbooks.find(pb => pb.id === clientData.playbook_tax_invoice);
+                                 return pb ? (
+                                   <span
+                                     style={{ cursor: "pointer", textDecoration: "underline" }}
+                                     onClick={() => nav(`/playbook/${pb.id}`)}
+                                   >
+                                     {pb.title}
+                                   </span>
+                                 ) : (
+                                   "לא ידוע"
+                                 );
+                               })()}
+                             </div>
                             )}
                         </div>
 
@@ -268,9 +281,20 @@ const ClientPage = () => {
                                 ))}
                             </select>
                             {clientData.playbook_proforma && !isLoading && (
-                                <div className="client-page-playbook-current">
-                                    נוכחי: {playbooks.find(pb => pb.id === clientData.playbook_proforma)?.title || 'לא ידוע'}
-                                </div>
+                               <div className="client-page-playbook-current">
+                               נוכחי:{" "}
+                               {playbooks.find(pb => pb.id === clientData.playbook_proforma) ? (
+                                 <span
+                                   style={{ textDecoration: "underline", cursor: "pointer" }}
+                                   onClick={() => nav(`/playbook/${clientData.playbook_proforma}`)}
+                                 >
+                                   {playbooks.find(pb => pb.id === clientData.playbook_proforma).title}
+                                 </span>
+                               ) : (
+                                 "לא ידוע"
+                               )}
+                             </div>
+                             
                             )}
                         </div>
                     </div>

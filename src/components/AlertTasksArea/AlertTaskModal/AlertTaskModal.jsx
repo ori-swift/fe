@@ -42,17 +42,11 @@ const AlertTaskModal = ({ show, task, onHide }) => {
                 <span>{task.id}</span>
               </div>
               <div className="alert-task-modal-info-item">
-                <span className="alert-task-modal-label">מזהה לקוח:</span>
-                <Link to={`/client-page/${task.client_id}`}>{task.client_id}</Link>
+                <span className="alert-task-modal-label">לקוח:</span>
+                <Link to={`/client-page/${task.client_data?.id}`}>{task.client_data?.name} </Link>
+
               </div>
-              <div className="alert-task-modal-info-item">
-                <span className="alert-task-modal-label">מזהה מסמך:</span>
-                <Link to={`/document/${task.document_id}`}>{task.document_id}</Link>
-              </div>
-              <div className="alert-task-modal-info-item">
-                <span className="alert-task-modal-label">מזהה תבנית:</span>
-                <Link to={`/playbook/${task.playbook_id}`}>{task.playbook_id}</Link>
-              </div>
+             
               <div className="alert-task-modal-info-item">
                 <span className="alert-task-modal-label">סטטוס:</span>
                 <span className={`status-${task.status}`}>
@@ -62,7 +56,7 @@ const AlertTaskModal = ({ show, task, onHide }) => {
               <div className="alert-task-modal-info-item">
                 <span className="alert-task-modal-label">זמן מתוזמן:</span>
                 <span>{formatDate(task.scheduled_time)}</span>
-              </div>
+              </div>              
               <div className="alert-task-modal-info-item">
                 <span className="alert-task-modal-label">נוצר ב:</span>
                 <span>{formatDate(task.created_at)}</span>

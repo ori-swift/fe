@@ -1,13 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import './CompanySelectionPage.css';
 import { AppContext } from '../../App';
 
 const CompanySelectionPage = () => {
   const { userData, selectedCompany, setSelectedCompany } = useContext(AppContext);
-  const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');  
 
   // Filter companies based on search term
   const filteredCompanies = userData?.companies?.filter(company =>
@@ -44,10 +42,6 @@ const CompanySelectionPage = () => {
     localStorage.setItem('selected_company', JSON.stringify(company));
   };
 
-  const handlePlaybookNavigation = (type) => {
-
-    navigate(`/playbook/${selectedCompany.playbooks[type]}`);
-  };
 
   return (
     <div className="select-company-page-container" dir="rtl">
@@ -56,43 +50,7 @@ const CompanySelectionPage = () => {
         <p>בחר אחת מהחברות להצגת הפרטים</p>
       </header>
 
-      {/* Selected Company Section - Displayed First */}
-      {selectedCompany && (
-        <div className="select-company-page-selected-card">
-          <div className="select-company-page-selected-header">
-            <h2>{selectedCompany.company_name}</h2>
-            <div className="select-company-page-selected-badge">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              <span>נבחרה</span>
-            </div>
-          </div>
-          <div className="select-company-page-selected-content">
-            <div className="select-company-page-selected-details">
-              <div className="select-company-page-details-row">
-                <p><strong>שם:</strong> {selectedCompany.company_name}</p>
-                <p><strong>ספק:</strong> {selectedCompany.provider_name}</p>
-                <p><strong>מזהה ספק:</strong> {selectedCompany.provider_id}</p>
-                <p><strong>מזהה:</strong> {selectedCompany.id}</p>
-              </div>
-            </div>
-            <button
-              className="select-company-page-playbook-button"
-              onClick={() => { handlePlaybookNavigation("tax_invoice") }}
-            >
-              הגדרת פלייבוק כללי לחברה לחשבוניות מס
-            </button>
-            <br />
-            <button
-              className="select-company-page-playbook-button"
-              onClick={() => { handlePlaybookNavigation("proforma") }}
-            >
-              הגדרת פלייבוק כללי לחברה לדרישות תשלום
-            </button>
-          </div>
-        </div>
-      )}
+     
 
       <div className="select-company-page-search-container">
         <input

@@ -200,24 +200,7 @@ useEffect(() => {
             </div>
           </div>
         </div>
-
-        <div className="document-page-section document-page-playbook-section">
-          <h2 className="document-page-section-title">פלייבוק</h2>
-
-          {playbook && (
-            <div className="document-page-footer">
-              <button
-                className="document-page-footer-playbook"
-                onClick={() => nav(`/playbook/${playbook.id}`)}
-              >
-                פלייבוק: {playbook.title}
-              </button>
-            </div>
-          )}
-
-
-
-        </div>
+       
       </div>
     </div>
   );

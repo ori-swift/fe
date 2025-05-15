@@ -19,15 +19,17 @@ export default function AlertTasksPage() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const {selectedCompany} = useContext(AppContext)
+  const { selectedCompany } = useContext(AppContext)
   console.log(selectedCompany);
-  
+
   useEffect(() => {
     loadTasks();
   }, [page]);
 
   const loadTasks = async () => {
     const data = await fetchAlertTasks({ ...filters, companyId: selectedCompany.id, page });
+
+
     setTasks(data.results || []);
     setPagination({ next: data.next, previous: data.previous });
   };
@@ -83,7 +85,7 @@ export default function AlertTasksPage() {
           <thead>
             <tr>
               <th>מזהה</th>
-              <th>מזהה לקוח</th>
+              <th> לקוח</th>
               <th>סטטוס</th>
               <th>זמן מתוזמן</th>
             </tr>
@@ -92,9 +94,13 @@ export default function AlertTasksPage() {
             {tasks.map(task => (
               <tr key={task.id} onClick={() => handleRowClick(task)} className="alert-tasks-row">
                 <td>{task.id}</td>
-                <td>{task.client_id}</td>
+                <td>{task.client_data?.name} </td>
                 <td className={`status-${task.status}`}>{statusTranslations[task.status] || task.status}</td>
-                <td>{new Date(task.scheduled_time).toLocaleString('he-IL')}</td>
+                {task.sent_at ?
+                  <td>נשלח ב{new Date(task.sent_at).toLocaleString('he-IL')}</td>
+                  :
+                  <td>{new Date(task.scheduled_time).toLocaleString('he-IL')}</td>
+                }
               </tr>
             ))}
           </tbody>
@@ -121,9 +127,9 @@ export default function AlertTasksPage() {
 
       {selectedTask && (
         <AlertTaskModal
-          show={showModal} 
-          task={selectedTask} 
-          onHide={handleCloseModal} 
+          show={showModal}
+          task={selectedTask}
+          onHide={handleCloseModal}
         />
       )}
     </div>

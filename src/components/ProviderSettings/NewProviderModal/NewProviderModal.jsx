@@ -102,7 +102,7 @@ const NewProviderModal = ({ show, setShow }) => {
         <Modal show={show} onHide={() => handleHide(false)} centered >
             <div className="new-ps-container">
                 <Modal.Header closeButton>
-                    <Modal.Title className="new-ps-title">הוספת ספק חדש</Modal.Title>
+                    <Modal.Title className="new-ps-title">הוספת חברה חדשה</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {success ? (
@@ -181,7 +181,7 @@ const NewProviderModal = ({ show, setShow }) => {
                                             <span className="new-ps-spinner-text">מוסיף...</span>
                                         </>
                                     ) : (
-                                        "הוסף ספק"
+                                        "הוסף חברה"
                                     )}
                                 </Button>
                                 <Button variant="secondary" onClick={() => handleHide(false)} disabled={loading} className="new-ps-cancel-button">
