@@ -7,6 +7,7 @@ import { updateCompanyPlan } from "../../api/company_api";
 const ChoosePlanModal = ({ show, setShow, companyId }) => {
   const [selectedPlanId, setSelectedPlanId] = useState(null);
   const [plans, setPlans] = useState([])
+  const [refreshing, setRefreshing] = useState(false);
   const [cardInfo, setCardInfo] = useState({
     number: "",
     expiry: "",
@@ -18,6 +19,7 @@ const ChoosePlanModal = ({ show, setShow, companyId }) => {
     // fetch plans
     fetchPlans().then(setPlans)
   }, [])
+
   const handleClose = () => {
     setShow(false);
     setSelectedPlanId(null);
@@ -26,9 +28,11 @@ const ChoosePlanModal = ({ show, setShow, companyId }) => {
 
   const handleSubmit = async () => {
     alert("Demo-processing-payment - not fully implemented");
-    
-    try {      
+
+    try {
+      setRefreshing(true)
       await updateCompanyPlan(companyId, selectedPlanId);
+      setRefreshing(false)
       handleClose();
     } catch (error) {
       alert("Error on updating plan. please retry later or contact support")
@@ -136,7 +140,7 @@ const ChoosePlanModal = ({ show, setShow, companyId }) => {
               disabled={!selectedPlanId || !cardInfo.number || !cardInfo.expiry || !cardInfo.cvv}
               className="plan-modal-submit-btn"
             >
-              אשר ובצע תשלום
+              {refreshing ? <span className="spinner"></span> : "אשר ובצע תשלום"}
             </Button>
           </div>
         </Modal.Body>
