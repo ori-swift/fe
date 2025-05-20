@@ -15,11 +15,7 @@ const DocumentsPage = () => {
     const [filterStatus, setFilterStatus] = useState('all');    
     const [openDropdownId, setOpenDropdownId] = useState(null); // Track which row's dropdown is open
     
-    
-    const toggleDropdown = (e, docId) => {
-        e.stopPropagation();
-        setOpenDropdownId((prev) => (prev === docId ? null : docId)); // Toggle specific row
-    };
+   
     const itemsPerPage = 10;
 
     const { selectedClient } = useContext(AppContext);

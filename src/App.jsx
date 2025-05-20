@@ -10,6 +10,7 @@ import Settings from './components/Settings/Settings';
 import { Button } from 'react-bootstrap';
 import { clearLocalStorageExcept } from './utils/helpers';
 import { IS_DEV, SERVER_URL } from './config';
+import GoogleLoginPage from './components/Auth/GoogleAuth/GoogleLoginPage';
 // import { ConfirmationProvider } from './context/ConfirmationContext';
 
 export const AppContext = createContext();
@@ -33,6 +34,8 @@ function App() {
         setIsLogged(true);
 
         return true
+      } else {
+        localStorage.removeItem("sc_token");
       }
     }
     return false;
@@ -94,6 +97,8 @@ function App() {
     localStorage.clear();
     nav("/auth");
   };
+  
+    
 
   return (
     <ConfirmationProvider>
@@ -111,7 +116,12 @@ function App() {
             :
             <>
               <Button className='back-btn' onClick={() => { nav(-1) }}> חזרה </Button>
-              <SiteRoutes />
+              
+              
+              <SiteRoutes />              
+
+
+
             </>
           }
         </div>

@@ -7,6 +7,7 @@ import moment from 'moment-timezone';
 import TimezoneSelector from '../TimezoneSelector/TimezoneSelector';
 import { clearLocalStorageExcept } from '../../../utils/helpers';
 import { getPlaybooks } from '../../../api/playbook_api';
+import ClientDocuments from '../ClientDocuments/ClientDocuments';
 
 const ClientPage = () => {
     const { id } = useParams();
@@ -548,6 +549,8 @@ const ClientPage = () => {
                         </div>
                     )}
                 </div>
+
+                <ClientDocuments clientId={clientData.id} />
             </div>
         </div>
     );

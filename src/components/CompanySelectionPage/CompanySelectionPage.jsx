@@ -5,7 +5,7 @@ import { AppContext } from '../../App';
 
 const CompanySelectionPage = () => {
   const { userData, selectedCompany, setSelectedCompany } = useContext(AppContext);
-  const [searchTerm, setSearchTerm] = useState('');  
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Filter companies based on search term
   const filteredCompanies = userData?.companies?.filter(company =>
@@ -38,10 +38,31 @@ const CompanySelectionPage = () => {
   }, [userData, setSelectedCompany]); // Dependencies: userData and setSelectedCompany
 
   const handleCompanySelect = (company) => {
-    setSelectedCompany(company);    
+    setSelectedCompany(company);
     localStorage.setItem('selected_company', JSON.stringify(company));
   };
 
+  console.log(selectedCompany);
+  /*
+  {
+    "id": 36,
+    "provider_name": "Green Invoice",
+    "provider_id": 1,
+    "company_name": "סאניליד-ח.י",
+    "playbook": 96,
+    "default_alert_template": 42,
+    "language": "he",
+    "email": "ori@swiftcollect.io",
+    "usage": {
+        "year": 2025,
+        "month": 5,
+        "usage_email": 0,
+        "usage_sms": 1,
+        "usage_whatsapp": 1
+    },
+    "cred_json": {}
+}
+  */
 
   return (
     <div className="select-company-page-container" dir="rtl">
@@ -50,7 +71,7 @@ const CompanySelectionPage = () => {
         <p>בחר אחת מהחברות להצגת הפרטים</p>
       </header>
 
-     
+
 
       <div className="select-company-page-search-container">
         <input
@@ -77,7 +98,15 @@ const CompanySelectionPage = () => {
               <div className="select-company-page-card-content">
                 <p><span>ספק:</span> {company.provider_name}</p>
                 <p><span>מזהה:</span> {company.id}</p>
+
+
               </div>
+                <div className="select-company-page-usage">
+                  <h5> שימוש במערכת </h5>
+                  <p><span>מיילים:</span> {company.usage?.usage_email ?? 0}</p>
+                  <p><span>מסרונים:</span> {company.usage?.usage_sms ?? 0}</p>
+                  <p><span>וואטסאפ:</span> {company.usage?.usage_whatsapp ?? 0}</p>
+                </div>
               {selectedCompany?.id === company.id && (
                 <div className="select-company-page-card-selected-indicator">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

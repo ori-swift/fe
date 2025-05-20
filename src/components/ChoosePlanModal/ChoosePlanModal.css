@@ -1,0 +1,167 @@
+/* ChoosePlanModal.css */
+
+.plan-modal-wrapper .modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .plan-modal-container {
+    direction: rtl;
+    font-family: 'Rubik', 'Segoe UI', sans-serif;
+  }
+  
+  .plan-modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eaeaea;
+    padding: 20px 24px;
+  }
+  
+  .plan-modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  
+  .plan-modal-body {
+    padding: 24px;
+  }
+  
+  .plan-modal-plans-row {
+    margin-bottom: 20px;
+  }
+  
+  .plan-modal-plan-col {
+    padding: 8px;
+  }
+  
+  .plan-modal-card {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    height: 100%;
+  }
+  
+  .plan-modal-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  }
+  
+  .plan-modal-card-selected {
+    border-color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.03);
+    box-shadow: 0 6px 15px rgba(13, 110, 253, 0.1);
+  }
+  
+  .plan-modal-card-body {
+    padding: 16px;
+  }
+  
+  .plan-modal-plan-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .plan-modal-radio {
+    margin-left: 10px;
+  }
+  
+  .plan-modal-plan-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  
+  .plan-modal-plan-details {
+    padding-right: 28px;
+  }
+  
+  .plan-modal-feature {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .plan-modal-feature-label {
+    color: #6c757d;
+  }
+  
+  .plan-modal-feature-value {
+    font-weight: 500;
+    color: #2c3e50;
+  }
+  
+  .plan-modal-payment-form {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .plan-modal-payment-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 16px;
+  }
+  
+  .plan-modal-form-group {
+    margin-bottom: 16px;
+  }
+  
+  .plan-modal-form-row {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .plan-modal-form-group-half {
+    flex: 1;
+  }
+  
+  .plan-modal-form-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 6px;
+  }
+  
+  .plan-modal-form-control {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.2s;
+  }
+  
+  .plan-modal-form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  }
+  
+  .plan-modal-footer {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 20px;
+  }
+  
+  .plan-modal-submit-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  
+  .plan-modal-submit-btn:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
+  }
+  
+  .plan-modal-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }

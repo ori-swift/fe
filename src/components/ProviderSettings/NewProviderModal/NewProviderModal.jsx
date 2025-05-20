@@ -1,7 +1,10 @@
+
+
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Spinner, Alert } from "react-bootstrap";
-import { addNewProvider, fetchProviders } from "../../../api/general_be_api";
+import { fetchProviders } from "../../../api/general_be_api";
 import "./NewProviderModal.css"
+import { addNewCompany } from "../../../api/company_api";
 
 const NewProviderModal = ({ show, setShow }) => {
     const [providers, setProviders] = useState({});
@@ -79,7 +82,7 @@ const NewProviderModal = ({ show, setShow }) => {
         setError("");
 
         try {
-            const result = await addNewProvider(selectedProvider, companyName, formData);
+            const result = await addNewCompany(selectedProvider, companyName, formData);
 
 
             if (!result) {
@@ -155,22 +158,7 @@ const NewProviderModal = ({ show, setShow }) => {
                                         />
                                     </Form.Group>
                                 ))}
-
-                            {/* {selectedProvider &&
-                                Object.entries(requiredFields).map(([key]) => (
-                                    <Form.Group key={key} className="new-ps-form-group">
-                                        <Form.Label className="new-ps-label">{key}:</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name={key}
-                                            value={formData[key] || ""}
-                                            onChange={handleChange}
-                                            className="new-ps-input"
-                                            required
-                                        />
-                                    </Form.Group>
-                                ))} */}
-
+                       
                             {error && <div className="new-ps-error">{error}</div>}
 
                             <div className="new-ps-button-container">

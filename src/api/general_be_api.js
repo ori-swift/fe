@@ -12,7 +12,7 @@ export const getAuthHeaders = () => {
 
 export async function refreshProviderData(cred_id) {
 
-    const data = { cred_id: cred_id };
+    const data = { company_id: cred_id };
     const token = localStorage.getItem("sc_token");
 
     try {
@@ -31,51 +31,7 @@ export async function refreshProviderData(cred_id) {
     }
 }
 
-// export async function getAllClients(cred_id) {
-//     const cacheKey = `clients_${cred_id}`;
-//     const cacheTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
-//     // Check cache first
-//     const cachedData = localStorage.getItem(cacheKey);
-//     if (cachedData) {
-//         const parsedData = JSON.parse(cachedData);
-//         const now = new Date().getTime();
-//         if (now - parsedData.timestamp < cacheTime) {
-//             console.log("Using cache for clients");
-
-//             return parsedData.response.data;
-//         }
-//     }
-//     console.log("No cache for clients");
-
-//     // const data = { cred_id: cred_id };
-//     const token = localStorage.getItem("sc_token");
-
-//     try {
-//         const response = await axios.get(`${SERVER_URL}/clients/${cred_id}/`,
-//             // data,
-//             {
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     "Authorization": `Token ${token}`
-//                 }
-//             });
-
-//         // console.log(response.data);
-
-//         // Cache the response
-//         localStorage.setItem(cacheKey, JSON.stringify({
-//             response: response,
-//             timestamp: new Date().getTime()
-//         }));
-
-//         return response.data;
-//     } catch (error) {
-//         console.log(error);
-//         alert("Error fetching clients.")
-//         return false;
-//     }
-// }
 export async function getAllClients(companyId) {
     if (!companyId) {
         console.error("Company ID is required");
@@ -228,25 +184,8 @@ export const fetchProviders = async () => {
 };
 
 
-export async function addNewProvider(providerId, companyName, credJson) {
-    try {
-        const response = await axios.post(`${SERVER_URL}/providers/add`, {
-            provider_id: providerId,  // Send only the ID
-            company_name: companyName,
-            cred_json: credJson // Keep additional data in cred_json
-        }, { headers: getAuthHeaders() });
 
-        console.log("Success:", response.data);
-        return response.data;
-    } catch (error) {
-        // console.error("Error adding user credentials:", error.response?.data || error.message);
-        let errorMsg = "Error adding user credentials:" + error.response?.data?.error;
-        console.error(errorMsg);
-        // alert(errorMsg);
-        error.errorMsg = errorMsg;
-        throw error;
-    }
-}
+
 
 
 export async function updateClientSettings(clientId, data) {
@@ -265,7 +204,7 @@ export async function updateClientSettings(clientId, data) {
             data,
             { headers: getAuthHeaders() }
         );
-        
+
         // purge cache
         Object.keys(localStorage).forEach((key) => {
             if (key.startsWith("clients_")) {
@@ -280,3 +219,29 @@ export async function updateClientSettings(clientId, data) {
         throw error;
     }
 }
+
+export const fetchPlans = async () => {
+    const cacheKey = "plans_cache";
+    const cacheTTL = 24 * 60 * 60 * 1000; // 24 hours
+
+    const cached = JSON.parse(localStorage.getItem(cacheKey));
+    if (cached && Date.now() - cached.timestamp < cacheTTL) {
+        return cached.data;
+    }
+
+    try {
+        const response = await axios.get(`${SERVER_URL}/plans/`, {
+            headers: getAuthHeaders(),
+        });
+        localStorage.setItem(
+            cacheKey,
+            JSON.stringify({ data: response.data, timestamp: Date.now() })
+        );
+        return response.data;
+    } catch (error) {
+        const errorMsg = 'Error fetching plans: ' + String(error) + String(error?.response?.data);
+        alert(errorMsg);
+        throw error;
+    }
+};
+
