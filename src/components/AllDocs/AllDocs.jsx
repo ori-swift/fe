@@ -51,7 +51,7 @@ const AllDocs = () => {
   const [showFilters, setShowFilters] = useState(false);
 
   const navigate = useNavigate();
-  const { selectedCompany } = useContext(AppContext);
+  const { selectedCompany, userData } = useContext(AppContext);
 
   // Filter state - consolidated into a single object
   const [filters, setFilters] = useState({
@@ -120,6 +120,8 @@ const AllDocs = () => {
         apiFilters
       );
 
+      console.log(response);
+      
       setDocuments(response.results);
       
       // Update pagination state with data from the API response
@@ -224,6 +226,12 @@ const AllDocs = () => {
   const viewDocument = (docId) => {
     navigate(`/document/${docId}`);
   };
+
+  if (userData?.user?.onboarding_status === "company_added") {
+    return <h4 style={{textAlign: 'RTL'}}>
+      עליך לעדכן פרטי התחברות לספק החשבוניות שלך לצורך הפעלת מערכת סוויפט
+    </h4>
+  }
 
   return (
     <div className="doc-container" dir="rtl">

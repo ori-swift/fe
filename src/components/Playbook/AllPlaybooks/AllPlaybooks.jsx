@@ -162,7 +162,7 @@ const AllPlaybooks = () => {
               <th>#</th>                                          
               <th>שם</th>                                          
               <th>שלבים</th>
-              <th>התראות</th>              
+              <th>תזכורות</th>              
               <th>נוצר בתאריך</th>
               <th>ימי עבודה</th>
             </tr>

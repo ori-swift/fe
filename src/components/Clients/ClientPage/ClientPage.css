@@ -495,3 +495,126 @@
     justify-content: flex-start;
     margin-top: 20px;
 }
+
+/* Template section styles */
+.client-page-template-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.client-page-template-row:last-child {
+    border-bottom: none;
+}
+
+.client-page-template-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.client-page-template-method {
+    font-weight: 600;
+    color: #333;
+    min-width: 80px;
+}
+
+.client-page-template-name {
+    color: #666;
+    font-size: 14px;
+}
+
+.client-page-override-badge {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.client-page-template-actions {
+    display: flex;
+    align-items: center;
+}
+
+.client-page-template-dropdown {
+    position: relative;
+}
+
+.client-page-dropdown-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.client-page-dropdown-content select {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    min-width: 150px;
+}
+
+.client-page-link-button {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.client-page-link-button:hover {
+    background: #45a049;
+}
+
+.client-page-link-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.client-page-cancel-button {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.2s;
+}
+
+.client-page-cancel-button:hover {
+    background: #da190b;
+}
+
+/* Update existing remove button for consistency */
+.client-page-remove-button {
+    background: #ff9800;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.client-page-remove-button:hover {
+    background: #f57000;
+}
+
+.client-page-remove-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { register, requestEmailCode } from "../../../api/auth_api";
+import GoogleLoginPage from "../GoogleAuth/GoogleLoginPage";
 
 const RegisterPage = ({ goBack }) => {
     const [step, setStep] = useState(1);
@@ -37,7 +38,7 @@ const RegisterPage = ({ goBack }) => {
 
     return (
         <div className="login-container">
-            <h2 className="login-title">הרשמה</h2>
+            <h2 className="login-title">הרשמה</h2>            
             {step === 1 ? (
                 <form className="login-form" onSubmit={handleEmailVerify}>
                     <input
@@ -87,6 +88,7 @@ const RegisterPage = ({ goBack }) => {
                     <p className="login-toggle" onClick={goBack}>חזור</p>
                 </form>
             )}
+            <GoogleLoginPage />
         </div>
     );
 };

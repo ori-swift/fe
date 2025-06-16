@@ -3,15 +3,16 @@ import { AppContext } from '../../../App';
 import "./ClientPage.css";
 import { addContactInfo, createPlaybooksForClient, getClient, updateClientSettings } from '../../../api/general_be_api';
 import { useNavigate, useParams } from 'react-router-dom';
-import moment from 'moment-timezone';
 import TimezoneSelector from '../TimezoneSelector/TimezoneSelector';
 import { clearLocalStorageExcept } from '../../../utils/helpers';
 import { getPlaybooks } from '../../../api/playbook_api';
 import ClientDocuments from '../ClientDocuments/ClientDocuments';
+import { getCompanyTemplates } from '../../../api/alerts_api';
+import { addClientTemplate, removeClientTemplate } from '../../../api/templates_api';
 
 const ClientPage = () => {
     const { id } = useParams();
-    const { selectedClient, selectedCompany, setSelectedClient } = useContext(AppContext);
+    const { selectedClient, selectedCompany, setSelectedClient, userData } = useContext(AppContext);
     const [clientData, setClientData] = useState({});
     const [emails, setEmails] = useState([]);
     const [phones, setPhones] = useState([]);
@@ -25,7 +26,8 @@ const ClientPage = () => {
     const [selectedTimezone, setSelectedTimezone] = useState('');
     const [pendingTimezone, setPendingTimezone] = useState('');
     const [pendingRunAlerts, setPendingRunAlerts] = useState(null);
-
+    const [companyTemplates, setCompanyTemplates] = useState([]);
+    const [showTemplateDropdown, setShowTemplateDropdown] = useState(null); // tracks which method dropdown is open
     const [playbooks, setPlaybooks] = useState([]);
 
     useEffect(() => {
@@ -74,6 +76,14 @@ const ClientPage = () => {
             nav("/clients");
         }
     }, [selectedCompany, id]); // Add id as a dependency
+
+    useEffect(() => {
+        if (selectedCompany?.id) {
+            getCompanyTemplates(selectedCompany.id)
+                .then(setCompanyTemplates)
+                .catch(console.error);
+        }
+    }, [selectedCompany?.id]);
 
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -176,8 +186,100 @@ const ClientPage = () => {
     if (!clientData) return <div className="client-page-container">לא נבחר לקוח</div>;
 
     console.log(clientData);
-    console.log(playbooks);
+    /*
+    {
+    "id": 3851,
+    "name": "יעקב",
+    "provider_ec_id": "1307",
+    "emails": [
+        "ori@swiftcollect.io"
+    ],
+    "phones": [
+        {
+            "number": "972546668390",
+            "has_whatsapp": false
+        }
+    ],
+    "open_docs_count": 3,
+    "contact_person_name": null,
+    "company_id": "test",
+    "run_alerts": false,
+    "timezone": "Asia/Jerusalem",
+    "total_open_amount": 12295.6,
+    "is_overdue": 20,
+    "playbook_proforma": 108,
+    "playbook_tax_invoice": 108,
+    "alert_templates": {
+        "email": {
+            "id": 56,
+            "name": "כללי-email",
+            "is_override": false,
+            "override_id": null
+        },
+        "sms": {
+            "id": 59,
+            "name": "123",
+            "is_override": true,
+            "override_id": 2
+        },
+        "whatsapp": {
+            "id": 58,
+            "name": "כללי-whatsapp",
+            "is_override": false,
+            "override_id": null
+        }
+    }
+}
+    */
+ 
+    const handleAddTemplate = async (method, templateId) => {
+        try {
+            setIsLoading(true);
+            await addClientTemplate(clientData.id, templateId);
+            
+            // Refresh client data to get updated templates
+            const updatedClient = await getClient(id, selectedCompany.id);
+            setClientData(updatedClient);
+            setSelectedClient(updatedClient);
+            setShowTemplateDropdown(null);
+        } catch (error) {
+            console.error('Error adding template override:', error);
+            alert('שגיאה בהוספת תבנית');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    const handleRemoveTemplate = async (method) => {
+        try {
+            setIsLoading(true);
+            
+            // Get the override_id from the template data
+            const overrideId = clientData.alert_templates[method].override_id;
+            
+            if (!overrideId) {
+                alert('שגיאה: לא נמצא מזהה ההתאמה');
+                return;
+            }
+            
+            await removeClientTemplate(overrideId);
+            
+            // Refresh client data
+            const updatedClient = await getClient(id, selectedCompany.id);
+            setClientData(updatedClient);
+            setSelectedClient(updatedClient);
+        } catch (error) {
+            console.error('Error removing template override:', error);
+            alert('שגיאה בהסרת תבנית');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
+    if (userData?.user?.onboarding_status === "company_added") {
+        return <h4 style={{textAlign: 'RTL'}}>
+          עליך לעדכן פרטי התחברות לספק החשבוניות שלך לצורך הפעלת מערכת סוויפט
+        </h4>
+      }
 
     return (
         <div className="client-page-container">
@@ -299,7 +401,74 @@ const ClientPage = () => {
                             )}
                         </div>
                     </div>
-
+                    <div className="client-page-section">
+    <div className="client-page-section-header">
+        <h2>תבניות תזכורות</h2>
+    </div>
+    
+    {clientData.alert_templates && Object.entries(clientData.alert_templates).map(([method, template]) => (
+        <div key={method} className="client-page-template-row">
+            <div className="client-page-template-info">
+                <span className="client-page-template-method">
+                    {method === 'email' ? 'אימייל' : method === 'sms' ? 'SMS' : 'WhatsApp'}:
+                </span>
+                <span className="client-page-template-name">{template.name}</span>
+                {template.is_override && <span className="client-page-override-badge">מותאם אישית</span>}
+            </div>
+            
+            <div className="client-page-template-actions">
+                {template.is_override ? (
+                    <button
+                        className="client-page-remove-button"
+                        onClick={() => handleRemoveTemplate(method)}
+                        disabled={isLoading}
+                    >
+                        הסר התאמה
+                    </button>
+                ) : (
+                    <div className="client-page-template-dropdown">
+                        {showTemplateDropdown === method ? (
+                            <div className="client-page-dropdown-content">
+                                <select
+                                    onChange={(e) => {
+                                        if (e.target.value) {
+                                            handleAddTemplate(method, parseInt(e.target.value));
+                                        }
+                                    }}
+                                    defaultValue=""
+                                >
+                                    <option value="">בחר תבנית</option>
+                                    {companyTemplates
+                                        .filter(t => t.method === method)
+                                        .map(t => (
+                                            <option key={t.id} value={t.id}>
+                                                {t.name}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                                <button
+                                    className="client-page-cancel-button"
+                                    onClick={() => setShowTemplateDropdown(null)}
+                                >
+                                    ביטול
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                className="client-page-link-button"
+                                onClick={() => setShowTemplateDropdown(method)}
+                                disabled={isLoading}
+                            >
+                                קשר תבנית
+                            </button>
+                        )}
+                    </div>
+                )}
+            </div>
+        </div>
+    ))}
+</div>
                     <div className="client-page-switch-row">
                         <label className="client-page-switch-label">
                             {pendingRunAlerts ? "התראות פעילות" : "התראות כבויות"}
@@ -524,6 +693,7 @@ const ClientPage = () => {
                     </div>
                 )}
 
+                
                 <div className="client-page-stats">
                     <div
                         className={`client-page-stat-item ${parseInt(clientData.open_docs_count) > 0 ? "clickable-stat" : ""}`}

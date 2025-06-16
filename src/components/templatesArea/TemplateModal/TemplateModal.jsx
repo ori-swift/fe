@@ -12,7 +12,7 @@ const TemplateModal = ({ show, onHide, template }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const { confirmAction } = useConfirmation();
-  const { refetchUserDate } = useContext(AppContext);
+  const { refetchUserData } = useContext(AppContext);
 
   useEffect(() => {
     if (template) {
@@ -51,7 +51,7 @@ const TemplateModal = ({ show, onHide, template }) => {
     setIsSaving(true);
     try {
       await updateTemplate(template.id, editedTemplate);
-      await refetchUserDate();
+      await refetchUserData();
       setEditMode(false);
       onHide();
     } catch (error) {
@@ -71,7 +71,7 @@ const TemplateModal = ({ show, onHide, template }) => {
       async () => {
         try {
           await deleteTemplate(template.id);
-          await refetchUserDate();
+          await refetchUserData();
           handleCancelEdit(true);
         } catch (error) {
           setErrorMessage("אירעה שגיאה במחיקת התבנית");
@@ -98,7 +98,7 @@ const TemplateModal = ({ show, onHide, template }) => {
       className="template-modal-container"
     >
       <Modal.Header closeButton>
-        <Modal.Title>עריכת תבנית</Modal.Title>
+        <Modal.Title>עריכת תבנית  {template.method}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Table>
@@ -116,7 +116,7 @@ const TemplateModal = ({ show, onHide, template }) => {
                 )}
               </td>
             </tr>
-            <tr>
+            {template.method === "email" && <tr>
               <td>נושא (לאימייל)</td>
               <td>
                 {editMode ? (
@@ -128,7 +128,7 @@ const TemplateModal = ({ show, onHide, template }) => {
                   editedTemplate.subject || '—'
                 )}
               </td>
-            </tr>
+            </tr>}
           </tbody>
         </Table>
 
@@ -180,7 +180,7 @@ export default TemplateModal;
 //   const [isSaving, setIsSaving] = useState(false);
 //   const [errorMessage, setErrorMessage] = useState('');
 //   const { confirmAction } = useConfirmation();
-//   const { refetchUserDate, selectedCompany } = useContext(AppContext);
+//   const { refetchUserData, selectedCompany } = useContext(AppContext);
 
 //   // Initialize edited template when the modal is shown or template changes
 //   useEffect(() => {
@@ -250,7 +250,7 @@ export default TemplateModal;
 //       }
 
 //       await updateTemplate(template.id, payload);
-//       await refetchUserDate(); // Make sure this completes before continuing
+//       await refetchUserData(); // Make sure this completes before continuing
 //       setEditMode(false);
 //       onHide();
 //     } catch (error) {
@@ -272,7 +272,7 @@ export default TemplateModal;
 //       async () => {
 //         try {
 //           await deleteTemplate(template.id);
-//           await refetchUserDate(); // Make sure this completes before continuing
+//           await refetchUserData(); // Make sure this completes before continuing
 //           handleCancelEdit(true);
 //         } catch (error) {
 //           console.error("שגיאה במחיקת התבנית:", error);

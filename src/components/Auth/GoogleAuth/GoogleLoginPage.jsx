@@ -15,7 +15,7 @@ const GoogleLoginPage = () => {
 
   useEffect(() => {
     if (isLogged) {
-      alert("Already logged")
+      // alert("Already logged")
       nav("/home");
     }
   }, []);
@@ -23,7 +23,7 @@ const GoogleLoginPage = () => {
   const onSuccess = async (response) => {
     console.log("Login Success at FE side:", response);
 
-    const data = await getTokenByProviderCredential(
+    const token = await getTokenByProviderCredential(
       response.credential,
       "google"
     );
@@ -37,8 +37,8 @@ const GoogleLoginPage = () => {
     }
     */
 
-    if (data.token) {
-      alert("Successfully logged-in");
+    if (token) {
+      // alert("Successfully logged-in");
       window.location = window.location; // reload app, now with token on localstorage
     }
   };

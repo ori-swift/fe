@@ -10,7 +10,7 @@ export default function AlertTasksPage() {
   const [filters, setFilters] = useState({
     clientId: "",
     documentId: "",
-    status: "",
+    status: "pending",
     startDate: "",
     endDate: "",
   });
@@ -19,7 +19,7 @@ export default function AlertTasksPage() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const { selectedCompany } = useContext(AppContext)
+  const { selectedCompany, userData } = useContext(AppContext)
   console.log(selectedCompany);
 
   useEffect(() => {
@@ -62,76 +62,84 @@ export default function AlertTasksPage() {
     "failed": "נכשל"
   };
 
-  return (
-    <div className="alert-tasks-container">
-      <h2 className="alert-tasks-title">משימות התראה</h2>
-      <form className="alert-tasks-filter" onSubmit={handleFilter}>
-        <input type="number" name="clientId" placeholder="מזהה לקוח" value={filters.clientId} onChange={handleChange} />
-        <input type="number" name="documentId" placeholder="מזהה מסמך" value={filters.documentId} onChange={handleChange} />
-        <select name="status" value={filters.status} onChange={handleChange}>
-          <option value="">בחר סטטוס</option>
-          <option value="pending">ממתין</option>
-          <option value="in_progress">בתהליך</option>
-          <option value="completed">הושלם</option>
-          <option value="failed">נכשל</option>
-        </select>
-        <input type="date" name="startDate" value={filters.startDate} onChange={handleChange} placeholder="תאריך התחלה" />
-        <input type="date" name="endDate" value={filters.endDate} onChange={handleChange} placeholder="תאריך סיום" />
-        <button type="submit" className="alert-tasks-button">סנן</button>
-      </form>
+  if (userData?.user?.onboarding_status === "company_added") {
+    return <h4 style={{textAlign: 'RTL'}}>
+      עליך לעדכן פרטי התחברות לספק החשבוניות שלך לצורך הפעלת מערכת סוויפט
+    </h4>
+  }
 
-      <div className="alert-tasks-table-container">
-        <table className="alert-tasks-table">
-          <thead>
-            <tr>
-              <th>מזהה</th>
-              <th> לקוח</th>
-              <th>סטטוס</th>
-              <th>זמן מתוזמן</th>
+
+
+return (
+  <div className="alert-tasks-container">
+    <h2 className="alert-tasks-title">משימות התראה</h2>
+    <form className="alert-tasks-filter" onSubmit={handleFilter}>
+      <input type="number" name="clientId" placeholder="מזהה לקוח" value={filters.clientId} onChange={handleChange} />
+      <input type="number" name="documentId" placeholder="מזהה מסמך" value={filters.documentId} onChange={handleChange} />
+      <select name="status" value={filters.status} onChange={handleChange}>
+        <option value="">בחר סטטוס</option>
+        <option value="pending">ממתין</option>
+        <option value="in_progress">בתהליך</option>
+        <option value="completed">הושלם</option>
+        <option value="failed">נכשל</option>
+      </select>
+      <input type="date" name="startDate" value={filters.startDate} onChange={handleChange} placeholder="תאריך התחלה" />
+      <input type="date" name="endDate" value={filters.endDate} onChange={handleChange} placeholder="תאריך סיום" />
+      <button type="submit" className="alert-tasks-button">סנן</button>
+    </form>
+
+    <div className="alert-tasks-table-container">
+      <table className="alert-tasks-table">
+        <thead>
+          <tr>
+            <th>מזהה</th>
+            <th> לקוח</th>
+            <th>סטטוס</th>
+            <th>זמן מתוזמן</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map(task => (
+            <tr key={task.id} onClick={() => handleRowClick(task)} className="alert-tasks-row">
+              <td>{task.id}</td>
+              <td>{task.client_data?.name} </td>
+              <td className={`status-${task.status}`}>{statusTranslations[task.status] || task.status}</td>
+              {task.sent_at ?
+                <td>נשלח ב{new Date(task.sent_at).toLocaleString('he-IL')}</td>
+                :
+                <td>{new Date(task.scheduled_time).toLocaleString('he-IL')}</td>
+              }
             </tr>
-          </thead>
-          <tbody>
-            {tasks.map(task => (
-              <tr key={task.id} onClick={() => handleRowClick(task)} className="alert-tasks-row">
-                <td>{task.id}</td>
-                <td>{task.client_data?.name} </td>
-                <td className={`status-${task.status}`}>{statusTranslations[task.status] || task.status}</td>
-                {task.sent_at ?
-                  <td>נשלח ב{new Date(task.sent_at).toLocaleString('he-IL')}</td>
-                  :
-                  <td>{new Date(task.scheduled_time).toLocaleString('he-IL')}</td>
-                }
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="alert-tasks-pagination">
-        <button
-          className="alert-tasks-button"
-          disabled={!pagination.previous}
-          onClick={() => setPage(prev => Math.max(prev - 1, 1))}
-        >
-          הקודם
-        </button>
-        <span className="alert-tasks-page-number">עמוד {page}</span>
-        <button
-          className="alert-tasks-button"
-          disabled={!pagination.next}
-          onClick={() => setPage(prev => prev + 1)}
-        >
-          הבא
-        </button>
-      </div>
-
-      {selectedTask && (
-        <AlertTaskModal
-          show={showModal}
-          task={selectedTask}
-          onHide={handleCloseModal}
-        />
-      )}
+          ))}
+        </tbody>
+      </table>
     </div>
-  );
+
+    <div className="alert-tasks-pagination">
+      <button
+        className="alert-tasks-button"
+        disabled={!pagination.previous}
+        onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+      >
+        הקודם
+      </button>
+      <span className="alert-tasks-page-number">עמוד {page}</span>
+      <button
+        className="alert-tasks-button"
+        disabled={!pagination.next}
+        onClick={() => setPage(prev => prev + 1)}
+      >
+        הבא
+      </button>
+    </div>
+
+    {selectedTask && (
+      <AlertTaskModal
+        show={showModal}
+        task={selectedTask}
+        onHide={handleCloseModal}
+      />
+    )}
+  </div>
+);
 }

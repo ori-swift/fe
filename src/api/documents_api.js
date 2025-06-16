@@ -1,9 +1,10 @@
 import axios from "axios";
 import { SERVER_URL } from "../config";
 import { getAuthHeaders } from "./general_be_api";
+import { scPrivateCall } from "./api_client";
 
 // helper to clean empty filter params
-const cleanParams = (params) => {
+const cleanParams = (params) => {    
     const cleaned = {};
     Object.entries(params).forEach(([key, value]) => {
         if (value !== '' && value !== null && value !== undefined) {
@@ -21,6 +22,8 @@ export async function fetchDocumentsByCompany(companyId, page = 1, pageSize = 10
             page_size: pageSize,
             ...filters,
         });
+        
+        return await scPrivateCall(`documents?${new URLSearchParams(params).toString()}`)
 
         const response = await axios.get(`${SERVER_URL}/documents`, {
             headers: getAuthHeaders(),
@@ -37,6 +40,9 @@ export async function fetchDocumentsByCompany(companyId, page = 1, pageSize = 10
 export async function fetchDocumentsByClient(clientId) {
     try {
         const params = cleanParams({ client_id: clientId });
+        const paramString = new URLSearchParams(params).toString()
+        const res = await scPrivateCall(`documents?${paramString}`)
+        return res.results || []
 
         const response = await axios.get(`${SERVER_URL}/documents`, {
             headers: getAuthHeaders(),
@@ -45,8 +51,7 @@ export async function fetchDocumentsByClient(clientId) {
 
         return response.data.results || [];
     } catch (error) {
-        console.error("Error fetching documents:", error);
-        alert("Error fetching documents of client");
+        // maybe pagination error should be treated here        
         throw error;
     }
 }
@@ -63,6 +68,8 @@ export async function getDocumentById(documentId) {
         localStorage.removeItem(cacheKey);
     }
 
+    
+    return await scPrivateCall(`documents?${new URLSearchParams({ document_id: documentId }).toString()}`)
     try {
         const response = await axios.get(`${SERVER_URL}/documents`, {
             headers: getAuthHeaders(),
@@ -89,11 +96,13 @@ export async function updateDocument(docId, { runAlerts = null, playbookId = nul
         if (runAlerts !== null) payload.run_alerts = runAlerts;
         if (playbookId !== null) payload.playbook_id = playbookId;
 
-        const response = await axios.patch(
-            `${SERVER_URL}/document/update/${docId}`,
-            payload,
-            { headers: getAuthHeaders() }
-        );
+        
+        const response = await scPrivateCall(`document/update/${docId}`, 'PATCH', payload)
+        // const response = await axios.patch(
+        //     `${SERVER_URL}/document/update/${docId}`,
+        //     payload,
+        //     { headers: getAuthHeaders() }
+        // );
         // remove doc from cache
         localStorage.removeItem(`document_${docId}`)
         return response.data;
@@ -105,6 +114,7 @@ export async function updateDocument(docId, { runAlerts = null, playbookId = nul
 }
 
 export async function getDocumentPdfLink(docId) {
+    return await scPrivateCall(`document/pdf-link/${docId}`)
     try {
         const response = await axios.get(
             `${SERVER_URL}/document/pdf-link/${docId}`,

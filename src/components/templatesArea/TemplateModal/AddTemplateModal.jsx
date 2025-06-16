@@ -6,8 +6,13 @@ import { AppContext } from '../../../App';
 import SmartTemplateEditor from '../SmartTemplateEditor/SmartTemplateEditor';
 
 const AddTemplateModal = ({ show, onHide }) => {
-  const { selectedCompany, refetchUserDate } = useContext(AppContext);
-  const [newTemplate, setNewTemplate] = useState({ name: '', subject: '', template_content: '' });
+  const { selectedCompany, refetchUserData } = useContext(AppContext);
+  const [newTemplate, setNewTemplate] = useState({
+    name: '',
+    subject: '',
+    template_content: '',
+    method: '',
+  });
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -17,6 +22,10 @@ const AddTemplateModal = ({ show, onHide }) => {
   };
 
   const validate = () => {
+    if (!newTemplate.method.trim()) {
+      setErrorMessage('סוג ההתראה הינו שדה חובה');
+      return false;
+    }
     if (!newTemplate.name.trim()) {
       setErrorMessage('שם התבנית הינו שדה חובה');
       return false;
@@ -34,7 +43,7 @@ const AddTemplateModal = ({ show, onHide }) => {
     setIsSaving(true);
     try {
       await addTemplate({ ...newTemplate, company: selectedCompany.id });
-      await refetchUserDate();
+      await refetchUserData();
       onHide();
     } catch (error) {
       let errMsg = 'אירעה שגיאה בשמירת התבנית';
@@ -72,6 +81,20 @@ const AddTemplateModal = ({ show, onHide }) => {
               </td>
             </tr>
             <tr>
+              <td>סוג התראה</td>
+              <td>
+                <Form.Select
+                  value={newTemplate.method}
+                  onChange={(e) => handleInputChange('method', e.target.value)}
+                >
+                  <option value="">בחר סוג</option>
+                  <option value="sms">SMS</option>
+                  <option value="email">Email</option>
+                  <option value="whatsapp">WhatsApp</option>
+                </Form.Select>
+              </td>
+            </tr>
+            {newTemplate.method === 'email' && <tr>
               <td>נושא (לאימייל)</td>
               <td>
                 <Form.Control
@@ -79,7 +102,7 @@ const AddTemplateModal = ({ show, onHide }) => {
                   onChange={(e) => handleInputChange('subject', e.target.value)}
                 />
               </td>
-            </tr>
+            </tr>}
           </tbody>
         </Table>
 

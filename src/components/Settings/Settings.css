@@ -1,48 +1,265 @@
-.settings-container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .settings-header {
-    /* display: flex; */
-    text-align: right;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .settings-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .settings-add-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .settings-add-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .settings-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
+/* Settings.css */
 
-  
+.settings-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  direction: rtl;
+  text-align: right;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.settings-header {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.settings-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.settings-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 24px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+}
+
+.settings-header hr {
+  border: none;
+  height: 2px;
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+  margin: 24px 0;
+  border-radius: 1px;
+}
+
+.settings-add-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(72, 187, 120, 0.3);
+  position: relative;
+  overflow: hidden;
+  min-width: 180px;
+  margin-bottom: 24px;
+}
+
+.settings-add-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.settings-add-button:hover::before {
+  left: 100%;
+}
+
+.settings-add-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(72, 187, 120, 0.4);
+  background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+}
+
+.settings-add-button:active {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(72, 187, 120, 0.3);
+}
+
+.settings-list {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+}
+
+.settings-provider-card {
+  background: white;
+  border-radius: 20px;
+  padding: 0;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.settings-provider-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.settings-provider-card:hover::before {
+  transform: scaleX(1);
+}
+
+.settings-provider-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+  border-color: rgba(102, 126, 234, 0.2);
+}
+
+.settings-provider-name {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2d3748;
+  padding: 24px 32px 0 32px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.settings-provider-name::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  right: 32px;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
+}
+
+/* Override ProviderSettings wrapper in this context */
+.settings-provider-card .provider-settings-wrapper {
+  margin: 0;
+  max-width: none;
+  padding: 0 32px 32px 32px;
+}
+
+.settings-provider-card .provider-settings-show-button {
+  margin-bottom: 0;
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.25);
+}
+
+.settings-provider-card .provider-settings-show-button:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35);
+}
+
+.settings-provider-card .provider-settings-container {
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  padding: 24px 0 0 0;
+  background: transparent;
+  margin-top: 16px;
+}
+
+.settings-provider-card .provider-settings-title {
+  display: none;
+}
+
+/* Loading state */
+.settings-container p {
+  text-align: center;
+  font-size: 18px;
+  color: #4a5568;
+  margin-top: 120px;
+  font-weight: 500;
+}
+
+/* Animation for cards appearing */
+.settings-provider-card {
+  animation: slideInCard 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.settings-provider-card:nth-child(1) { animation-delay: 0.1s; }
+.settings-provider-card:nth-child(2) { animation-delay: 0.2s; }
+.settings-provider-card:nth-child(3) { animation-delay: 0.3s; }
+.settings-provider-card:nth-child(4) { animation-delay: 0.4s; }
+.settings-provider-card:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes slideInCard {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hover effect for the entire card */
+.settings-provider-card {
+  cursor: pointer;
+}
+
+.settings-provider-card:hover .settings-provider-name {
+  color: #667eea;
+}
+
+/* Enhanced focus states */
+.settings-add-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.2), 0 8px 24px rgba(72, 187, 120, 0.3);
+}
+
+/* Subtle gradient background for the whole page */
+.settings-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(102, 126, 234, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Empty state styling */
+.settings-list:empty::before {
+  content: 'אין חברות רשומות עדיין';
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  color: #718096;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 16px;
+  border: 2px dashed #e2e8f0;
+  margin-top: 20px;
+}

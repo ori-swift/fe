@@ -13,6 +13,9 @@ import AllDocs from "./components/AllDocs/AllDocs";
 import TemplatesPage from "./components/templatesArea/TemplatesPage/TemplatesPage";
 import AllPlaybooks from "./components/Playbook/AllPlaybooks/AllPlaybooks";
 import AlertTasksPage from "./components/AlertTasksArea/AlertTasksPage/AlertTasksPage";
+import PostPaymentFailed from "./components/PostPayment/PostPaymentFailed";
+import PostPaymentSuccess from "./components/PostPayment/PostPaymentSuccess";
+import OnBoarding from "./components/OnBoarding/OnBoarding";
 
 
 
@@ -36,6 +39,9 @@ function SiteRoutes() {
       <Route path="/templates" element={<TemplatesPage />} />
       <Route path="/all-playbooks" element={<AllPlaybooks />} />
       <Route path="/alert-tasks" element={<AlertTasksPage />} />
+      <Route path="/payment-success" element={<PostPaymentSuccess />} />
+      <Route path="/payment-failed" element={<PostPaymentFailed />} />
+      <Route path="/onboarding" element={<OnBoarding />} />
 
     </Routes>
   );

@@ -42,28 +42,10 @@ const CompanySelectionPage = () => {
     localStorage.setItem('selected_company', JSON.stringify(company));
   };
 
-  console.log(selectedCompany);
-  /*
-  {
-    "id": 36,
-    "provider_name": "Green Invoice",
-    "provider_id": 1,
-    "company_name": "סאניליד-ח.י",
-    "playbook": 96,
-    "default_alert_template": 42,
-    "language": "he",
-    "email": "ori@swiftcollect.io",
-    "usage": {
-        "year": 2025,
-        "month": 5,
-        "usage_email": 0,
-        "usage_sms": 1,
-        "usage_whatsapp": 1
-    },
-    "cred_json": {}
-}
-  */
-
+  // console.log(selectedCompany);
+  // console.log(getPlanById(selectedCompany?.plan));
+  
+  
   return (
     <div className="select-company-page-container" dir="rtl">
       <header className="select-company-page-header">
@@ -95,6 +77,8 @@ const CompanySelectionPage = () => {
               <div className="select-company-page-card-header">
                 <h2>{company.company_name}</h2>
               </div>
+              <div> {company.relation} </div>
+              <div> תוכנית: {company.plan.name} </div>
               <div className="select-company-page-card-content">
                 <p><span>ספק:</span> {company.provider_name}</p>
                 <p><span>מזהה:</span> {company.id}</p>

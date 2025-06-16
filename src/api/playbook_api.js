@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getAuthHeaders } from "./general_be_api";
 import { SERVER_URL } from "../config";
+import { scPrivateCall } from "./api_client";
 
 
 function removePlaybookCache() {
@@ -13,7 +14,9 @@ function removePlaybookCache() {
 
 
 export async function addNewPlaybook(data) {
-    try {
+    return await scPrivateCall("playbooks/", 'POST', data)
+
+    try {        
         console.log(data);
         
         const response = await axios.post(
@@ -35,35 +38,36 @@ export async function addNewPlaybook(data) {
     }
 }
 export async function getPlaybook(playbookId) {
+    return await scPrivateCall(`playbooks/${playbookId}/`)
+    
     try {
         // Get company ID from localStorage
-        const selectedCompanyStr = localStorage.getItem("selected_company");
-        if (!selectedCompanyStr) {
-            throw new Error("No selected company found in localStorage");
-        }
+        // const selectedCompanyStr = localStorage.getItem("selected_company");
+        // if (!selectedCompanyStr) {
+        //     throw new Error("No selected company found in localStorage");
+        // }
         
-        const selectedCompany = JSON.parse(selectedCompanyStr);
-        const companyId = selectedCompany.id;
+        // const selectedCompany = JSON.parse(selectedCompanyStr);
+        // const companyId = selectedCompany.id;
         
-        // Check if we have a cache for this company's playbooks
-        const cacheKey = `playbooks_${companyId}`;
-        const cachedPlaybooks = localStorage.getItem(cacheKey);
+        // // Check if we have a cache for this company's playbooks
+        // const cacheKey = `playbooks_${companyId}`;
+        // const cachedPlaybooks = localStorage.getItem(cacheKey);
         
-        if (cachedPlaybooks) {
-            try {
-                const playbooks = JSON.parse(cachedPlaybooks);
-                const playbook = playbooks.find(p => p.id === playbookId);
+        // if (cachedPlaybooks) {
+        //     try {
+        //         const playbooks = JSON.parse(cachedPlaybooks);
+        //         const playbook = playbooks.find(p => p.id === playbookId);
                 
-                if (playbook) {
-                    return playbook; // Return the cached playbook if found
-                }
-                // If not found in cache, we'll continue to the API call
-            } catch (e) {
-                localStorage.removeItem(cacheKey); // corrupt cache
-            }
-        }
-        
-        // Fallback to original implementation if not found in cache
+        //         if (playbook) {
+        //             return playbook; // Return the cached playbook if found
+        //         }
+        //         // If not found in cache, we'll continue to the API call
+        //     } catch (e) {
+        //         localStorage.removeItem(cacheKey); // corrupt cache
+        //     }
+        // }
+                
         const response = await axios.get(`${SERVER_URL}/playbooks/${playbookId}/`, {
             headers: getAuthHeaders()
         });
@@ -76,26 +80,27 @@ export async function getPlaybook(playbookId) {
 }
 
 export async function getPlaybooks(companyId) {
-    const cacheKey = `playbooks_${companyId}`;
-    const cached = localStorage.getItem(cacheKey);
+    // const cacheKey = `playbooks_${companyId}`;
+    // const cached = localStorage.getItem(cacheKey);
 
-    if (cached) {
-        try {                        
-            return JSON.parse(cached);
-        } catch (e) {
-            localStorage.removeItem(cacheKey); // corrupt cache
-        }
-    }
+    // if (cached) {
+    //     try {                        
+    //         return JSON.parse(cached);
+    //     } catch (e) {
+    //         localStorage.removeItem(cacheKey); // corrupt cache
+    //     }
+    // }
 
     try {
         const queryParams = new URLSearchParams();
         queryParams.append('company', companyId);
 
+        return await scPrivateCall(`playbooks/?${queryParams}`)
         const response = await axios.get(`${SERVER_URL}/playbooks/?${queryParams}`, {
             headers: getAuthHeaders()
         });
 
-        localStorage.setItem(cacheKey, JSON.stringify(response.data));
+        // localStorage.setItem(cacheKey, JSON.stringify(response.data));
         return response.data;
     } catch (error) {
         console.error("Error fetching playbooks:", error);
@@ -106,7 +111,9 @@ export async function getPlaybooks(companyId) {
 
 export async function updatePlaybook(playbookId, data) {
 
+    return await scPrivateCall(`playbooks/${playbookId}/`, 'PATCH', data)
     try {
+        
         const response = await axios.patch(
             `${SERVER_URL}/playbooks/${playbookId}/`,
             data,
@@ -123,9 +130,14 @@ export async function updatePlaybook(playbookId, data) {
 }
 
 export async function deletePlaybook(playbookId) {
+    await scPrivateCall(
+        `playbooks/${playbookId}/`,
+        "DELETE"
+    );    
+
     try {
         // Consider adding confirmation logic here
-
+        
         const response = await axios.delete(
             `${SERVER_URL}/playbooks/${playbookId}/`,
             { headers: getAuthHeaders() }
@@ -158,6 +170,7 @@ export async function deletePlaybook(playbookId) {
 }
 
 export async function createPlaybook(data) {
+    return await scPrivateCall("playbooks/", "POST", data)
     try {
         const response = await axios.post(
             `${SERVER_URL}/playbooks/`,

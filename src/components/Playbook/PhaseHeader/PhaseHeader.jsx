@@ -3,7 +3,7 @@ const PhaseHeader = ({ phaseIdx, editMode, removePhase }) => {
         <div className="playbook-page-phase-header">
             <div className="playbook-page-phase-title-container">
                 <div className="playbook-page-phase-badge">{phaseIdx + 1}</div>
-                <h3 className="playbook-page-phase-title">תקופת התראות {phaseIdx + 1}</h3>
+                <h3 className="playbook-page-phase-title">תקופת תזכורות {phaseIdx + 1}</h3>
             </div>
             {editMode && phaseIdx > 0 && (
                 <button

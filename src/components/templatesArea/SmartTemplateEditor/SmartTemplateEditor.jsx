@@ -79,7 +79,7 @@ const SmartTemplateEditor = ({ value, onChange, readOnly = false }) => {
   };
 
   return (
-    <div className="smart-template-editor">
+    <div className="smart-template-editor">      
       <div className="editor-container">
         <Form.Control
           as="textarea"

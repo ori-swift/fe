@@ -1,6 +1,7 @@
 import axios from "axios";
 import { SERVER_URL } from "../config";
 import { getAuthHeaders } from "./general_be_api";
+import { scPrivateCall } from "./api_client";
 
 export function getAlertTemplate(templates, {
   method,
@@ -66,21 +67,23 @@ export function getAlertTemplate(templates, {
 }
 
 export async function addTemplate(templateData) {
-  console.log(templateData);
-  try {
-    const response = await axios.post(
-      `${SERVER_URL}/alert-templates/`,
-      templateData,
-      { headers: getAuthHeaders() }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error adding new alert template:", error.response?.data || error.message);
-    throw error;
-  }
+  return await scPrivateCall("alert-templates/", "post", templateData)
+  // console.log(templateData);
+  // try {
+  //   const response = await axios.post(
+  //     `${SERVER_URL}/alert-templates/`,
+  //     templateData,
+  //     { headers: getAuthHeaders() }
+  //   );
+  //   return response.data;
+  // } catch (error) {
+  //   console.error("Error adding new alert template:", error.response?.data || error.message);
+  //   throw error;
+  // }
 }
 
 export async function deleteTemplate(templateId) {
+  return await scPrivateCall(`alert-templates/${templateId}/`, "DELETE")
   try {
     const response = await axios.delete(
       `${SERVER_URL}/alert-templates/${templateId}/`,
@@ -96,7 +99,7 @@ export async function deleteTemplate(templateId) {
 }
 
 export async function updateTemplate(templateId, templateData) {
-
+  return await scPrivateCall(`alert-templates/${templateId}/`, 'PUT', templateData)
   try {
     const response = await axios.put(
       `${SERVER_URL}/alert-templates/${templateId}/`,
@@ -111,11 +114,12 @@ export async function updateTemplate(templateId, templateData) {
 }
 
 export async function getCompanyTemplates(companyId) {
+  return await scPrivateCall(`alert-templates/?company_id=${companyId}`, "GET")
   try {
     const response = await axios.get(`${SERVER_URL}/alert-templates/?company_id=${companyId}`, {
       headers: getAuthHeaders(),
     });
-    console.log(response.data);
+    console.log(response.data.data);
     
     return response.data;
   } catch (error) {
@@ -127,7 +131,8 @@ export async function getCompanyTemplates(companyId) {
 
 
 export async function getTemplateVars() {
-  console.log(getAuthHeaders());
+
+  return await scPrivateCall("template-variables/")
 
   try {
     const response = await axios.get(
@@ -152,6 +157,9 @@ export async function fetchAlertTasks({ clientId, documentId, status, startDate,
     if (startDate) params.start_date = startDate;
     if (endDate) params.end_date = endDate;
     params.page = page;
+
+
+    return await scPrivateCall(`alert-tasks/?${new URLSearchParams(params).toString()}`)
 
     const response = await axios.get(`${SERVER_URL}/alert-tasks/`, {
       headers: getAuthHeaders(),

@@ -17,6 +17,12 @@ const Clients = () => {
         return <p>טוען...</p>;
     }
 
+    if (userData?.user?.onboarding_status === "company_added") {
+        return <h4 style={{textAlign: 'RTL'}}>
+          עליך לעדכן פרטי התחברות לספק החשבוניות שלך לצורך הפעלת מערכת סוויפט
+        </h4>
+      }
+      
     return (
         <div>
             <ProviderClients key={selectedCompany.id} ps={selectedCompany} />            

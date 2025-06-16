@@ -85,7 +85,7 @@ const TemplatesPage = () => {
           {filteredTemplates.length ? filteredTemplates.map(t => (
             <tr key={t.id}>
               <td>{t.id}</td>
-              <td>{t.name}</td>
+              <td>{t.name} - {t.method} </td>
               <td>{t.subject || '—'}</td>
               <td>{t.template_content.substring(0, 20)}{t.template_content.length > 20 && '...'}</td>
               <td>
